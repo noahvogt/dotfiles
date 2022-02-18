@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# output file can be viewed in normie video players and "apps"
+# Usage: videopipe [input file] [output file]
+
+[ ! -f "$1" ] && echo "Error: file '$1' not found" && exit 1
+if [ -z "$2" ]; then
+    outputbase="videopiped-${1%.*}"
+else
+    outputbase="${2%.*}"
+fi
+
+ffmpeg -i "$1" -codec:v libx264 -crf 26 -bf 2 -flags +cgop -pix_fmt yuv420p -codec:a aac -strict -2 -b:a 384k -r:a 48000 -movflags faststart "$outputbase.mp4"

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# list all connected mouses
+
+xinput | grep -B1000 "Virtual core keyboard" | preconv | cut -d' ' -f5-  |\
+sed '$ d; /^$/d;' | grep -v "master pointer" | rev | cut -d' ' -f5- | rev |\
+sed 's/\[slave//g;' | tr '\t' '    '

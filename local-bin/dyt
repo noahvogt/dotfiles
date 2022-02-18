@@ -1,0 +1,23 @@
+#!/bin/sh
+
+search="$(printf "" | dmenu -p "Search Query: " | tr ' ' '+')"
+
+curl "https://www.youtube.com/results?search_query=$search" > "/tmp/answer.html"
+
+titles="$(grep "watch?v=" "/tmp/answer.html" | tr ',' '\n'  | grep "^\"title\":{\"runs\":" | grep "\"}]" | sed 's/"}]}$//g; s/"}]$//g; s/.*\":\"//g;' | head -n 20)"
+
+urls="$(grep "watch?v=" /tmp/answer.html | tr ',' '\n' | grep "watch?v=" | uniq | sed s'/\"$//g; s/.*?v=//g;' | head -n 20)"
+
+
+i=0; j=20
+echo "" > "/tmp/dyt"
+while [ "$i" -lt "$j" ]; do
+    : $((i = i + 1))
+    currentURL="$(echo "$urls" | sed -n "${i}p")" 
+    currentTITLE="$(echo "$titles" | sed -n "${i}p")" 
+    echo "$currentTITLE   ---   $currentURL" >> "/tmp/dyt"
+done
+
+chosen="$(dmenu -i -l 20 < "/tmp/dyt" | sed 's/.*   ---   //;')"
+
+open-stream "https://www.youtube.com/watch?v=$chosen"

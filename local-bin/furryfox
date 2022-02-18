@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# wrapper script to move the ~/.mozilla folder after exiting firefox
+
+# check if firefox is installed
+command -v "firefox" > /dev/null || exit 1
+
+# make sure datadir exists
+datadir=${XDG_DATA_HOME:-$HOME/.local/share}/furryfox
+[ -d "$datadir" ] || mkdir -p "$datadir" || exit 1
+
+# mv datadir when needed and start firefox
+[ ! -d "$datadir/.mozilla" ] || mv "$datadir/.mozilla" "$HOME/.mozilla"
+firefox
+
+# move mozilla folder after closing firefox
+mv "$HOME/.mozilla" "$datadir"

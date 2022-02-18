@@ -1,0 +1,42 @@
+# setting basic variables
+export EDITOR=nvim
+export VISUAL=nvim
+export BROWSER=chromium
+export PATH=$PATH:~/.local/bin
+export SHELL=/bin/zsh
+
+# set XDG directories
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+# default git ssh key location
+export GIT_SSH_KEY="$XDG_CONFIG_HOME/ssh/id_rsa"
+
+# ~/ cleanup
+export VIMINIT="set nocp | source $XDG_CONFIG_HOME/vim/vimrc"
+export LESSHISTFILE='-'
+export XAUTHORITY="$XDG_RUNTIME_DIR/xauth"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export TERMINFO="$XDG_DATA_HOME/terminfo"
+export TERMINFO_DIRS="$XDG_DATA_HOME/terminfo:/usr/share/terminfo"
+export CARGO_HOME="$XDG_CACHE_HOME/cargo"
+export GOPATH="$XDG_DATA_HOME/go"
+export GNUPGHOME="${XDG_DATA_HOME:-$HOME/.local/share}/gnupg"
+export GRADLE_USER_HOME="$XDG_CACHE_HOME/gradle"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/pass"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/config"
+export LEIN_HOME="$XDG_DATA_HOME/lein"
+export CONAN_USER_HOME="$XDG_CONFIG_HOME"
+
+# quick acces to my latex templates 
+export PATH=$PATH:~/.config/setup/templates/latex
+
+# quick acces to my xournalpp templates 
+export PATH=$PATH:~/.config/setup/templates/xournalpp
+
+# fix android studio for dwm
+export _JAVA_AWT_WM_NONREPARENTING=1

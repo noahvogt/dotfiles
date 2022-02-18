@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p /tmp/nSession
+xrandr --auto --output "$(xrandr | grep 'primary' | awk '{print $1}')" --mode "$(xrandr | grep '\*' | awk '{print $1}')" --right-of "$(xrandr | grep 'HDMI' | awk '{print $1}')"
+xrandr --auto --output "$(xrandr | grep 'primary' | awk '{print $1}')" --mode "$(xrandr | grep '\*' | awk '{print $1}')" --right-of "$(xrandr | grep 'HDMI' | awk '{print $1}')" > /tmp/nSession/monitors

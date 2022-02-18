@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# TeX template for a beamer presentation
+
+# exit if no argument given
+[ -z "$*" ] && echo "Error: Usage: nx [filename]" && exit
+
+cp ~/.config/setup/templates/xournalpp/dotted.xopp .
+mv dotted.xopp "${1%.*}.xopp"

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# File Naming Correction (script)
+# Usage: fnc [filename]
+
+[ ! -f "$1" ] && { echo "Error: File '$1' not found"; exit 1; }
+
+file="${1##*/}"
+dir="${1%/*}"
+
+# lowercase
+base=$(echo "${file%.*}" | tr '[:upper:]' '[:lower:]')
+ext=$(echo "$file" | grep -q "\." && 
+    echo ".${file##*.}" | tr '[:upper:]' '[:lower:]')
+
+# replace whitespaces with single dashes
+base=$(echo "$base" | sed 's/\s/-/g;' | tr -s - - |
+    # lowercase first letter
+    awk '{printf tolower(substr($0,1,1))} {print substr($0,2)}') 
+
+mv -i "$dir/$file" "$dir/$base$ext"

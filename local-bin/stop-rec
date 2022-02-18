@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# kills the running screencast
+
+kill "$(pgrep -f "screencast" | head -n 1)"
+kill "$(pgrep -f "screencast" | tail -n 1)"
+[ -z "$(pgrep -f "screencast")" ] && notify-send "screencasting" "stopped"

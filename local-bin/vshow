@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# script to open the compiled version of a groff/latex source file, even if it 
+# doesn't exists
+
+case "${1##*.}" in
+    rmd) aimFormat="html"; viewer="chromium" flag="--app=file://";;
+    *)  aimFormat="pdf"; viewer="mupdf ";;
+esac
+
+$viewer "${flag}${1%.*}.${aimFormat}"& sleep 0.5; xdotool key "Super_L+Return";
+sleep 0.2; xdotool key "Super_L+j"; sleep 0.3; xdotool type Wk; sleep 0.1;
+xdotool key "Super_L+j";

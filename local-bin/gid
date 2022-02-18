@@ -1,0 +1,7 @@
+#!/bin/sh
+
+ git -c color.diff.new='bold reverse green' \
+    -c color.diff.old='bold reverse red' diff --no-index -U0 --no-color \
+    --word-diff=color --word-diff-regex=. \
+    $HOME/.cache/bv/guessed-verse $HOME/.cache/bv/stripped-verse | tail -n +3 |
+    grep -v '\-\-\-\|+++'

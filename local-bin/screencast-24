@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# record main display
+
+resolution=$(xrandr | grep '\*' | head -n 1 | awk '{print $1}')
+
+[ ! -d "$HOME/vids/screencasts" ] && mkdir -p "$HOME/vids/screencasts"
+
+ffmpeg -f x11grab -r 24 -s "$resolution" -i :0.0 -acodec acc -vcodec libx264 -crf 0 "$HOME/vids/screencasts/$(date +"%F--%H-%M-%S--%N").mkv" &
+
+notify-send "screencasting" "started"

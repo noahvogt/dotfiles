@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if cat "/etc/systemd/system/getty@tty1.service.d/override.conf" | grep -q "\-\-autologin"; then
+    echo "Disabling automining ...";
+    sudo rm -rf "/etc/systemd/system/getty@tty1.service.d"
+    #sudo mkdir -p "/etc/systemd/system/getty@tty1.service.d"
+    #printf "[Service]\nExecStart=\nExecStart=\nType=idle" | sudo tee "/etc/systemd/system/getty@tty1.service.d/override.conf"
+else
+    echo "Enabling automining ..."
+    sudo mkdir -p "/etc/systemd/system/getty@tty1.service.d"
+    printf "[Service]\nExecStart=\nExecStart=-/sbin/agetty --noissue --autologin miner %%I \$TERM\nType=idle" | sudo tee "/etc/systemd/system/getty@tty1.service.d/override.conf"
+fi

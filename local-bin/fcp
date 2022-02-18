@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# fast copy program (faster than "cp", but copies ALL data incl. permissions)
+# note that this only works with directorys as of now
+
+(cd "$1" || exit; tar -cf - .) | (cd "$2" || exit; tar -xf -)

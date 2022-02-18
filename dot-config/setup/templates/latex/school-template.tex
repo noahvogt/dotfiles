@@ -1,0 +1,60 @@
+%standard
+\documentclass[a4paper,12pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+%\selectlanguage{english}
+
+%font
+\usepackage{tgheros}
+\usepackage{mathptmx}
+% use sans serif font
+% \renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[hyphens]{url}
+\usepackage{hyperref}
+
+%pictures
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+%tables
+\renewcommand{\arraystretch}{1.4}
+\usepackage{multirow}
+
+%special characters
+\usepackage[official]{eurosym}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+%geometry
+\usepackage{geometry}
+\geometry{ headsep=20pt,
+ headheight=20pt,
+ left=21mm,
+ top=15mm,
+ right=21mm,
+ bottom=15mm,
+ footskip=20pt,
+ includeheadfoot}
+
+%header
+\usepackage{datetime}
+\newdateformat{dmy}{%
+  \THEDAY.~\monthname[\THEMONTH] \THEYEAR}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Noah J. Vogt}
+\chead{}
+\rhead{\dmy\today}
+\lfoot{}
+\cfoot{Gymnasium Kirschgarten}
+\rfoot{}
+
+%indent
+\renewcommand{\footrulewidth}{.4pt}
+\setlength{\parindent}{0em}
+
+\begin{document}
+
+
+
+\end{document}

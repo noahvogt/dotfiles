@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# script to display the current volume and mute state in dwmblocks
+
+volume=$(amixer sget Master | grep 'Front Left:' | awk -F '[\\]\\[]' '{print $2}')
+if [ -z "$(amixer sget Master | grep "off" )" ];
+then
+    muteicon="🔊"
+else
+    muteicon="🔇"
+fi
+printf "%s %s\\n" "$muteicon" "$volume"

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# script to change the java environment using dmenu from the commandline
+
+env="$(archlinux-java status | grep java | dmenu -l 30)"
+
+# exit if none selected
+[ -z "$env" ] && exit
+
+# set new environment
+sudo archlinux-java set "$env"

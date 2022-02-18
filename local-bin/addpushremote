@@ -1,0 +1,24 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Error: no argument given" && exit 1
+
+git pull || exit 1
+
+fetch="$(git remote -v | grep fetch | awk '{print $2}')"
+reponame="$(echo "$fetch" | sed 's/^.*\///; s/\..*$//')"
+newpushremote="$(echo "$1" | sed "s/REPONAME/$reponame/")"
+
+if ! git remote -v | grep -q "$newpushremote"; then
+    printf "\nAdding new push remote ...\n\n"
+    git remote set-url origin --add --push "$newpushremote"
+fi
+
+if ! git remote -v | grep push | grep -q "$fetch" ; then
+    echo "Readding fetch remote to push ...\n"
+    git remote set-url origin --add --push "$fetch"
+fi
+
+git push
+
+printf "\nShowing remotes ...\n\n"
+git remote -v

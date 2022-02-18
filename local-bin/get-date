@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# script to display the brightness state in dwmblocks
+
+DATETIME=$(date +"📅 %d.%m.%y ⌚ %H:%M")
+printf "%s \\n" "$DATETIME" 

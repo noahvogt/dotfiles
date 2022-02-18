@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# disable mouse acceleration with the device name given as an argument
+
+[ -z "$1" ] && exit 1
+
+sleep 5
+
+IDlist=$(xinput | grep -B1000 "Virtual core keyboard" | preconv | cut -d' ' -f5-  |\
+sed '$ d; /^$/d;' | grep -v "master pointer" | rev | cut -d' ' -f5- | rev |\
+sed 's/\[slave//g;' | tr '\t' '    ' )
+
+chosenDevice="$1"
+
+chosenID=$(echo "$IDlist" | grep "$chosenDevice" | awk '{print $NF}' | sed 's/id=//g')
+
+[ -z "$chosenID" ] && exit 1
+
+# disable the mouse acceleration (using xorg-xinput)
+xinput --set-prop "$chosenID" 'libinput Accel Speed' 0
+xinput --set-prop "$chosenID" 'libinput Accel Profile Enabled' 0, 1
+
+# set the mouse speed (using xorg-xset)
+xset mouse 1 0 &

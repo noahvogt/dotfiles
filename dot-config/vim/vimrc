@@ -1,0 +1,257 @@
+"
+" noah's ~/.config/vim/vimrc
+" 
+" basic setup
+set nocompatible
+
+" set vim paths
+set undodir="~/.config/vim/undo"
+set viminfo="~/.config/vim/viminfo"
+set runtimepath+="~/.config/vim"
+
+" make :find recursive
+set path+=**
+
+" display all files for tab completion
+set wildmenu
+
+" making me comfortable
+set nu
+set tabstop=4 softtabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set smartcase
+set noswapfile
+set nobackup
+set incsearch
+set spelllang=de_ch,en
+
+" getting plugins
+call plug#begin('~/.cache/vim/plugged')
+
+" colorshemes
+Plug 'morhetz/gruvbox'
+"Plug 'itchyny/landscape.vim'
+
+
+" nice statusline for vim
+Plug 'vim-airline/vim-airline'
+
+" some git integration
+Plug 'tpope/vim-fugitive'
+
+" preview colours
+Plug 'ap/vim-css-color'
+
+" autocompletion plugins
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'lervag/vimtex'
+
+call plug#end()
+
+colorscheme gruvbox
+set background=dark
+
+let loaded_matchparen = 1
+let mapleader = " "
+
+let g:netrw_browse_split = 2
+let g:vrfr_rg = 'true'
+let g:netrw_banner = 0
+let g:netrw_winsize = 25
+
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+
+nnoremap <leader>h :wincmd h<CR>
+nnoremap <leader>j wincmd j<CR>
+nnoremap <leader>k wincmd k<CR>
+nnoremap <leader>l wincmd l<CR>
+nnoremap <leader>u :UndotreeShow<CR>
+nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
+nnoremap <leader>ps :Rg<CR>
+nnoremap <silent> <leader>+ :vertical resize +5<CR>
+nnoremap <silent> <leader>- :vertical resize -5<CR>
+
+" general custom commands
+command D filetype detect
+
+
+""" active to autocompile docs on saving
+"autocmd BufWritePost *.ms !compile % | fold -w200
+"autocmd BufWritePost *.tex !compile % | fold -w200
+
+"" commands for opening and compiling various document types
+command S silent !vshow '%:p'
+command C !compile "%"
+
+" general compile button
+map <F3> :w<CR>:!compile "%"; pkill -HUP mupdf<CR>
+
+" bibtex extra compiler
+map <F2> :w<CR>:!latexmk -pdf "%"; pkill -HUP mupdf<CR>
+
+map <F4> :noh<CR>
+map <F5> :set spell!<CR>
+map <F6> :w<CR>:!glosscompile "%"; pkill -HUP mupdf<CR>
+
+" set encoding
+set encoding=utf-8
+
+" automatic python syntax highlighting for .tibasic files
+autocmd BufNewFile,BufRead *.tibasic set filetype=python
+autocmd BufNewFile,BufRead *.tib set filetype=python
+
+" jumper
+vnoremap <Space><Space> <Esc>/<++><Enter>"_c4l
+map <Space><Space> <Esc>/<++><Enter>"_c4l
+
+""" START latex macros
+" standard macros
+autocmd FileType tex inoremap ;beg <Esc>yypkI\begin{<Esc>A}<Esc>o<Esc>0i<Esc>jI\end{<Esc>A}<CR><Esc>0i<CR><Esc>0i<++><Esc>3ki
+autocmd FileType tex inoremap ;ig \includegraphics[]{<++>}<Esc>6hi
+autocmd FileType tex inoremap ;tw width=\textwidth<Esc>9hi
+autocmd FileType tex inoremap ;th height=\textheight<Esc>10hi
+autocmd FileType tex inoremap ;ni \setlength{\parindent}{0em}<Esc>
+
+" packages
+autocmd FileType tex inoremap ;ger \usepackage[ngerman]{babel}<Esc>
+
+" text formatting macros
+autocmd FileType tex inoremap ;bf \textbf{}<++><Esc>T{i
+autocmd FileType tex inoremap ;it \textit{}<++><Esc>T{i
+
+" beamer macros
+autocmd FileType tex inoremap ;fr \begin{frame}<CR>\frametitle{}<CR><++><CR>\end{frame}<Esc>kklli
+
+" book macros
+autocmd FileType tex inoremap ;sw \switchcolumn[]<++><Esc>4hi
+
+" preambule macros
+autocmd FileType tex inoremap ;up \usepackage{}<Esc>i
+autocmd FileType tex inoremap ;hy \hyphenation{}<Esc>i
+
+" apacite style
+autocmd FileType tex inoremap ;ap \bibliographystyle{apacite}<CR>\bibliography{}<Esc>i
+""" END latex macros
+
+" make background transparent
+"hi Normal ctermbg=none
+"hi NonText ctermbg=none
+
+" disalbe automatic identation
+filetype indent off
+
+" disable automatic comment
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+" clear a TeX build after exiting vim
+autocmd VimLeavePre *.tex !texclear "%"
+autocmd VimLeavePre *.md !texclear "%"
+autocmd VimLeavePre *.c !rm -rf .ccls-cache
+autocmd VimLeavePre *.cc !rm -rf .ccls-cache
+autocmd VimLeavePre *.cpp !rm -rf .ccls-cache
+autocmd VimLeavePre *.h !rm -rf .ccls-cache
+autocmd VimLeavePre *.hh !rm -rf .ccls-cache
+
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'vim-python/python-syntax'
+let g:python_highlight_all = 1
+
+" copy from / to clipboard
+vnoremap <C-c> "+y
+map <C-p> "+P
+
+" use TAB to autocomplete w/ coc
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Add status line support, for integration with other plugin, checkout `:h coc-status`
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" if hidden is not set, TextEdit might fail.
+set hidden
+
+" Better display for messages
+set cmdheight=2
+
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+
+" always show signcolumns
+set signcolumn=yes
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+set colorcolumn=80
+
+autocmd FileType plaintex,tex,latex syntax spell toplevel
+" Automatically wrap at 80 characters for Markdown
+" autocmd BufRead,BufNewFile *.md setlocal textwidth=80
+
+nmap <leader>rn <Plug>(coc-rename)
+
+vmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+function! MathAndLiquid()
+    "" Define certain regions
+    " Block math. Look for "$$[anything]$$"
+    syn region math start=/\$\$/ end=/\$\$/
+    " inline math. Look for "$[not $][anything]$"
+    syn match math_block '\$[^$].\{-}\$'
+
+    " Liquid single line. Look for "{%[anything]%}"
+    syn match liquid '{%.*%}'
+    " Liquid multiline. Look for "{%[anything]%}[anything]{%[anything]%}"
+    syn region highlight_block start='{% highlight .*%}' end='{%.*%}'
+    " Fenced code blocks, used in GitHub Flavored Markdown (GFM)
+    syn region highlight_block start='```' end='```'
+
+    "" Actually highlight those regions.
+    hi link math Statement
+    hi link liquid Statement
+    hi link highlight_block Function
+    hi link math_block Function
+endfunction
+
+" Call everytime we open a Markdown file
+autocmd BufRead,BufNewFile,BufEnter *.md,*.markdown call MathAndLiquid()
+Plug 'vim-pandoc/vim-pandoc-syntax'
+let g:vim_markdown_math = 1
+
+" Go to tab by number
+noremap <leader>1 1gt
+noremap <leader>2 2gt
+noremap <leader>3 3gt
+noremap <leader>4 4gt
+noremap <leader>5 5gt
+noremap <leader>6 6gt
+noremap <leader>7 7gt
+noremap <leader>8 8gt
+noremap <leader>9 9gt
+noremap <leader>0 :tablast<cr>
+
+set noshowmode

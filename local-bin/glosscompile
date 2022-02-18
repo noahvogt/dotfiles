@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ -z "$1" ] && { echo "Error: Usage: glosscompile [filename]"; exit 1; }
+
+[ ! -f "$1" ] && exit 1
+
+base=${1%.*}
+
+makeglossaries "${base}.glo"

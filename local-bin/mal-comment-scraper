@@ -1,0 +1,11 @@
+#!/bin/sh
+
+clipboard=$(xclip -out -sel clip | sed 's/!/\\!/')
+
+curl "$clipboard" > "/tmp/index.html"
+
+sed -i '0,/<h2>Reviews<\/h2>/d;' "/tmp/index.html"
+sed -i '0,/<h2>Recent News<\/h2>/!d;' "/tmp/index.html"
+sed -i '0,/<h2>Recommendations/!d;' "/tmp/index.html"
+pandoc -s "/tmp/index.html" -o "/tmp/index.pdf" --template="$HOME/.config/setup/templates/pandoc/english.latex"
+devour llpp "/tmp/index.pdf"

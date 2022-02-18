@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# script to increase the brightness by 10%
+
+device=$(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'")
+brightness=$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2 + 10}')
+
+brightnessctl -d "${device}" set "$brightness"%

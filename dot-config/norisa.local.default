@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# this is a the default configuration file which needs to be copied to 
+# $XDG_CONFIG_HOME/norisa.local to be active on a individual machine. It is
+# intended to provide the possibility of certain machine-specific configuration
+# options, while still enabling the machine-agnostic configuration to be synced
+# via the norisa dotfiles repository. This file should be ingnored by VCS.
+
+NORISA_DISPLAYSETUP="" # xrandr command to setup display settings
+
+NORISA_XORG_MOUSE_ID="" # mouse id on which to disable mouse acceleration
+
+VPS_REMOTE="" # remote vps git linkformat

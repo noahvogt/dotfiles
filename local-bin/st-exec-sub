@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# just a subscript for st-exec
+
+[ ! -f /tmp/norisa/st-exec-cmd ] && exit 1
+
+zsh -c "$(cat /tmp/norisa/st-exec-cmd)"

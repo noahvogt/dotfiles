@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# script to shutdown the pc normally when running critical on battery
+
+percent=$(acpi -b | awk '{print($4)}'| tr -d '%,')
+[ "$percent" -lt 10 ]; && echo "hi"
+#if [ "$percent" -lt 10 ]; then
+    #echo "$percent"
+#fi

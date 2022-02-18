@@ -1,0 +1,36 @@
+#!/bin/zsh
+
+[ -f "$HOME/.config/norisa/reapk" ] || exit 1
+
+notify() {
+    echo "$1"
+    notify-send "ReAPK" "$1"
+}
+
+# check if access to file
+apkFile=$(cat "$HOME/.config/norisa/reapk")
+fileTest=$(file $apkFile)
+if echo $fileTest | grep -q "Error: cannot open APK file"; then 
+    notify "error"
+fi
+
+#select device
+
+deviceAmount=$(adb devices | wc -l)
+
+if [ "$deviceAmount" -lt 3 ]; then
+    notify "Error: cannot open any devices"
+    exit 1
+elif [ "$deviceAmount" -eq 3 ]; then
+    extraAPKoptions=""
+else
+    device=$(adb devices -l | sed '/List of devices/d; /^$/d' | dmenu -i -l 30 -p "Selet Device:" | awk '{print $1}')
+    if [ -z $device ]; then
+        notify "Error: no device selected"
+        exit 1
+    fi
+    extraAPKoptions="-s $device"
+fi
+
+# install and notify when action finished
+st-exec "adb install $extraAPKoptions -r $apkFile" && notify "Action Finished !!!"

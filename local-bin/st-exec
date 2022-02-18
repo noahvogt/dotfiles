@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# script to run st with a startup command
+
+[ -z "$1" ] && exit 1
+
+[ ! -d /tmp/norisa ] && mkdir -p /tmp/norisa
+echo "$1" > /tmp/norisa/st-exec-cmd
+
+st -e st-exec-sub

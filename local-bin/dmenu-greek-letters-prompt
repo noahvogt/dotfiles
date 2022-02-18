@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# script to get a selection of greek letters using dmenu
+
+selected=$(dmenu -l 25 < ~/.local/share/norisa/greek-letters)
+
+# exit if none selected
+[ -z "$selected" ] && exit
+
+# copies the selected letter in the desired format
+case "${1##-}" in
+	vim) echo "\\${selected##* }" | tr -d '\n' | xclip -selection clipboard ;;
+	*) echo "${selected%% *}" | tr -d '\n' | xclip -selection clipboard ;;
+esac

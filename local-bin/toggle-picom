@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# script to toggle picom
+
+pgrep "picom" && killall picom && 
+notify-send "picom disabled" && exit
+
+picom &
+pgrep "picom" && notify-send "picom enabled"

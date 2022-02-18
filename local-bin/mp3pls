@@ -1,0 +1,3 @@
+#!/bin/bash
+
+for f in *.opus *.m4a; do ffmpeg -i "$f" -c:a libmp3lame "${f%.*}.mp3" && rm -f "$f"; done

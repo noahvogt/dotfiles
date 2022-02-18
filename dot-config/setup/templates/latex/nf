@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# TeX template for a tikz flowchart
+
+# exit if no argument given
+[ -z "$*" ] && echo "Error: Usage: nf [filename]" && exit
+
+cp ~/.config/setup/templates/latex/flowchart.tex .
+mv flowchart.tex "${1%.*}.tex"
+vim -c :1  "${1%.*}.tex"

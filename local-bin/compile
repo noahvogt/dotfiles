@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# script to compile some document types
+
+[ -z "$1" ] && { echo "Error: Usage: compile [filename]"; exit 1; }
+
+choosepandoc() {
+    [ -z "$template" ] && template="$(ls $HOME/.config/setup/templates/pandoc/* | \
+        sed 's/.*\///g' | dmenu -i -l 30 -p "choose pandoc template: ")"
+    [ -z "$newext" ] && newext="$(echo "$template" | sed 's/.*\.//; s/latex/pdf/;')"
+}
+
+base=${1%.*}
+ext=${1##*.}
+
+case "$ext" in
+    ms) preconv "$1" |  groff -"$ext" -dpaper=a4 -P -pa4 -T pdf > "$base.pdf" && pkill -HUP mupdf;;
+    tex) pdflatex "$1"; pkill -HUP mupdf;;
+    md) choosepandoc; pandoc -V "fontsize=16pt" -s "$1" --template="$HOME/.config/setup/templates/pandoc/$template" -V "fontsize=16pt" -o "$base.$newext"; pkill -HUP mupdf;;
+    rmd) pandoc -s "$1" --template="$HOME/.config/setup/templates/pandoc/german.latex" -o "$base.pdf"; pkill -HUP mupdf;;
+    *) echo "Error: unknown file extension '$ext'"; exit 1;#;
+esac

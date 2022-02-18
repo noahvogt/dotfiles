@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# script to get a prompt for power options or entering any other command
+
+printf 'lock\nbetterlockscreen -l\nsdn\nreboot' | dmenu -p '$' | tee /tmp/prompt-cmd | xargs -0 zsh -ic

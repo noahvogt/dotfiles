@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# create initial jar
+[ -z "$2" ] && echo "Error: missing arguments" && exit 1
+jar cvf "$@" || exit 1
+
+# open MANIFEST file template in $EDITOR
+printf "Class-Path: \nMain-Class: \n" > '/tmp/MANIFEST.MF'
+[ -z "$EDITOR" ] && echo "Error: \$EDITOR not set" && exit 1
+$EDITOR '/tmp/MANIFEST.MF'
+
+# apply manifest to jar
+jar uvfm "$1" '/tmp/MANIFEST.MF'
+
+# remove temporary files
+rm '/tmp/MANIFEST.MF'

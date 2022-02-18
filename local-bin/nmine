@@ -1,0 +1,75 @@
+#!/bin/sh
+
+[ ! -d "$HOME/.cache/nmine" ] && mkdir -p "$HOME/.cache/nmine"
+[ ! -f "$HOME/.cache/nmine/current-miner" ] && touch "$HOME/.cache/nmine/current-miner"
+cat "$HOME/.cache/nmine/current-miner" > /dev/null || { echo "Error: no access to cache file"; exit 1; }
+[ ! -d "$HOME/.config/nmine" ] && mkdir -p "$HOME/.config/nmine"
+[ ! -f "$HOME/.config/nmine/config" ] && touch "$HOME/.config/nmine/config"
+cat "$HOME/.config/nmine/config" > /dev/null || { echo "Error: no access to config file"; exit 1; }
+
+
+[ -z "$(cat "$HOME/.config/nmine/config")" ] && echo "Error: config file is empty" && exit 1
+
+helpMessage="Usage: nmine [option]
+Options:
+\tstart\t\tstart mining
+\tstop\t\tstop mining
+\tlist\t\tlist configured miners
+\tchange [miner]\tchange mining software / coin
+\thelp\t\tprint this help message"
+
+getMiners() {
+    grep "^miner" "$HOME/.config/nmine/config" | sed 's/^miner=//'
+}
+
+checkMinerConfig() {
+    getMiners | grep -q "^$miner\$" || { printf "Error: miner '%s' not found
+Exiting ...\n" "$miner"; exit 1; }
+}
+
+initCache () {
+    miner="$(cat "$HOME/.cache/nmine/current-miner")"
+    [ -z "$miner" ] && printf "Error: no miner selected, please run 'nmine change [miner]'\nExiting ...\n" && exit 1
+}
+
+
+
+[ -z "$1" ] && printf "Error: No Arguments given\n\n" && echo "$helpMessage" && exit 1
+
+case "$1" in
+    start)
+        echo "Start mining ..."
+        initCache
+        checkMinerConfig
+        cmd="$(grep -a1 "$miner" "$HOME/.config/nmine/config" | tail -n 1 | sed 's/^start=//')"
+        eval "$cmd";;
+    stop)
+        echo "Stop mining ..."
+        initCache
+        checkMinerConfig
+        processName="$(grep -a2 "$miner" "$HOME/.config/nmine/config" | tail -n 1 | sed 's/^stop=//')"
+        echo "$processName"
+        processID="$(pgrep -f "$processName")"
+        echo "$processID"
+        kill "$processID";;
+    list)
+        printf "Configured miners:\n"
+        miner="$(cat "$HOME/.cache/nmine/current-miner")"
+        [ -z "$miner" ] && getMiners && exit
+        getMiners | sed "s/$miner/$miner (current)/";;
+    change)
+        echo "Changing miner ..."
+        [ -z "$2" ] && printf "Error: Invalid Sytax\nExiting...\n" && exit
+        miner="$2"
+        checkMinerConfig
+        echo "$miner" > "$HOME/.cache/nmine/current-miner"
+        echo "Done";;
+    help)
+        echo "$helpMessage";;
+    *)
+        [ -z "$2" ] && printf "Error: Invalid Argument given:'%s'\n\n" "$1" &&
+        echo "$helpMessage" && exit 1
+
+        printf "Error: Invalid Arguments given:'%s'\n\n" "$@" &&
+        echo "$helpMessage" && exit 1
+esac

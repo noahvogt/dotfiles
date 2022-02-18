@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# If notify-send is not found, use echo as notifier
+command -v "notify-send" > /dev/null && notifier="echo" || notifier="notify-send"
+
+# check dependencies
+for prog in dmenu jq nomacs wget curl; do
+	! command -v "$prog" > /dev/null && 
+        $notifier "redyt" "Error: Program '$prog' not found." && exit 1
+done
+
+# set dirs
+cachedir="${XDG_CACHE_HOME:-$HOME/.cache}/redyt"
+configdir="${XDG_CONFIG_HOME:-$HOME/.config}/redyt"
+
+# if dirs do not exist, create them
+[ ! -d "$cachedir" ] && mkdir -p "$cachedir"
+[ ! -d "$configdir" ] && mkdir -p "$configdir"
+
+# remove all cached images
+rm "${cachedir:?}"/*
+
+# set defaults
+defaultsub="memes"
+[ -f "$configdir/subreddits" ] || echo "$defaultsub" > "$configdir/subreddits"
+limit=100
+# select sorting (default: sort by hot)
+# sorting=$(printf "hot\nnew\n" | dmenu -p "Select Sorting" -i -l 10)
+# [ -z "$sorting" ] && 
+sorting="hot"
+
+# when no argument given, use dmenu to ask for subreddit
+if [ -z "$1" ]; then
+	subreddit=$(dmenu -p "Select Subreddit r/" -i -l 10 < \
+        "$configdir/subreddits" | cut -d\| -f1 | awk '{$1=$1;print}')
+
+	# if no subreddit was chosen, exit
+	[ -z "$subreddit" ] && exit 1
+else
+	subreddit="$1"
+fi
+
+
+# send a notification
+$notifier "Redyt" "📩 Downloading your 🖼️ Memes"
+
+# download the subreddit feed, containing only the first 100 entries (limit),
+# and store it inside $cachedir/tmp.json
+curl -H "User-agent: 'your bot 0.1'" \
+    "https://www.reddit.com/r/$subreddit/$sorting.json?limit=$limit" \
+    > "$cachedir/tmp.json"
+
+# get a list of images
+imgs="$(jq '.' < "$cachedir/tmp.json" | grep url_overridden_by_dest | \
+    grep -Eo "http(s|)://.*(jpg|png)\b" | sort -u)"
+
+# if there are no images, exit
+[ -z "$imgs" ] && $notifier "Redyt" \
+    "sadly, there are no images for subreddit $subreddit, " \
+    "please try again later!" && exit 1
+
+# set welcome img
+cp "$configdir/redyt.png" "$cachedir"
+
+# download + display images in cache dir
+wget -bq -P "$cachedir" "$imgs" > /dev/null 2> /dev/null
+devour nomacs "$cachedir/redyt.png" & #> /dev/null 2> /dev/null

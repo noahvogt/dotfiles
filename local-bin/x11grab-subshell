@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# subshell for recording the main display
+
+ffmpeg -f x11grab -r 24 -s 1366x768 -i :0.0 -acodec acc -vcodec libx264 -crf 0 "$HOME/vids/screencasts/$(date +"%F--%H-%M-%S--%N").mkv"

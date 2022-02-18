@@ -1,0 +1,62 @@
+#!/bin/bash
+
+configError() {
+    echo "Error: No valid configuration found, exiting"
+    notify-send "based-sync" "Error: No valid configuration found, exiting"
+    exit 1
+}
+
+# check dependencies
+for prog in internal-ip rsync nc notify-send; do
+    if ! command -v "$prog" > /dev/null 2>&1; then
+        echo "$prog is not detected" 1>&2
+        notify-send "$prog is not detected"; exit 1
+    fi
+done
+
+# set dirs
+configDir="${XDG_CONFIG_HOME:-$HOME/.config}"
+cacheFile="/tmp/norisa/based-sync-cache"
+
+# read config files
+[ -f "$HOME/.config/based-sync/dirs" ] || configError
+[ -f "$HOME/.config/based-sync/cons" ] || configError
+dirs="$(cat "$configDir/based-sync/dirs")"
+cons="$(grep -v "$(internal-ip)" < "$configDir/based-sync/cons")"
+
+# reset cachefile safely
+[ -d ${cacheFile%/*} ] || mkdir -p ${cacheFile%/*}
+if [ -f $cacheFile ]; then
+    rm $cacheFile; touch $cacheFile
+else
+    touch $cacheFile
+fi
+
+# check each connection via netcat
+for con in $cons; do
+    if nc -zv -w 1 "${con/*@}" 22 2>&1 | grep -q "succeeded"; then
+        echo "$con ON" | tee $cacheFile
+    else
+        echo "$con OFF"
+    fi
+done
+
+sed -i "s/ ON//g" $cacheFile
+
+# exit when no working connection found
+[ -s $cacheFile ] || configError
+
+# choose remote on which to sync the dirs to
+ip=$(dmenu -i -l 30 < $cacheFile)
+
+# sync dirs via rsync
+for dir in $dirs; do
+    remoteUser=${ip/@*}
+    rsync -uvrP --delete-after -e \
+        'ssh -T -c aes128-gcm@openssh.com -o Compression=no' \
+        "${dir/\~/$HOME}/" "$ip:${dir/\~/\/home\/$remoteUser}"
+done
+
+# success message
+echo "Success: File syncing is finished"
+notify-send "Success: File syncing is finished"

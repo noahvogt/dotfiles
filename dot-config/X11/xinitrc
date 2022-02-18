@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# set keyboard layout to Swiss German
+setxkbmap ch
+
+# start hotkey daemon
+xbindkeys -f "$XDG_CONFIG_HOME"/xbindkeys/config &
+
+feh --bg-scale --no-fehbg "$XDG_DATA_HOME"/norisa/black.jpg
+
+# turn off BIOS beeper
+xset b off
+
+# set WM name (for Java apps)
+wmname LG3D
+
+# load notification deamon
+dunst &
+
+# load composite manager
+picom &
+
+# swap caps and escape (for vim users)
+setxkbmap -option caps:swapescape
+
+# set brightness
+brightnessctl -d $(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'") set $(cat ~/.config/norisa/brightness-state)%
+
+# load dwmblocks
+dwmblocks &
+
+# don't display mouse if not used recently
+unclutter &
+
+# apply local config
+localconfig="${XDG_CONFIG_HOME:-$HOME/.config}/norisa.local"
+if [ -f "$localconfig" ]; then
+    . "$localconfig"
+    [ -z "$NORISA_XORG_MOUSE_ID" ] || scripted-mouse-acceleration \
+        "$NORISA_XORG_MOUSE_ID" &
+    [ -z "$NORISA_DISPLAYSETUP" ] || $NORISA_DISPLAYSETUP
+fi
+
+# set (previous) wallpaper
+~/.cache/.fehbg && mv ~/.fehbg ~/.cache
+
+# start pulseaudio when unable to fetch the volume
+volume=$(amixer sget Master | grep 'Front Left:' | awk -F '[\\]\\[]' '{print $2}')
+[ -z "$volume" ] && pulseaudio &
+
+# run dwm
+exec dwm

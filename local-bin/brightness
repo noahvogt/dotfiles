@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# script to display the brightness state in dwmblocks
+
+device=$(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'")
+[ -z "$device" ] && { printf ""; exit; }
+
+printf "🔆 %s\\n" "$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2}')"

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+while getopts ":c:l:o:h" option; do case "${option}" in
+    h) printf "Usage (note that c,l and o flags are obligatory):\\n\
+ -c [filename]\t path to cookie file (.txt file) \\n -l [filename]\t link \
+to the file on sharepoint (full url)\\n\
+ -o [path]\t path to output directory\\n\\n\
+ -h\t\t show this help message\\n" && exit 1 ;;
+    c) cookiefile=${OPTARG};;
+    l) linktofile=${OPTARG};;
+    o) outputpath=${OPTARG};;
+    *) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
+esac done
+
+[ ! -f "$cookiefile" ] && echo "Error: file '$cookiefile' not found" && exit 1
+[ ! -d "$outputpath" ] && echo "Error: path '$outputpath' not found" && exit 1
+[ -z "$linktofile" ] && echo "Error: no link provided" && exit 1
+
+# note: '--no-if-modified-since' was suggested by wget on running with out it
+wget -nH --cut-dirs=1 --quiet -P "$outputpath" --cookies=on --load-cookies "$cookiefile" --keep-session-cookies --no-check-certificate --no-if-modified-since -m "$linktofile"

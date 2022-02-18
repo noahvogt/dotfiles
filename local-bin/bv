@@ -1,0 +1,123 @@
+#!/bin/sh
+
+# bv, short for bible verse, is a simple program for helping to learn and 
+# remember bible verses from a minimal X environment and the command line.
+
+# make sure needed dirs exist
+conf="${XDG_CONFIG_DIR:-$HOME/.config}/bv"
+cache="${XDG_CACHE_DIR:-$HOME/.cache}/bv"
+[ -d "$conf" ] || mkdir -p "$conf"
+[ -d "$cache" ] || mkdir -p "$cache"
+
+
+help_msg() {
+    printf "Usage:\\n\
+ -s \t set new bible verse to given string or path to file\\n\
+ -l \t list current bible verse \\n\
+ -u \t update media (do this after changing your wallpaper)\\n\
+ -a \t ask for bible verse via stdin and mark mistakes if found\\n\
+ -h \t show this help message\\n"
+}
+
+generate_assets() {
+    # fetch infos
+    bgpath="$(tail -n 1 "${XDG_CACHE_DIR:-$HOME/.cache}/.fehbg" | rev | \
+        awk '{print $1}' | rev | sed 's/.$//;s/^.//' )"
+    dim="$(mediainfo "$bgpath" | grep "Width\|Height" | sed 's/^.*\: //;s/pixels//' \
+        | tr -d ' ' | tr '\n' x | sed s'/x$/\n/')"
+    width="$(echo "$dim" | sed 's/x.*//')"
+    #height="$(echo "$dim" | sed 's/.*x//')"
+    bgext="${bgpath##*.}"
+    savedpath="$(cat "$cache/bg-orig.path")"
+    savedext="${savedpath##*.}"
+
+    # clunky path parsing ...
+
+    [ -f "$cache/bg-orig.path" ] || echo "$bgpath" > "$cache/bg-orig.path"
+
+    if ! echo "${bgpath##*/}" | grep -q "bv-bg.png"; then
+        echo "$bgpath" > "$cache/bg-orig.path"
+    fi
+
+    echo "$savedpath" | grep -q "bv-bg.png" && savedpath=""
+
+    if [ ! -s "$savedpath" ]; then
+        if [ -n "$savedpath" ]; then
+            cp "$cache/bg-orig.$savedext" "$savedpath" && 
+            echo "original file moved or deleted: restoring ..."
+        fi
+    fi
+
+    # check if new background should be generated
+    if diff "$cache/bg-orig.$savedext" "$(cat "$cache/bg-orig.path")" > /dev/null 2> /dev/null &&
+        diff "$cache/verse" "$conf/verse" > /dev/null 2> /dev/null; then
+        echo "Everything already up to date, skipping Asset Generation ..."
+    else
+        # cache new bg incl. its source path
+        cp "$bgpath" "$cache/bg-orig.$bgext"
+        echo "$bgpath" > "$cache/bg-orig.path"
+
+        # cache new verse
+        cat "$conf/verse" > "$cache/verse"
+
+        echo "Generating Background ..."
+
+        # calculate text scaling accordingly to the resolution
+        : $((scal = width / 128))
+        : $((dens = 300 * 15 / scal))
+        : $((pntr = scal * scal * 16 / 225))
+        : $((strk = scal * 2 / 15))
+
+        # generate text and merge w/ background
+        magick -gravity center -background transparent -density "$dens" \
+            -pointsize "$pntr" -fill white -size "$dim" -stroke black -strokewidth "$strk" \
+            -font "/usr/share/fonts/adobe-source-code-pro/SourceCodePro-BlackIt.otf" \
+            caption:@- "$cache/bv-verse.png" < "$conf/verse"
+        composite -gravity center "$cache/bv-verse.png" \
+            "$bgpath" "$cache/bv-bg.png"
+    fi
+}
+
+update_assets() {
+    # set bg
+    echo "Setting Background ..."
+    feh --bg-scale "$cache/bv-bg.png"
+    mv "$HOME/.fehbg" "${XDG_CACHE_DIR:-$HOME/.cache}"
+}
+
+exit_when_no_verse() {
+    [ ! -s "$conf/verse" ] && echo "Error: No bible verse set." && exit 1
+}
+
+verse_diff() {
+    git -c color.diff.new='bold reverse green' \
+        -c color.diff.old='bold reverse red' diff --no-index -U0 --no-color \
+        --word-diff=color --word-diff-regex=. \
+        "$cache/guessed-verse" "$cache/stripped-verse" | tail -n +3 |
+        grep -v '\-\-\-\|+++'
+}
+
+# parse arguments
+while getopts ":s:ahlu" option; do case "${option}" in
+    h)  help_msg; exit 0;;
+    s)  newbv="${OPTARG}"
+        if [ -s "$newbv" ]; then
+            cat "$newbv" > "$conf/verse"
+            cp "$conf/verse" "$cache/verse"
+        elif [ -n "$newbv" ]; then
+            echo "$newbv" > "$conf/verse"
+            cp "$conf/verse" "$cache/verse"
+        fi
+
+        generate_assets; update_assets; exit 0;;
+    l)  exit_when_no_verse; cat "$conf/verse"; exit 0;;
+    u)  generate_assets; update_assets; exit 0;;
+    a)  exit_when_no_verse; printf "bible verse: "; read -r ask_input
+        echo "$ask_input" > "$cache/guessed-verse"
+        tr '\n' ' ' < "$conf/verse" | sed 's/.$/\n/; s/  / /g' > "$cache/stripped-verse"
+        verse_diff; exit 0;;
+    *)  printf "Invalid option: -%s\\n\\n" "$OPTARG"; help_msg; exit 1 ;;
+esac done
+
+# when no arguments are given, print help message
+help_msg

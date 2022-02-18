@@ -1,0 +1,139 @@
+# adding some colors to the world
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias ccat='highlight --out-format=ansi' # like cat, but w/ syntax highlighting
+alias diff='diff --color=auto'
+
+# human readable pls
+alias du='du -h'
+alias df='df -h'
+alias free='free -h'
+
+# basic system aliases
+alias p='doas pacman'
+alias sc='doas systemctl'
+alias sdn='shutdown now > /dev/null 2> /dev/null || doas /usr/bin/openrc-shutdown --poweroff now'
+alias sus='systemctl suspend || loginctl suspend'
+alias re='reboot || doas openrc-shutdown --reboot now '
+alias q='exit'
+alias sx='startx "$XDG_CONFIG_HOME/X11/xinitrc" --'
+alias ll='ls -l'
+alias la='ls -A'
+alias resource='source ${ZDOTDIR:-$HOME}/.zshrc'
+
+# frequently used programs aliases
+alias r='ranger'
+alias ca='calcurse'
+alias py='python'
+#alias wget='wget --hsts-file ~/.cache/wget/wget-hsts'
+alias si='devour sxiv'
+alias lo='devour libreoffice'
+alias mu='devour mupdf'
+alias llp='devour llpp'
+alias nb='newsboat'
+alias mutt='neomutt'
+
+# copy and paste using xclip package
+alias copy="xclip -sel clip"
+alias paste="xclip -out -sel clip"
+
+# lockscreen
+alias lock='betterlockscreen -s dim'
+
+# faster directory switching
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# vim, v -> neovim
+alias vim='nvim'
+alias v='vim'
+
+# set background
+setbg() {
+    feh --bg-scale "$1"
+    [ -f "$HOME/.fehbg" ] && mv "$HOME/.fehbg" "$XDG_CACHE_HOME" && bv -u
+}
+
+# safety features
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# git aliases
+alias gsetkey="git config --add --local core.sshCommand 'ssh -i \$GIT_SSH_KEY'"
+alias clone="git clone -c core.sshCommand='/usr/bin/ssh -i \$GIT_SSH_KEY'"
+alias gs='git status'
+alias gd='git diff'
+alias add='git add'
+alias commit='git commit'
+alias fetch='git fetch'
+alias pull='git pull'
+alias push='git push'
+alias log='git log'
+alias remote='git remote'
+alias tag='git tag'
+alias checkout='git checkout'
+alias merge='git merge'
+alias branch='git branch'
+alias lsc='git log --graph --oneline --decorate --all'
+alias lsb="git log --graph --simplify-by-decoration --pretty=format:'%d' --all"
+alias lst="git log --graph --decorate --all --date=short --abbrev-commit --oneline --pretty=format:'%h%x09%an%x09%ad%x09%s'"
+
+# ~/ cleanup
+alias yarn="yarn --use-yarnrc $XDG_CONFIG_HOME/yarn/config"
+alias xbindkeys="xbindkeys -f $XDG_CONFIG_HOME/xbindkeys/config"
+alias abook="abook --config $XDG_CONFIG_HOME/abook/abookrc --datafile $XDG_DATA_HOME/abook/addressbook"
+
+# always open st in non-interactive mode
+alias nst="st > /dev/null 2> /dev/null &disown"
+
+# sane ytdl shortcuts
+alias yt="youtube-dl --add-metadata -i"
+alias yta="yt -x -f bestaudio/best"
+
+# imagemagick shortcuts
+alias dpi="identify -format '%x\n' -units PixelsPerInch"
+
+alias rmexif="exiftool -overwrite_original -all="
+
+# fast dir switching
+s() {
+    cd "$(ls -d ~/.local/src/* | fzf)"
+}
+
+b() {
+    file="$(ls ~/.local/bin/* | fzf)"
+    [ -n "$file" ] && "$EDITOR" "$file"
+}
+
+c() {
+    pushd "$HOME/.local/src/dotfiles" > /dev/null || exit 1
+    file="$(find dot-config -type f | fzf)"
+    [ -n "$file" ] && 
+        "$EDITOR" "${file/dot-config\//${XDG_CONFIG_HOME:-$HOME/.config}/}"
+    popd > /dev/null
+}
+
+# useful extended system aliases
+alias perm="stat -c \"%a %n\" --"
+installedsize() {
+    pacman -Qi | egrep '^(Name|Installed)' | cut -f2 -d':' | sed 's/^ //' | \
+    grep -A1 "$1" | grep -v "\-\-" | \
+    awk '{ printf "%s%s", $0, (NR%2==1 ? FS : RS) }' | column -t
+}
+etouch() {
+    [ -n "$1" ] && touch "$1" chmod +x "$1"
+}
+evim() {
+    [ -n "$1" ] && touch "$1" && chmod +x "$1" && v "$1"
+}
+mkcd() {
+    [ -n "$1" ] && mkdir "$1" && cd "$1"
+}
+
+# more non-system essential aliases
+djangokeygen() { python -c 'from django.core.management.utils import get_random_secret_key; \
+    print(get_random_secret_key())' || pip install django
+}
