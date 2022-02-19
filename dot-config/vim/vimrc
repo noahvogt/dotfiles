@@ -27,6 +27,11 @@ set nobackup
 set incsearch
 set spelllang=de_ch,en
 
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $XDG_CONFIG_HOME/vim/vimrc
+\| endif
+
 " getting plugins
 call plug#begin('~/.cache/vim/plugged')
 
