@@ -11,3 +11,5 @@ NORISA_DISPLAYSETUP="" # xrandr command to setup display settings
 NORISA_XORG_MOUSE_ID="" # mouse id on which to disable mouse acceleration
 
 VPS_REMOTE="" # remote vps git linkformat
+
+GIT_SSH_KEY="" # non-default ssh key location for git

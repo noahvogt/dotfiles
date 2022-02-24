@@ -1,0 +1,28 @@
+#!/bin/sh
+
+config_error() {
+    echo "Error: No valid configuration found, exiting"
+    notify-send "xmenu" "Error: No valid configuration found, exiting"
+    exit 1
+}
+
+# check dependencies
+for prog in feh xrandr notify-send; do
+    if ! command -v "$prog" > /dev/null 2>&1; then
+        echo "$prog is not detected" 1>&2
+        notify-send "$prog is not detected"; exit 1
+    fi
+done
+
+# set dirs
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/xmenu"
+escaped_config_dir="$(echo $config_dir | sed 's/\//\\\//g')"
+bg_script="${XDG_CACHE_HOME:-$HOME/.cache}/.fehbg"
+mkdir -p "$config_dir"
+[ -f "$bg_script" ] && bgCmd="$bg_script"
+
+# update monitors
+find "$config_dir" -type f | sed 's/^.*\///' | dmenu -i -l 30 | \
+    sed "s/^/\/home\/noah5\/.config\/xmenu\//" | xargs sh
+
+"$bg_cmd"

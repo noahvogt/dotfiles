@@ -65,6 +65,7 @@ bindkey '^e' edit-command-line
 # Load aliases and shortcuts if existent.
 [ -f "$HOME/.config/exportrc" ] && source "$HOME/.config/exportrc"
 [ -f "$HOME/.config/aliasrc" ] && source "$HOME/.config/aliasrc"
+[ -f "$HOME/.config/norisa.local" ] && source "$HOME/.config/norisa.local"
 
 if echo $USER | grep -q "miner"; then
     if cat /tmp/norisa/currently-mining | grep -q "0"; then
