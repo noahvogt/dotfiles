@@ -1,8 +1,16 @@
 #!/bin/sh
 
-# script to increase the brightness by 10%
+# script to increase the display brightness by 5%
 
-device=$(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'")
-brightness=$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2 + 10}')
+device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +3 | awk '{print $2}' | tr -d "'")
+if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'acpi_video0'"; then
+    device="acpi_video0"
+fi
 
-brightnessctl -d "${device}" set "$brightness"%
+brightness=$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2 + 5}')
+
+if [ "$(cat .config/norisa/brightness-state)" -eq "100" ]; then
+    exit 1
+else
+    brightnessctl -d "${device}" set "$brightness"%
+fi

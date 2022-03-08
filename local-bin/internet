@@ -1,12 +1,19 @@
 #!/bin/sh
-
 # script to display the network state in dwmblocks
 
 wifi=$(iwgetid -r)
-upstate=$(ip a | grep BROADCAST,MULTICAST, | awk '{print $9}')
-if [ -z "$wifi" ];
-    then
-        printf "%s\\n" "🔌 $upstate"
+upstate=$(ip a | grep BROADCAST,MULTICAST | awk '{print $9}')
+if [ -z "$wifi" ]; then
+    if echo "$upstate" | grep -q "DOWN"; then
+        if [ "$(rfkill | grep 'blocked' | awk '{print $4 $5}' | sed 's/unblocked//g' | uniq | wc -l)" -eq "1" ]; then
+            if [ "$(rfkill | grep 'blocked' | awk '{print $4 $5}' | sed 's/unblocked//g' | grep . | wc -l)" -gt "0" ]; then
+                echo "📡 off"; exit
+            fi
+        elif rfkill list wifi | grep 'Soft blocked' | awk '{print $3}' | grep -q 'yes'; then
+            echo "📶 off"; exit
+        fi
+    fi
+    printf "%s\\n" "🔌 $upstate"; exit
     else
         # alternatively: diplay percentage
         # awk '/^\s*w/ { print "📶", int($3 * 100 / 70) "%" }' \

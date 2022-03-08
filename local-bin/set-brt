@@ -1,0 +1,15 @@
+#!/bin/sh
+
+mkdir -p "/tmp/norisa/"
+
+update() {
+    pkill -RTMIN+2 dwmblocks
+    touch "/tmp/norisa/brt-tempfile"
+    sleep 0.5
+    rm "/tmp/norisa/brt-tempfile"
+    pkill -RTMIN+2 dwmblocks
+}
+
+if [ ! -f "/tmp/norisa/brt-tempfile" ]; then
+    update
+fi

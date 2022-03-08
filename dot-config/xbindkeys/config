@@ -1,3 +1,19 @@
+"dec-kbd-blt"
+   XF86KbdBrightnessDown
+"dec-kbd-blt"
+   Mod4 + F9
+
+"inc-kbd-blt"
+   XF86KbdBrightnessUp
+"inc-kbd-blt"
+   Mod4 + F10
+
+"rfkill toggle wifi && pkill -RTMIN+3 dwmblocks"
+   Mod4 + F5
+
+"rfkill toggle all && pkill -RTMIN+3 dwmblocks"
+   Mod4 + F4
+
 # toggle mute
 "amixer set Master toggle && pkill -RTMIN+1 dwmblocks"
    XF86AudioMute
@@ -5,34 +21,38 @@
    Mod4 + F1
 
 # lower volume
-"amixer set Master 10%- && pkill -RTMIN+1 dwmblocks"
+"amixer set Master 5%- && pkill -RTMIN+1 dwmblocks"
    XF86AudioLowerVolume
-"amixer set Master 10%- && pkill -RTMIN+1 dwmblocks"
+"amixer set Master 5%- && pkill -RTMIN+1 dwmblocks"
    Mod4 + F2
 
 # increase volume
-"amixer set Master 10%+ && pkill -RTMIN+1 dwmblocks"
+"amixer set Master 5%+ && pkill -RTMIN+1 dwmblocks"
    XF86AudioRaiseVolume
-"amixer set Master 10%+ && pkill -RTMIN+1 dwmblocks"
+"amixer set Master 5%+ && pkill -RTMIN+1 dwmblocks"
    Mod4 + F3
 
 # dmenu mount prompt
 "dmenumount"
-   Mod4 + F8
+   Mod4 + F7
 
 # dmenu umount prompt
 "dmenuumount"
-   Mod4 + F9
+   Mod4 + F8
 
 # decrease monitor brightness
-"dec-brightness && pkill -RTMIN+2 dwmblocks && brightness-save"
+"dec-brightness && brightness-save && set-brt"
+   XF86MonBrightnessDown
+"dec-brightness && brightness-save && set-brt"
    Mod4 + F11
 
 # increase monitor brightness
-"inc-brightness && pkill -RTMIN+2 dwmblocks && brightness-save"
+"inc-brightness && brightness-save && set-brt"
+   XF86MonBrightnessUp
+"inc-brightness && brightness-save && set-brt"
    Mod4 + F12
 
-# select area of screenshoot
+# select area of screenshot
 "screenshot-area"
    Mod4 + Print
 
@@ -82,4 +102,4 @@
 
 # open htop in new terminal window
 "st-exec htop"
-   Mod4 + F7
+   Mod4 + F6

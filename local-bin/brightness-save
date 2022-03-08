@@ -2,7 +2,12 @@
 
 # script to save the brightness state so it is the same after a restart
 
-device=$(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'")
+device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +3 | awk '{print $2}' | tr -d "'")
+if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'acpi_video0'"; then
+    device="acpi_video0"
+fi
 [ -z "$device" ] && { printf ""; exit; }
 
+
+mkdir -p "$HOME/.config/norisa"
 printf "%s\\n" "$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2}' | tr -d "%")" > ~/.config/norisa/brightness-state
