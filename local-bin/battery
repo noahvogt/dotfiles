@@ -1,14 +1,23 @@
-#!/bin/bash
+#!/bin/sh
 
 # script to display the battery state in dwmblocks
 
-acpi -b | grep -q "Battery 0" || { printf ""; exit; }
+#acpi -b | grep -q "Battery 0" || { printf ""; exit; }
+#
+#BATTERYSTATE=$( acpi -b | awk '{ split($5,a,":"); print substr($3,0,2), $4, "["a[1]":"a[2]"]" }' | tr -d ',DiFu' )
+#if [[ $BATTERYSTATE =~ "Ch" ]]; then
+    #icon="⚡"
+#else
+    #icon="🔋"
+#fi
+#batterypercent=$(echo "$BATTERYSTATE" | tr -d 'Ch' | sed 's/cargng:/?/')
 
-BATTERYSTATE=$( acpi -b | awk '{ split($5,a,":"); print substr($3,0,2), $4, "["a[1]":"a[2]"]" }' | tr -d ',DiFu' )
-if [[ $BATTERYSTATE =~ "Ch" ]]; then
-    icon="⚡"
-else
+if grep -q 'Discharging' /sys/class/power_supply/BAT0/status; then
     icon="🔋"
+elif grep -q 'Charging' /sys/class/power_supply/BAT0/status; then
+    icon="⚡"
+elif grep -q 'Full' /sys/class/power_supply/BAT0/status; then
+    icon="🔌"
 fi
-batterypercent=$(echo "$BATTERYSTATE" | tr -d 'Ch' | sed 's/cargng:/?/')
-printf "%s%s\\n" "$icon" "$batterypercent"
+
+printf "%s %s%%\\n" "$icon" "$(cat /sys/class/power_supply/BAT0/capacity)"

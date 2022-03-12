@@ -1,19 +1,3 @@
-"dec-kbd-blt"
-   XF86KbdBrightnessDown
-"dec-kbd-blt"
-   Mod4 + F9
-
-"inc-kbd-blt"
-   XF86KbdBrightnessUp
-"inc-kbd-blt"
-   Mod4 + F10
-
-"rfkill toggle wifi && pkill -RTMIN+3 dwmblocks"
-   Mod4 + F5
-
-"rfkill toggle all && pkill -RTMIN+3 dwmblocks"
-   Mod4 + F4
-
 # toggle mute
 "amixer set Master toggle && pkill -RTMIN+1 dwmblocks"
    XF86AudioMute
@@ -32,6 +16,16 @@
 "amixer set Master 5%+ && pkill -RTMIN+1 dwmblocks"
    Mod4 + F3
 
+"rfkill toggle all && pkill -RTMIN+3 dwmblocks"
+   Mod4 + F4
+
+"rfkill toggle wifi && pkill -RTMIN+3 dwmblocks"
+   Mod4 + F5
+
+# open htop in new terminal window
+"st -e htop"
+   Mod4 + F6
+
 # dmenu mount prompt
 "dmenumount"
    Mod4 + F7
@@ -40,16 +34,26 @@
 "dmenuumount"
    Mod4 + F8
 
+"dec-kbd-blt"
+   XF86KbdBrightnessDown
+"dec-kbd-blt"
+   Mod4 + F9
+
+"inc-kbd-blt"
+   XF86KbdBrightnessUp
+"inc-kbd-blt"
+   Mod4 + F10
+
 # decrease monitor brightness
-"dec-brightness && brightness-save && set-brt"
+"dec-brightness 5 && brightness-save && set-brt"
    XF86MonBrightnessDown
-"dec-brightness && brightness-save && set-brt"
+"dec-brightness 5 && brightness-save && set-brt"
    Mod4 + F11
 
 # increase monitor brightness
-"inc-brightness && brightness-save && set-brt"
+"inc-brightness 5 && brightness-save && set-brt"
    XF86MonBrightnessUp
-"inc-brightness && brightness-save && set-brt"
+"inc-brightness 5 && brightness-save && set-brt"
    Mod4 + F12
 
 # select area of screenshot
@@ -93,13 +97,40 @@
    Mod4 + A
 
 # open newsboat in new terminal window
-"st-exec newsboat"
+"st -e newsboat"
    Mod4 + U
 
 # open neomutt in new terminal window
-"st-exec neomutt"
+"st -e neomutt"
    Mod4 + Z
 
-# open htop in new terminal window
-"st-exec htop"
-   Mod4 + F6
+# open ncmpcpp in new terminal window
+"st -e ncmpcpp"
+   Mod4 + section
+
+
+### MPD CPMMANDS
+
+"mpc next"
+   XF86AudioNext
+"mpc next"
+   Mod4 + Shift + less
+
+"mpc prev"
+   XF86AudioPrev
+"mpc prev"
+   Mod4 + less
+
+"mpc toggle"
+  XF86AudioPlay
+"mpc toggle"
+   Mod4 + Y
+
+"mpc seek -00:00:05"
+   Mod4 + Left
+
+"mpc seek +00:00:05"
+   Mod4 + Right
+
+"echo \"$(mpc current)\" | xargs notify-send"
+   Mod4 + C

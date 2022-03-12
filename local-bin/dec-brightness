@@ -1,12 +1,17 @@
 #!/bin/sh
 
-# script to decrease the display brightness by 5%
+# script to decrease the display brightness by $1%
+
+[ -z "$1" ] && echo "Error: please give percent as argument" && exit 1
+
+#xbacklight -dec "$1"
+#exit
 
 device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +3 | awk '{print $2}' | tr -d "'")
-if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'acpi_video0'"; then
-    device="acpi_video0"
+if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'intel_backlight'"; then
+    device="intel_backlight"
 fi
 
-brightness=$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2 - 5}')
+brightness=$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' "{print \$2 - $1}")
 
 brightnessctl -d "${device}" set "$brightness"%
