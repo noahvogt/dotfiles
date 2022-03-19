@@ -134,3 +134,6 @@
 
 "echo \"$(mpc current)\" | xargs notify-send"
    Mod4 + C
+
+"mpc stop && killall mpd"
+   Mod4 + X
