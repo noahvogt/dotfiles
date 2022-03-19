@@ -23,6 +23,9 @@ picom &
 # swap caps and escape (for vim users)
 setxkbmap -option caps:swapescape
 
+# set machine specific xmodmap rules
+for f in ${XDG_DATA_HOME:-$HOME/.local/share}/xmodmap/*; do xmodmap $f; done
+
 # set brightness
 brightnessctl -d $(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'") set $(cat ~/.config/norisa/brightness-state)%
 
