@@ -18,6 +18,9 @@ elif grep -q 'Charging' /sys/class/power_supply/BAT0/status; then
     icon="⚡"
 elif grep -q 'Full' /sys/class/power_supply/BAT0/status; then
     icon="🔌"
+else
+    echo "🖥 AC"
+    exit
 fi
 
 printf "%s %s%%\\n" "$icon" "$(cat /sys/class/power_supply/BAT0/capacity)"

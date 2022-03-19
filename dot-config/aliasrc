@@ -98,6 +98,8 @@ alias dpi="identify -format '%x\n' -units PixelsPerInch"
 
 alias rmexif="exiftool -overwrite_original -all="
 
+alias lf='lfub'
+
 # fast dir switching
 s() {
     cd "$(ls -d ~/.local/src/* | fzf)"
