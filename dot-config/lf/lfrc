@@ -42,7 +42,8 @@ cmd open ${{
 		;;
 	audio/*) mpv --audio-display=no $f ;;
 	video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
-	application/pdf|application/vnd*|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+    application/vnd*) setsid -f libreoffice "$f" >/dev/null 2>&1;;
+	application/pdf|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
 	xopp) devour xournalpp $f;;
     sc) sc-im $f;;
