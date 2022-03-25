@@ -1,12 +1,26 @@
+% !TeX program = lualatex
+
 %standard
-\documentclass[a4paper,12pt]{scrartcl}
-\usepackage[utf8]{inputenc}
+\documentclass[a4paper,12pt]{article}
 \usepackage[ngerman]{babel}
 %\selectlanguage{english}
+
+\usepackage{ifluatex}
 
 %font
 \usepackage{tgheros}
 \usepackage{mathptmx}
+
+\ifluatex
+    \usepackage{fontspec}
+    \newfontfamily\emojifont{Noto Color Emoji}[Renderer=Harfbuzz]
+    \newcommand{\emoji}[1]{\ifmmode \text{\emojifont{#1}} \else \emojifont{#1} \fi}
+    \setmainfont{TeX Gyre Termes}
+    \setsansfont{TeX Gyre Heros}[Scale=MatchUppercase]
+\else
+    \usepackage[utf8]{inputenc}
+\fi 
+
 % use sans serif font
 % \renewcommand{\familydefault}{\sfdefault}
 

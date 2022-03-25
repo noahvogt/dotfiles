@@ -7,4 +7,4 @@
 
 cp ~/.config/setup/templates/latex/school-template.tex .
 mv school-template.tex "${1%.*}.tex"
-nvim -c :58  "${1%.*}.tex"
+nvim -c :72  "${1%.*}.tex"
