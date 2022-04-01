@@ -1,0 +1,69 @@
+#!/usr/bin/zsh
+
+pkgname="$(grep "^pkgname" PKGBUILD | sed 's/^.*=//; s/$/-bin/')"
+pkver="$(grep "^pkgver" PKGBUILD | sed 's/^.*=//')"
+
+dest="/tmp/$pkgname"
+srcdest="$dest/src"
+
+rm -rf "$dest"
+mkdir -p "$srcdest"
+
+cp -r src/chromium-launcher-8/ "$dest"
+
+cd "src/chromium-$pkgver"
+
+mkcp() {
+    mkdir -p "$2/${1%/*}"
+    cp "$1" "$2/${1%/*}"
+}
+
+mkcp out/Release/chrome "$srcdest"
+mkcp out/Release/chromedriver "$srcdest"
+mkcp out/Release/chrome_sandbox "$srcdest"
+
+cp ../chromium-drirc-disable-10bpc-color-configs.conf "$dest"
+
+mkcp chrome/installer/linux/common/desktop.template "$srcdest"
+mkcp chrome/app/resources/manpage.1.in "$srcdest"
+mkcp chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml "$srcdest"
+
+  toplevel_files=(
+    chrome_100_percent.pak
+    chrome_200_percent.pak
+    chrome_crashpad_handler
+    resources.pak
+    v8_context_snapshot.bin
+    libEGL.so
+    libGLESv2.so
+    libvk_swiftshader.so
+    vk_swiftshader_icd.json
+    icudtl.dat
+  )
+
+for file in $toplevel_files; do
+    echo "$file"
+    mkcp "out/Release/$file" "$srcdest"
+done
+
+for file in out/Release/locales/*.pak; do
+    mkcp "$file" "$srcdest"
+done
+
+for file in out/Release/swiftshader/*.so; do
+    mkcp "$file" "$srcdest"
+done
+
+for size in 24 48 64 128 256; do
+    mkcp "chrome/app/theme/chromium/product_logo_$size.png" "$srcdest"
+done
+
+for size in 16 32; do
+    mkcp "chrome/app/theme/default_100_percent/chromium/product_logo_$size.png" "$srcdest"
+done
+
+cp LICENSE "$srcdest"
+
+cd /tmp
+tar -czf "$pkgname-$pkgver.tar.gz" "$pkgname"
+rm -rf "$dest"
