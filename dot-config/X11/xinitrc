@@ -23,6 +23,9 @@ picom &
 # swap caps and escape (for vim users)
 setxkbmap -option caps:swapescape
 
+# swap left alt and super key (for wannabe mac users)
+setxkbmap -option altwin:swap_lalt_lwin
+
 # set machine specific xmodmap rules
 for f in ${XDG_DATA_HOME:-$HOME/.local/share}/xmodmap/*; do xmodmap $f; done
 

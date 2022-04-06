@@ -1,7 +1,11 @@
 #!/usr/bin/zsh
 
+[ -z "$1" ] && echo "Error: please give build directory as argument" && exit 1
+
+pushd "$1" || exit 1
+
 pkgname="$(grep "^pkgname" PKGBUILD | sed 's/^.*=//; s/$/-bin/')"
-pkver="$(grep "^pkgver" PKGBUILD | sed 's/^.*=//')"
+pkgver="$(grep "^pkgver" PKGBUILD | sed 's/^.*=//')"
 
 dest="/tmp/$pkgname"
 srcdest="$dest/src"
@@ -42,7 +46,6 @@ mkcp chrome/installer/linux/common/chromium-browser/chromium-browser.appdata.xml
   )
 
 for file in $toplevel_files; do
-    echo "$file"
     mkcp "out/Release/$file" "$srcdest"
 done
 
@@ -67,3 +70,5 @@ cp LICENSE "$srcdest"
 cd /tmp
 tar -czf "$pkgname-$pkgver.tar.gz" "$pkgname"
 rm -rf "$dest"
+
+popd
