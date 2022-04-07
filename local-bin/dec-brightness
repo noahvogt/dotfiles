@@ -7,11 +7,17 @@
 #xbacklight -dec "$1"
 #exit
 
+# get brightness device
 device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +3 | awk '{print $2}' | tr -d "'")
 if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'intel_backlight'"; then
     device="intel_backlight"
 fi
 
+# get brightness percentage
 brightness=$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' "{print \$2 - $1}")
 
+# correct negative values to 0
+echo $brightness | grep -q '^-' && brightness=0
+
+# set brightness
 brightnessctl -d "${device}" set "$brightness"%
