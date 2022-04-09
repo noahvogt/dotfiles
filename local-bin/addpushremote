@@ -14,7 +14,7 @@ if ! git remote -v | grep -q "$newpushremote"; then
 fi
 
 if ! git remote -v | grep push | grep -q "$fetch" ; then
-    echo "Readding fetch remote to push ...\n"
+    printf "Readding fetch remote to push ...\n\n"
     git remote set-url origin --add --push "$fetch"
 fi
 
