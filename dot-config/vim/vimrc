@@ -1,4 +1,3 @@
-"
 " noah's ~/.config/vim/vimrc
 " 
 " basic setup
@@ -38,7 +37,15 @@ call plug#begin('~/.cache/vim/plugged')
 " colorshemes
 Plug 'morhetz/gruvbox'
 "Plug 'itchyny/landscape.vim'
+"Plug 'averms/black-nvim'
 
+" fuzzy find files
+Plug 'ctrlpvim/ctrlp.vim'
+
+" navigate and manipulate files in a tree view.
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+"Plug 'dense-analysis/ale'
 
 " nice statusline for vim
 Plug 'vim-airline/vim-airline'
@@ -73,7 +80,6 @@ nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j wincmd j<CR>
 nnoremap <leader>k wincmd k<CR>
 nnoremap <leader>l wincmd l<CR>
-nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
 nnoremap <leader>ps :Rg<CR>
 nnoremap <silent> <leader>+ :vertical resize +5<CR>
@@ -190,7 +196,7 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 set hidden
 
 " Better display for messages
-set cmdheight=2
+set cmdheight=1
 
 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
@@ -260,3 +266,70 @@ noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
 
 set noshowmode
+
+" .............................................................................
+" lambdalisue/fern.vim
+" .............................................................................
+
+" Disable netrw.
+let g:loaded_netrw  = 1
+let g:loaded_netrwPlugin = 1
+let g:loaded_netrwSettings = 1
+let g:loaded_netrwFileHandlers = 1
+
+augroup my-fern-hijack
+  autocmd!
+  autocmd BufEnter * ++nested call s:hijack_directory()
+augroup END
+
+function! s:hijack_directory() abort
+  let path = expand('%:p')
+  if !isdirectory(path)
+    return
+  endif
+  bwipeout %
+  execute printf('Fern %s', fnameescape(path))
+endfunction
+
+" Custom settings and mappings.
+let g:fern#disable_default_mappings = 1
+let g:fern#disable_drawer_tabpage_isolation = 1
+
+noremap <silent> <Leader>f :Fern . -drawer -reveal=% -toggle -width=35<CR><C-w>=
+
+function! FernInit() abort
+  nmap <buffer><expr>
+        \ <Plug>(fern-my-open-expand-collapse)
+        \ fern#smart#leaf(
+        \   "\<Plug>(fern-action-open:select)",
+        \   "\<Plug>(fern-action-expand:stay)",
+        \   "\<Plug>(fern-action-collapse)",
+        \ )
+  nmap <buffer> <CR> <Plug>(fern-my-open-expand-collapse)
+  nmap <buffer> <2-LeftMouse> <Plug>(fern-my-open-expand-collapse)
+  nmap <buffer> n <Plug>(fern-action-new-path)
+  nmap <buffer> d <Plug>(fern-action-remove)
+  nmap <buffer> m <Plug>(fern-action-move)
+  nmap <buffer> M <Plug>(fern-action-rename)
+  nmap <buffer> c <Plug>(fern-action-hidden:toggle)
+  nmap <buffer> r <Plug>(fern-action-reload)
+  nmap <buffer> g <Plug>(fern-action-mark-toggle)
+  nmap <buffer> o <Plug>(fern-action-open)
+  nmap <buffer> b <Plug>(fern-action-open:split)
+  nmap <buffer> v <Plug>(fern-action-open:vsplit)
+  nmap <buffer> h <Plug>(fern-action-collapse)
+  nmap <buffer> l <Plug>(fern-action-expand:stay)
+  nmap <buffer><nowait> < <Plug>(fern-action-leave)
+  nmap <buffer><nowait> > <Plug>(fern-action-enter)
+endfunction
+
+augroup FernGroup
+  autocmd!
+  autocmd FileType fern call FernInit()
+augroup END
+
+" switch (back and forth) to (and from) the last opened file
+nmap <leader>b <c-^><cr>
+
+" ctrlp
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']

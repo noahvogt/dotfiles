@@ -3,7 +3,8 @@
   "sh": "shellcheck"
 },
 "diagnostic-languageserver.formatFiletypes": {
-  "sh": "shfmt"
+  "sh": "shfmt",
+  "python": "black"
 },
   "python.linting.pylintEnabled" : true,
   "languageserver": {
