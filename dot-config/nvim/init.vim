@@ -12,13 +12,5 @@ source $XDG_CONFIG_HOME/nvim/keys/bindings.vim
 " get autocommands
 source $XDG_CONFIG_HOME/nvim/general/auto.vim
 
-colorscheme onedark
-let g:airline_theme='onedark'
-set background=dark
-
-" make background transparent
-"hi Normal ctermbg=none
-"hi NonText ctermbg=none
-
 " disalbe automatic identation (should be at the end???)
 filetype indent off
