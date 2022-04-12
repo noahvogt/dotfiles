@@ -14,7 +14,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export GIT_SSH_KEY="$XDG_CONFIG_HOME/ssh/id_rsa"
 
 # ~/ cleanup
-export VIMINIT="set nocp | source $XDG_CONFIG_HOME/vim/vimrc"
+export VIMINIT="set nocp | source $XDG_CONFIG_HOME/nvim/init.vim"
 export LESSHISTFILE='-'
 export XAUTHORITY="$XDG_RUNTIME_DIR/xauth"
 export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
