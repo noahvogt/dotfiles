@@ -63,6 +63,7 @@ vmap <leader>f  <Plug>(coc-format-selected)
 
 " switch (back and forth) to (and from) the last opened file
 nmap <leader>b <c-^><cr>
+
 nmap <leader>f  <Plug>(coc-format-selected)
 
 noremap <silent> <Leader>f :Fern . -drawer -reveal=% -toggle -width=35<CR><C-w>=
@@ -83,7 +84,7 @@ function! FernInit() abort
   nmap <buffer> M <Plug>(fern-action-rename)
   nmap <buffer> c <Plug>(fern-action-hidden:toggle)
   nmap <buffer> r <Plug>(fern-action-reload)
-  nmap <buffer> g <Plug>(fern-action-mark-toggle)
+  nmap <buffer> g <Plug>(fern-action-mark:toggle)
   nmap <buffer> o <Plug>(fern-action-open)
   nmap <buffer> b <Plug>(fern-action-open:split)
   nmap <buffer> v <Plug>(fern-action-open:vsplit)
@@ -119,3 +120,16 @@ noremap <leader>7 7gt
 noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+nmap <leader>cl  <Plug>(coc-codelens-action)

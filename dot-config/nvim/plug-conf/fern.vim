@@ -1,4 +1,4 @@
-" Disable netrw.
+" disable netrw.
 let g:loaded_netrw  = 1
 let g:loaded_netrwPlugin = 1
 let g:loaded_netrwSettings = 1
@@ -23,6 +23,8 @@ augroup FernGroup
   autocmd FileType fern call FernInit()
 augroup END
 
-" Custom settings and mappings.
+" custom settings and mappings.
 let g:fern#disable_default_mappings = 1
 let g:fern#disable_drawer_tabpage_isolation = 1
+let g:fern#default_hidden = 0
+let g:fern#renderer = "nerdfont"

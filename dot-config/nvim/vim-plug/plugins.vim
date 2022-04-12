@@ -22,6 +22,9 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'lambdalisue/fern.vim'
 " with git status integration
 Plug 'lambdalisue/fern-git-status.vim'
+" with nerdfont icons
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 
 " asynchronous lint engine
 "Plug 'dense-analysis/ale'
