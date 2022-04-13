@@ -1,4 +1,8 @@
-autocmd FileType plaintex,tex,latex syntax spell toplevel
+" fix latex commenting
+augroup fixLatexComments
+  autocmd!
+  autocmd FileType plaintex,tex,latex syntax spell toplevel
+augroup END
 " Automatically wrap at 80 characters for Markdown
 " autocmd BufRead,BufNewFile *.md setlocal textwidth=80
 
@@ -24,26 +28,55 @@ function! MathAndLiquid()
 endfunction
 
 " Call everytime we open a Markdown file
-autocmd BufRead,BufNewFile,BufEnter *.md,*.markdown call MathAndLiquid()
-"Plug 'vim-pandoc/vim-pandoc-syntax'
-let g:vim_markdown_math = 1
+augroup callMathFunction
+  autocmd!
+  autocmd BufRead,BufNewFile,BufEnter *.md,*.markdown call MathAndLiquid()
+augroup END
 
 " active to autocompile docs on saving
 "autocmd BufWritePost *.ms !compile % | fold -w200
 "autocmd BufWritePost *.tex !compile % | fold -w200
 
 " disable automatic comment
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+augroup disableAutoComment
+  autocmd!
+  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+augroup END
 
 " clear a TeX build after exiting vim
-autocmd VimLeavePre *.tex !texclear "%"
-autocmd VimLeavePre *.md !texclear "%"
-autocmd VimLeavePre *.c !rm -rf .ccls-cache
-autocmd VimLeavePre *.cc !rm -rf .ccls-cache
-autocmd VimLeavePre *.cpp !rm -rf .ccls-cache
-autocmd VimLeavePre *.h !rm -rf .ccls-cache
-autocmd VimLeavePre *.hh !rm -rf .ccls-cache
+augroup texclear
+  autocmd!
+  autocmd VimLeavePre *.tex !texclear "%"
+  autocmd VimLeavePre *.md !texclear "%"
+augroup END
+
+"autocmd VimLeavePre *.c !rm -rf .ccls-cache
+"autocmd VimLeavePre *.cc !rm -rf .ccls-cache
+"autocmd VimLeavePre *.cpp !rm -rf .ccls-cache
+"autocmd VimLeavePre *.h !rm -rf .ccls-cache
+"autocmd VimLeavePre *.hh !rm -rf .ccls-cache
 
 " use python syntax highlighting for .tibasic files
-autocmd BufNewFile,BufRead *.tibasic set filetype=python
-autocmd BufNewFile,BufRead *.tib set filetype=python
+augroup tibasic
+  autocmd!
+  autocmd BufNewFile,BufRead *.tibasic set filetype=python
+  autocmd BufNewFile,BufRead *.tib set filetype=python
+augroup END
+
+function! FernInitReload() abort
+  augroup FernGroupLocal
+    autocmd! * <buffer>
+    autocmd BufEnter <buffer> silent execute "normal \<Plug>(fern-action-reload)"
+  augroup END
+endfunction
+
+augroup OnEnteringFernWindow
+  autocmd!
+  autocmd FileType fern call FernInitReload()
+augroup END
+
+" enable emmet only for html / css files
+augroup EmmetEnabler
+  autocmd!
+  autocmd FileType html,css EmmetInstall
+augroup END

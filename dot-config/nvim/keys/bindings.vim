@@ -40,9 +40,11 @@ map <F6> :w<CR>:!glosscompile "%"; pkill -HUP mupdf<CR>
 vnoremap <Space><Space> <Esc>/<++><Enter>"_c4l
 map <Space><Space> <Esc>/<++><Enter>"_c4l
 
-" copy from / to clipboard
-vnoremap <C-c> "+y
-map <C-p> "+P
+"copy from / to clipboard
+vnoremap <leader>y "+y
+vnoremap <leader>Y "+Y
+nmap <leader>p "+p
+nmap <leader>P "+P
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
@@ -133,3 +135,10 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Run the Code Lens action on the current line.
 nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" auto center view when walking through searches
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" toggle tag bar
+nmap <leader>g :TagbarToggle<CR>

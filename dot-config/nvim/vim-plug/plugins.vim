@@ -9,7 +9,6 @@ call plug#begin('~/.cache/vim/plugged')
 " colorshemes
 "Plug 'morhetz/gruvbox'
 "Plug 'itchyny/landscape.vim'
-"Plug 'rakr/vim-one'
 Plug 'joshdick/onedark.vim'
 
 " better syntax support
@@ -49,6 +48,18 @@ Plug 'romainl/vim-cool'
 " graphical debugger
 "Plug 'puremourning/vimspector'
 
-Plug 'kien/rainbow_parentheses.vim'
+" use when there are too many parentheses
+"Plug 'kien/rainbow_parentheses.vim'
+
+" auto close pairs, etc.
+Plug 'jiangmiao/auto-pairs'
+
+" easy commenting
+Plug 'tpope/vim-commentary'
+
+" tag bar for easy navigation
+Plug 'preservim/tagbar'
+
+Plug 'mattn/emmet-vim'
 
 call plug#end()
