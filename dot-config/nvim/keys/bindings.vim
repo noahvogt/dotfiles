@@ -92,6 +92,10 @@ function! FernInit() abort
   nmap <buffer> v <Plug>(fern-action-open:vsplit)
   nmap <buffer> h <Plug>(fern-action-collapse)
   nmap <buffer> l <Plug>(fern-action-expand:stay)
+  nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
+  nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
+  nmap <silent> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
+  nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
   nmap <buffer><nowait> < <Plug>(fern-action-leave)
   nmap <buffer><nowait> > <Plug>(fern-action-enter)
 endfunction
@@ -142,3 +146,14 @@ nnoremap N Nzzzv
 
 " toggle tag bar
 nmap <leader>g :TagbarToggle<CR>
+
+" please write
+cmap w!! w !doas tee %
+
+" navigate chunks of current buffer
+nmap [h <Plug>(coc-git-prevchunk)
+nmap ]h <Plug>(coc-git-nextchunk)
+
+" navigate conflicts of current buffer
+nmap [c <Plug>(coc-git-prevconflict)
+nmap ]c <Plug>(coc-git-nextconflict)

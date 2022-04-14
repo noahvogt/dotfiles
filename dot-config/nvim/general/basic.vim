@@ -12,15 +12,20 @@ set path+=**
 set wildmenu
 
 " making me comfortable
-set nu
+set number
 set tabstop=4 softtabstop=4
 set shiftwidth=4
+
+"convert tabs to spaces
 set expandtab
 set nosmartindent
 set nocindent
 set smartcase
+
+" disable swapfiles (mostly to avoid problems)
 set noswapfile
 set nobackup
+
 set incsearch
 set spelllang=de_ch,en
 set noshowmode
@@ -41,3 +46,21 @@ set colorcolumn=80
 
 " set encoding
 set encoding=utf-8
+
+" enable mouse
+set mouse=a
+
+" horizontal splits will automatically be below
+set splitbelow
+
+" vertical splits will automatically be to the right
+set splitright
+
+" so that I can see `` in markdown files
+set conceallevel=0
+
+" make sure to enable syntax highlighting
+syntax enable
+
+" always show tabs
+"set showtabline=2

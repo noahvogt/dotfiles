@@ -24,6 +24,8 @@ Plug 'lambdalisue/fern-git-status.vim'
 " with nerdfont icons
 Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+" and a floating, scrollable preview window
+Plug 'yuki-yano/fern-preview.vim'
 
 " asynchronous lint engine
 "Plug 'dense-analysis/ale'
@@ -60,6 +62,10 @@ Plug 'tpope/vim-commentary'
 " tag bar for easy navigation
 Plug 'preservim/tagbar'
 
+" better html / css handling
 Plug 'mattn/emmet-vim'
+
+" fast search 'n' jump
+Plug 'justinmk/vim-sneak'
 
 call plug#end()
