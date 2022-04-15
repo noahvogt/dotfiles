@@ -80,3 +80,10 @@ augroup EmmetEnabler
   autocmd!
   autocmd FileType html,css EmmetInstall
 augroup END
+
+" colored nerdfont icons on fern + startify buffers
+augroup my-glyph-palette
+  autocmd! *
+  autocmd FileType fern call glyph_palette#apply()
+  autocmd FileType startify call glyph_palette#apply()
+augroup END

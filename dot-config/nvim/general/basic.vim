@@ -2,11 +2,12 @@ set nocompatible
 
 " set vim paths
 set undodir="~/.cache/vim/undo"
-set viminfo="~/.cache/vim/viminfo"
 set runtimepath+="~/.config/vim"
 
 " make :find recursive
 set path+=**
+set wildignore+=*/node_modules/*
+set wildignore+=*/__pycache__/*
 
 " display all files for tab completion
 set wildmenu
@@ -64,3 +65,9 @@ syntax enable
 
 " always show tabs
 "set showtabline=2
+
+" don't redraw while executing macros (good performance config)
+set lazyredraw
+
+" ignore case when searching
+set ignorecase

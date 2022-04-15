@@ -7,8 +7,8 @@
 call plug#begin('~/.cache/vim/plugged')
 
 " colorshemes
-"Plug 'morhetz/gruvbox'
-"Plug 'itchyny/landscape.vim'
+Plug 'morhetz/gruvbox'
+Plug 'itchyny/landscape.vim'
 Plug 'joshdick/onedark.vim'
 
 " better syntax support
@@ -19,11 +19,12 @@ Plug 'ctrlpvim/ctrlp.vim'
 
 " faster nerdtree
 Plug 'lambdalisue/fern.vim'
-" with git status integration
+" w/ git status integration
 Plug 'lambdalisue/fern-git-status.vim'
-" with nerdfont icons
+" w/ colored nerdfont icons
 Plug 'lambdalisue/nerdfont.vim'
 Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/glyph-palette.vim'
 " and a floating, scrollable preview window
 Plug 'yuki-yano/fern-preview.vim'
 
@@ -48,7 +49,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-cool'
 
 " graphical debugger
-"Plug 'puremourning/vimspector'
+Plug 'puremourning/vimspector'
 
 " use when there are too many parentheses
 "Plug 'kien/rainbow_parentheses.vim'
@@ -67,5 +68,18 @@ Plug 'mattn/emmet-vim'
 
 " fast search 'n' jump
 Plug 'justinmk/vim-sneak'
+
+" fancy start screen
+Plug 'mhinz/vim-startify'
+" w/ nerdfont icons
+Plug 'csch0/vim-startify-renderer-nerdfont'
+
+" easily change surrounding elements
+Plug 'tpope/vim-surround'
+
+" use treesitter inside nvim
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" w/ refactoring capabilites
+Plug 'nvim-treesitter/nvim-treesitter-refactor'
 
 call plug#end()
