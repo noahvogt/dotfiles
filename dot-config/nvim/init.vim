@@ -12,6 +12,7 @@ source $XDG_CONFIG_HOME/nvim/plug-conf/sneak.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/airline.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/startify.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/editorconfig.vim
+source $XDG_CONFIG_HOME/nvim/plug-conf/wilder.vim
 lua require 'treesitter'
 lua require 'indent-blankline'
 lua require 'telescope'
