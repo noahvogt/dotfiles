@@ -13,10 +13,12 @@ source $XDG_CONFIG_HOME/nvim/plug-conf/airline.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/startify.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/editorconfig.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/wilder.vim
+source $XDG_CONFIG_HOME/nvim/plug-conf/vcoolor.vim
+source $XDG_CONFIG_HOME/nvim/plug-conf/better-whitespace.vim
 lua require 'treesitter'
 lua require 'indent-blankline'
 lua require 'telescope'
-
+lua require 'whichkey'
 " get theme
 source $XDG_CONFIG_HOME/nvim/theme/theme.vim
 " get keybinds

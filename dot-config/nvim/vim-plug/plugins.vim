@@ -104,7 +104,19 @@ Plug 'nvim-lua/plenary.nvim'
 " a more adventurous wildmenu
 Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
 
-Plug 'nixprime/cpsm'
-Plug 'romgrk/fzy-lua-native'
+" markdown preview in browser tab and full sync
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" when you forget which key to press
+Plug 'folke/which-key.nvim'
+
+" general whitespace highlighter + remover
+Plug 'ntpeters/vim-better-whitespace'
+
+" access an external colorpicker directly from neovim
+Plug 'KabbAmine/vCoolor.vim'
+
+" repo for some code snippets
+Plug 'honza/vim-snippets'
 
 call plug#end()

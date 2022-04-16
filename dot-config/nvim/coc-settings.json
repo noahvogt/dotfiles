@@ -33,5 +33,6 @@
   },
   "codeLens.enable": true,
   "java.referencesCodeLens.enabled": true,
-  "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar"
+  "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar",
+  "snippets.userSnippetsDirectory": "~/.config/nvim/snips"
 }

@@ -180,3 +180,30 @@ nnoremap <Leader>sv :source $XDG_CONFIG_HOME/nvim/init.vim<CR>
 
 nnoremap <leader>l :Telescope live_grep<CR>
 nnoremap <leader>t :Telescope find_files<CR>
+
+" markdown preview mappings
+nmap <leader>mg <Plug>MarkdownPreview
+nmap <leader>ms <Plug>MarkdownPreviewStop
+nmap <leader>mt <Plug>MarkdownPreviewToggle
+
+" correct whitespace
+nnoremap <leader>cw :StripWhitespace<CR>
+
+" move to next / previous trailing whitespace
+nnoremap ]w :NextTrailingWhitespace<CR>
+nnoremap [w :PrevTrailingWhitespace<CR>
+
+" trigger snippet expand
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" select text for visual placeholder of snippet
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" jump to next placeholder
+let g:coc_snippet_next = '<c-n>'
+
+" jump to previous placeholder
+let g:coc_snippet_prev = '<c-b>'
+
+" for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
