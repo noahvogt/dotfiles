@@ -1,5 +1,4 @@
 " noah's $VIMINIT
-" 
 
 " get basic (set)tings
 source $XDG_CONFIG_HOME/nvim/general/basic.vim
@@ -12,7 +11,11 @@ source $XDG_CONFIG_HOME/nvim/plug-conf/ctrlp.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/sneak.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/airline.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/startify.vim
-lua require('treesitter')
+source $XDG_CONFIG_HOME/nvim/plug-conf/editorconfig.vim
+lua require 'treesitter'
+lua require 'indent-blankline'
+lua require 'telescope'
+
 " get theme
 source $XDG_CONFIG_HOME/nvim/theme/theme.vim
 " get keybinds

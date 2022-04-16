@@ -50,12 +50,6 @@ augroup texclear
   autocmd VimLeavePre *.md !texclear "%"
 augroup END
 
-"autocmd VimLeavePre *.c !rm -rf .ccls-cache
-"autocmd VimLeavePre *.cc !rm -rf .ccls-cache
-"autocmd VimLeavePre *.cpp !rm -rf .ccls-cache
-"autocmd VimLeavePre *.h !rm -rf .ccls-cache
-"autocmd VimLeavePre *.hh !rm -rf .ccls-cache
-
 " use python syntax highlighting for .tibasic files
 augroup tibasic
   autocmd!
@@ -86,4 +80,11 @@ augroup my-glyph-palette
   autocmd! *
   autocmd FileType fern call glyph_palette#apply()
   autocmd FileType startify call glyph_palette#apply()
+augroup END
+
+" relative line numbers
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END

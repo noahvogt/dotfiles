@@ -1,17 +1,26 @@
 {
-"diagnostic-languageserver.filetypes": {
-  "sh": "shellcheck"
-},
-"diagnostic-languageserver.formatFiletypes": {
-  "sh": "shfmt",
-  "python": "black"
-},
-  "python.linting.pylintEnabled" : true,
+  "diagnostic-languageserver.filetypes": {
+    "sh": "shellcheck"
+  },
+  "diagnostic-languageserver.formatFiletypes": {
+    "sh": "shfmt",
+    "python": "black"
+  },
+  "python.linting.pylintEnabled": true,
   "languageserver": {
     "ccls": {
       "command": "ccls",
-      "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
-      "rootPatterns": [".ccls-root", "compile_commands.json"],
+      "filetypes": [
+        "c",
+        "cpp",
+        "cuda",
+        "objc",
+        "objcpp"
+      ],
+      "rootPatterns": [
+        ".ccls-root",
+        "compile_commands.json"
+      ],
       "initializationOptions": {
         "cache": {
           "directory": "/tmp/ccls-cache"
@@ -21,5 +30,8 @@
         }
       }
     }
-  }
+  },
+  "codeLens.enable": true,
+  "java.referencesCodeLens.enabled": true,
+  "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar"
 }

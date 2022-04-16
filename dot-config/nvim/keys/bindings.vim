@@ -8,12 +8,9 @@ vnoremap J :m '>+1<CR>gv=gv
 nnoremap <Leader>w :w<CR>
 nnoremap <Leader>z :wq<CR>
 nnoremap <Leader>q :qa<CR>
+nnoremap <Leader>e :q<CR>
 
 " windows commands
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j wincmd j<CR>
-nnoremap <leader>k wincmd k<CR>
-nnoremap <leader>l wincmd l<CR>
 nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
 nnoremap <leader>ps :Rg<CR>
 nnoremap <silent> <leader>+ :vertical resize +5<CR>
@@ -157,3 +154,29 @@ nmap ]h <Plug>(coc-git-nextchunk)
 " navigate conflicts of current buffer
 nmap [c <Plug>(coc-git-prevconflict)
 nmap ]c <Plug>(coc-git-nextconflict)
+
+
+function! WinMove(key)
+    let t:curwin = winnr()
+    exec "wincmd ".a:key
+    if (t:curwin == winnr())
+        if (match(a:key,'[jk]'))
+            wincmd v
+        else
+            wincmd s
+        endif
+        exec "wincmd ".a:key
+    endif
+endfunction
+
+" smart global buffor / window switching
+nnoremap <silent> <C-h> :call WinMove('h')<CR>
+nnoremap <silent> <C-j> :call WinMove('j')<CR>
+nnoremap <silent> <C-k> :call WinMove('k')<CR>
+nnoremap <silent> <C-l> :call WinMove('l')<CR>
+
+" source vim config
+nnoremap <Leader>sv :source $XDG_CONFIG_HOME/nvim/init.vim<CR>
+
+nnoremap <leader>l :Telescope live_grep<CR>
+nnoremap <leader>t :Telescope find_files<CR>

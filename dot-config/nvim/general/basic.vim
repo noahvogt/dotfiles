@@ -71,3 +71,13 @@ set lazyredraw
 
 " ignore case when searching
 set ignorecase
+
+" Show next 3 lines while scrolling.
+if !&scrolloff
+    set scrolloff=3       
+endif
+
+" Show next 5 columns while side-scrolling.
+if !&sidescrolloff
+    set sidescrolloff=5   
+endif

@@ -3,6 +3,11 @@
 "  \| PlugInstall --sync | source $VIMINIT
 "\| endif
 
+function! UpdateRemotePlugins(...)
+    " Needed to refresh runtime files
+    let &rtp=&rtp
+    UpdateRemotePlugins
+  endfunction
 
 call plug#begin('~/.cache/vim/plugged')
 
@@ -81,5 +86,25 @@ Plug 'tpope/vim-surround'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 " w/ refactoring capabilites
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
+
+" adds indentation guides to all lines
+Plug 'lukas-reineke/indent-blankline.nvim'
+
+" add editorconfig support
+Plug 'editorconfig/editorconfig-vim'
+
+" highly extensible fuzzy finder
+Plug 'nvim-telescope/telescope.nvim'
+" w/ media preview
+Plug 'nvim-telescope/telescope-media-files.nvim'
+" w/ dependencies
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+
+" a more adventurous wildmenu
+Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
+
+Plug 'nixprime/cpsm'
+Plug 'romgrk/fzy-lua-native'
 
 call plug#end()
