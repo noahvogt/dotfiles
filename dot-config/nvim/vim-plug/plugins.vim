@@ -119,4 +119,7 @@ Plug 'KabbAmine/vCoolor.vim'
 " repo for some code snippets
 Plug 'honza/vim-snippets'
 
+" easier buffer resizing
+Plug 'ahonn/resize.vim'
+
 call plug#end()

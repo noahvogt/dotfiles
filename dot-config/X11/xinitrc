@@ -1,18 +1,22 @@
 #!/bin/sh
 
+# start with a black screen
+feh --bg-scale --no-fehbg "$XDG_DATA_HOME"/norisa/black.jpg
+
 # set keyboard layout to Swiss German
 setxkbmap ch
 
 # start hotkey daemon
 xbindkeys -f "$XDG_CONFIG_HOME"/xbindkeys/config &
 
-feh --bg-scale --no-fehbg "$XDG_DATA_HOME"/norisa/black.jpg
-
 # turn off BIOS beeper
 xset b off
 
 # set WM name (for Java apps)
 wmname LG3D
+
+# load chadwm bar
+~/.config/chadwm/scripts/bar.sh &
 
 # load notification deamon
 dunst &
@@ -31,9 +35,6 @@ for f in ${XDG_DATA_HOME:-$HOME/.local/share}/xmodmap/*; do xmodmap $f; done
 
 # set brightness
 brightnessctl -d $(brightnessctl -l | grep "class 'backlight'" | head -n 1 | awk '{print $2}' | tr -d "'") set $(cat ~/.config/norisa/brightness-state)%
-
-# load dwmblocks
-dwmblocks &
 
 # don't display mouse if not used recently
 unclutter &

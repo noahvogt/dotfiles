@@ -100,6 +100,8 @@ alias rmexif="exiftool -overwrite_original -all="
 
 alias lf='lfub'
 
+alias loc='find -type f | xargs wc -l | sort -h'
+
 # fast dir switching
 s() {
     cd "$(ls -d ~/.local/src/* | fzf)"

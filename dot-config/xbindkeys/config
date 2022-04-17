@@ -108,6 +108,8 @@
 "st -e ncmpcpp"
    Mod4 + section
 
+"dmenu_run"
+   Mod4 + P
 
 ### MPD CPMMANDS
 

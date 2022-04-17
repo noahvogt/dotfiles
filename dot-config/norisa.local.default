@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# this is a the default configuration file which needs to be copied to 
+# this is a the default configuration file which needs to be copied to
 # $XDG_CONFIG_HOME/norisa.local to be active on a individual machine. It is
 # intended to provide the possibility of certain machine-specific configuration
 # options, while still enabling the machine-agnostic configuration to be synced
