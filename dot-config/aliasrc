@@ -115,10 +115,12 @@ b() {
 c() {
     pushd "$HOME/.local/src/dotfiles" > /dev/null || exit 1
     file="$(find dot-config -type f | fzf)"
-    [ -n "$file" ] && 
+    [ -n "$file" ] &&
         "$EDITOR" "${file/dot-config\//${XDG_CONFIG_HOME:-$HOME/.config}/}"
     popd > /dev/null
 }
+
+alias uppkg='git commit -m "uppkg -> $(grep "^pkgver=\|^pkgrel=" PKGBUILD | sed "s/^pkgver=//; s/^pkgrel=/-/"| tr -d "\n")"'
 
 # useful extended system aliases
 alias perm="stat -c \"%a %n\" --"

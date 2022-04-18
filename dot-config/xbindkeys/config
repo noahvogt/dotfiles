@@ -64,6 +64,10 @@
 "dmenuunicode"
    Mod4 + E
 
+# dmenu nerd glyph selector
+"dmenunerd"
+   Mod4 + Shift + E
+
 # command prompt (only non-root commands)
 "dmenuprompt"
    Mod4 + R

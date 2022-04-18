@@ -81,3 +81,6 @@ endif
 if !&sidescrolloff
     set sidescrolloff=5   
 endif
+
+" needed for colorizer plugin
+set termguicolors

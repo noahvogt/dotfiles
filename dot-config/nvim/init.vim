@@ -20,6 +20,7 @@ lua require 'treesitter'
 lua require 'indent-blankline'
 lua require 'telescope'
 lua require 'whichkey'
+lua require 'colorizer'.setup()
 " get theme
 source $XDG_CONFIG_HOME/nvim/theme/theme.vim
 " get keybinds

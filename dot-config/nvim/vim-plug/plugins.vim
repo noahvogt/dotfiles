@@ -44,9 +44,6 @@ Plug 'vim-airline/vim-airline-themes'
 " some git integration
 Plug 'tpope/vim-fugitive'
 
-" preview colours
-Plug 'ap/vim-css-color'
-
 " intellisense
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -121,5 +118,8 @@ Plug 'honza/vim-snippets'
 
 " easier buffer resizing
 Plug 'ahonn/resize.vim'
+
+" fast colorizer
+Plug 'norcalli/nvim-colorizer.lua'
 
 call plug#end()
