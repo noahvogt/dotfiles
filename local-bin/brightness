@@ -5,10 +5,11 @@
 #printf "🔆 %s%%\\n" "$(xbacklight -get | sed 's/\..*$//')"
 #exit
 
-device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +3 | awk '{print $2}' | tr -d "'")
+device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +2 | awk '{print $2}' | tr -d "'")
 if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'intel_backlight'"; then
     device="intel_backlight"
 fi
 [ -z "$device" ] && { printf ""; exit; }
 
-printf "🔆 %s\\n" "$(brightnessctl -d "${device}" | grep Current | awk -F '[)(]' '{print $2}')"
+printf "%s" "$(brightnessctl -d "${device}" | grep Current | \
+    awk -F '[)(]' '{print $2}' | sed 's/%$//')"

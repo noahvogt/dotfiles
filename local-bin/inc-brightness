@@ -8,7 +8,7 @@
 #exit
 
 # get brightness device
-device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +3 | awk '{print $2}' | tr -d "'")
+device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +2 | awk '{print $2}' | tr -d "'")
 if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'intel_backlight'"; then
     device="intel_backlight"
 fi

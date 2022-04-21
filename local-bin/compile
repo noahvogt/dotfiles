@@ -4,19 +4,38 @@
 
 [ -z "$1" ] && { echo "Error: Usage: compile [filename]"; exit 1; }
 
+file=$(readlink -f "$1")
+dir=${file%/*}
+base="${file%.*}"
+ext="${file##*.}"
+
 choosepandoc() {
     [ -z "$template" ] && template="$(ls $HOME/.config/setup/templates/pandoc/* | \
         sed 's/.*\///g' | dmenu -i -l 30 -p "choose pandoc template: ")"
     [ -z "$newext" ] && newext="$(echo "$template" | sed 's/.*\.//; s/latex/pdf/;')"
 }
 
-base=${1%.*}
-ext=${1##*.}
+textype() { \
+	command="pdflatex"
+	( head -n5 "$file" | grep -qi 'xelatex' ) && command="xelatex"
+	( head -n5 "$file" | grep -qi 'lualatex' ) && command="lualatex"
+	$command --output-directory="$dir" "$base" &&
+	grep -qi addbibresource "$file" &&
+	biber --input-directory "$dir" "$base" &&
+	$command --output-directory="$dir" "$base" &&
+	$command --output-directory="$dir" "$base"
+}
 
 case "$ext" in
-    ms) preconv "$1" |  groff -"$ext" -dpaper=a4 -P -pa4 -T pdf > "$base.pdf" && pkill -HUP mupdf;;
-    tex) pdflatex "$1"; pkill -HUP mupdf;;
-    md) choosepandoc; pandoc -V "fontsize=16pt" -s "$1" --template="$HOME/.config/setup/templates/pandoc/$template" -V "fontsize=16pt" -o "$base.$newext"; pkill -HUP mupdf;;
-    rmd) pandoc -s "$1" --template="$HOME/.config/setup/templates/pandoc/german.latex" -o "$base.pdf"; pkill -HUP mupdf;;
+    ms) preconv "$file" |  groff -"$ext" -dpaper=a4 -P -pa4 -T pdf > "$base.pdf" && pkill -HUP mupdf;;
+    md) choosepandoc; pandoc -V "fontsize=16pt" -s "$file" --template="$HOME/.config/setup/templates/pandoc/$template" -V "fontsize=16pt" -o "$base.$newext"; pkill -HUP mupdf;;
+    rmd) pandoc -s "$file" --template="$HOME/.config/setup/templates/pandoc/german.latex" -o "$base.pdf"; pkill -HUP mupdf;;
+	py) python "$file" ;;
+	[rR]md) Rscript -e "rmarkdown::render('$file', quiet=TRUE)" ;;
+	rs) cargo build ;;
+	sass) sassc -a "$file" "$base.css" ;;
+	scad) openscad -o "$base".stl "$file" ;;
+	sent) setsid -f sent "$file" 2>/dev/null ;;
+	tex) textype "$file"; pkill -HUP mupdf ;;
     *) echo "Error: unknown file extension '$ext'"; exit 1;#;
 esac
