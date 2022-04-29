@@ -88,3 +88,7 @@ augroup numbertoggle
   autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
   autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END
+
+" ugly fix fo the vimspector log file
+augroup fixVimSpectorLogFile
+autocmd User VimspectorDebugEnded call system("mv ~/.vimspector.log " . $XDG_CACHE_HOME."/vim/")
