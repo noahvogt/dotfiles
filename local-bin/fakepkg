@@ -1,0 +1,23 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Error: please provide 'pkgname' as argument" && exit 1
+
+cd /tmp || exit 1
+mkdir "$1" || exit 1
+cd "$1" || exit 1
+
+printf "pkgname=%s-dummy
+pkgver=0.0
+pkgrel=1
+pkgdesc='WARNING: THIS IS A DUMMY PACKAGE'
+arch=('any')
+url=''
+license=('none')
+provides=('%s')
+conflicts=('%s')
+source=()
+package() {
+	echo 'WARNING: THIS IS A DUMMY PACKAGE'
+}" "$1" "$1" "$1" > PKGBUILD
+
+makepkg -si
