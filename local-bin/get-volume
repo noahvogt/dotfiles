@@ -2,11 +2,15 @@
 
 # script to display the current volume and mute state in dwmblocks
 
-volume=$(amixer sget Master | grep 'Front Left:' | awk -F '[\\]\\[]' '{print $2}')
-if [ -z "$(amixer sget Master | grep "off" )" ];
-then
-    muteicon="🔊"
+percent="$(amixer sget Master | grep 'Front Left:' | \
+    awk -F '[\\]\\[]' '{print $2}' | sed 's/\%$//')"
+if amixer sget Master | grep -q "off"; then
+    volume_icon="婢"
+elif [ "$percent" -gt 69 ]; then
+    volume_icon="墳"
+elif [ "$percent" -gt 29 ]; then
+    volume_icon="奔"
 else
-    muteicon="🔇"
+    volume_icon="奄"
 fi
-printf "%s %s\\n" "$muteicon" "$volume"
+printf "%s %s\\n" "$volume_icon" "$percent"

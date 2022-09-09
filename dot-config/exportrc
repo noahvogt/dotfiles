@@ -13,6 +13,9 @@ export XDG_CACHE_HOME="$HOME/.cache"
 # default git ssh key location
 export GIT_SSH_KEY="$XDG_CONFIG_HOME/ssh/id_rsa"
 
+# wine stuff
+export WINEPREFIX="$XDG_DATA_HOME/wineprefix"
+
 # ~/ cleanup
 export VIMINIT="set nocp | source $XDG_CONFIG_HOME/nvim/init.vim"
 export LESSHISTFILE='-'
@@ -34,11 +37,13 @@ export CONAN_USER_HOME="$XDG_CONFIG_HOME"
 export TEXMFHOME="$XDG_DATA_HOME/texmf"
 export TEXMFVAR="$XDG_CACHE_HOME/texlive/texmf-var"
 export TEXMFCONFIG="$XDG_CONFIG_HOME/texlive/texmf-config"
+export MBSYNCRC="$XDG_CONFIG_HOME/mbsync/mbsyncrc"
+export BOTO_CONFIG="$XDG_CONFIG_HOME/gsutil/config"
 
-# quick acces to my latex templates 
+# quick acces to my latex templates
 export PATH=$PATH:~/.config/setup/templates/latex
 
-# quick acces to my xournalpp templates 
+# quick acces to my xournalpp templates
 export PATH=$PATH:~/.config/setup/templates/xournalpp
 
 # fix android studio for dwm

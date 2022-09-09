@@ -24,14 +24,14 @@ command S silent !vshow '%:p'
 command C !compile "%"
 
 " general compile button
-map <F3> :w<CR>:!compile "%"; pkill -HUP mupdf<CR>
+map <F3> :w<CR>:!compile "%" && pkill -HUP mupdf<CR>
 
 " bibtex extra compiler
-map <F2> :w<CR>:!latexmk -pdf "%"; pkill -HUP mupdf<CR>
+map <F2> :w<CR>:!latexmk -pdf "%" && pkill -HUP mupdf<CR>
 
 map <F4> :noh<CR>
 map <F5> :set spell!<CR>
-map <F6> :w<CR>:!glosscompile "%"; pkill -HUP mupdf<CR>
+map <F6> :w<CR>:!glosscompile "%" && pkill -HUP mupdf<CR>
 
 " jumper
 vnoremap <Space><Space> <Esc>/<++><Enter>"_c4l

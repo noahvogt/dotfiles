@@ -53,10 +53,6 @@ for file in out/Release/locales/*.pak; do
     mkcp "$file" "$srcdest"
 done
 
-for file in out/Release/swiftshader/*.so; do
-    mkcp "$file" "$srcdest"
-done
-
 for size in 24 48 64 128 256; do
     mkcp "chrome/app/theme/chromium/product_logo_$size.png" "$srcdest"
 done

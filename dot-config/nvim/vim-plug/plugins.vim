@@ -51,7 +51,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'romainl/vim-cool'
 
 " graphical debugger
-Plug 'puremourning/vimspector'
+"Plug 'puremourning/vimspector'
 
 " use when there are too many parentheses
 "Plug 'kien/rainbow_parentheses.vim'

@@ -30,6 +30,7 @@ alias si='devour sxiv'
 alias lo='devour libreoffice'
 alias mu='devour mupdf'
 alias llp='devour llpp'
+alias d='devour'
 alias nb='newsboat'
 alias mutt='neomutt'
 
@@ -91,7 +92,7 @@ alias nst="st > /dev/null 2> /dev/null &disown"
 
 # sane ytdl shortcuts
 alias yt="youtube-dl --add-metadata -i"
-alias yta="yt -x -f bestaudio/best"
+alias yta="yt -x -f 140/bestaudio/best"
 
 # imagemagick shortcuts
 alias dpi="identify -format '%x\n' -units PixelsPerInch"

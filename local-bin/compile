@@ -16,7 +16,7 @@ choosepandoc() {
 }
 
 textype() { \
-	command="pdflatex"
+	command="pdflatex --shell-escape"
 	( head -n5 "$file" | grep -qi 'xelatex' ) && command="xelatex"
 	( head -n5 "$file" | grep -qi 'lualatex' ) && command="lualatex"
 	$command --output-directory="$dir" "$base" &&
