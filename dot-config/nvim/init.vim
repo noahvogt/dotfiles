@@ -16,6 +16,7 @@ source $XDG_CONFIG_HOME/nvim/plug-conf/wilder.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/vcoolor.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/better-whitespace.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/vimspector.vim
+source $XDG_CONFIG_HOME/nvim/plug-conf/vimspector.vim
 lua require 'treesitter'
 lua require 'indent-blankline'
 lua require 'telescope'

@@ -34,3 +34,5 @@ let hide_dirs  = '^\%(\.git\|node_modules\)$'  " here you write the dir names
 let hide_files = '\%(^.*\.class\|\.ruby-\)\+'    " here you write the file names
 
 let g:fern#default_exclude = hide_dirs . '\|' . hide_files  " here you exclude them
+
+let g:fern_disable_startup_warnings = 1

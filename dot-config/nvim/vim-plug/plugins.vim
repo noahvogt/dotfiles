@@ -23,7 +23,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'ctrlpvim/ctrlp.vim'
 
 " faster nerdtree
-Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern.vim', {'branch': 'main'}
 " w/ git status integration
 Plug 'lambdalisue/fern-git-status.vim'
 " w/ colored nerdfont icons
@@ -57,7 +57,7 @@ Plug 'romainl/vim-cool'
 "Plug 'kien/rainbow_parentheses.vim'
 
 " auto close pairs, etc.
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
 
 " easy commenting
 Plug 'tpope/vim-commentary'
@@ -121,5 +121,8 @@ Plug 'ahonn/resize.vim'
 
 " fast colorizer
 Plug 'norcalli/nvim-colorizer.lua'
+
+" for android dev
+Plug 'hsanson/vim-android'
 
 call plug#end()
