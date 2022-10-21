@@ -173,7 +173,9 @@ nnoremap <silent> <C-l> :call WinMove('l')<CR>
 nnoremap <Leader>sv :source $XDG_CONFIG_HOME/nvim/init.vim<CR>
 
 nnoremap <leader>l :Telescope live_grep<CR>
-nnoremap <leader>t :Telescope find_files<CR>
+nnoremap <leader>t :Telescope git_files<CR>
+nnoremap <leader>z :Telescope find_files<CR>
+nnoremap <C-s> :Telescope grep_string<CR>
 
 " markdown preview mappings
 nmap <leader>mg <Plug>MarkdownPreview

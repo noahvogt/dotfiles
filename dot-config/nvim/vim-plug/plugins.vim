@@ -17,7 +17,7 @@ Plug 'itchyny/landscape.vim'
 Plug 'joshdick/onedark.vim'
 
 " better syntax support
-Plug 'sheerun/vim-polyglot'
+"Plug 'sheerun/vim-polyglot'
 
 " fuzzy find files
 Plug 'ctrlpvim/ctrlp.vim'
@@ -57,7 +57,7 @@ Plug 'romainl/vim-cool'
 "Plug 'kien/rainbow_parentheses.vim'
 
 " auto close pairs, etc.
-"Plug 'jiangmiao/auto-pairs'
+Plug 'jiangmiao/auto-pairs'
 
 " easy commenting
 Plug 'tpope/vim-commentary'

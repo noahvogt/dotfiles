@@ -5,6 +5,10 @@ augroup fixLatexComments
 augroup END
 " Automatically wrap at 80 characters for Markdown
 " autocmd BufRead,BufNewFile *.md setlocal textwidth=80
+augroup wrapJavaAt100LinesException
+  autocmd!
+  autocmd FileType java set colorcolumn=100
+augroup END
 
 function! MathAndLiquid()
     "" Define certain regions

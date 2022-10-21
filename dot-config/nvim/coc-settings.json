@@ -1,4 +1,13 @@
 {
+   "codeLens.enable": true,
+   "codeLens.position": "eol",
+   "coc.preferences.formatOnType": true,
+   "coc.preferences.enableMessageDialog": true,
+   "python.formatting.provider": "black",
+   "python.formatting.blackPath": "/usr/bin/black",
+   "coc.preferences.formatOnSaveFiletypes": ["python", "java"],
+
+
   "diagnostic-languageserver.filetypes": {
     "sh": "shellcheck"
   },
@@ -35,5 +44,6 @@
   //"java.referencesCodeLens.enabled": true,
   // "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar",
   "snippets.userSnippetsDirectory": "~/.config/nvim/snips",
-  "suggest.noselect": true
+  "suggest.noselect": true,
+  "java.format.settings.url": "/home/based/.config/coc/extensions/node_modules/redhat.java/eclipse-formatter.xml"
 }
