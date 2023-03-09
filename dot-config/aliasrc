@@ -121,7 +121,7 @@ c() {
     popd > /dev/null
 }
 
-alias uppkg='git commit -m "uppkg -> $(grep "^\s*pkgver" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//"| tr -d "\n")"'
+alias uppkg='git commit -m "uppkg -> $(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"'
 
 # useful extended system aliases
 alias perm="stat -c \"%a %n\" --"
