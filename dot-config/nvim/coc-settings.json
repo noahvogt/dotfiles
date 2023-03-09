@@ -45,5 +45,9 @@
   // "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar",
   "snippets.userSnippetsDirectory": "~/.config/nvim/snips",
   "suggest.noselect": true,
-  "java.format.settings.url": "/home/based/.config/coc/extensions/node_modules/redhat.java/eclipse-formatter.xml"
+  "java.format.settings.url": "/home/based/.config/coc/extensions/node_modules/redhat.java/eclipse-formatter.xml",
+  "coc.source.vimtex.filetypes": [
+    "tex",
+    "plaintex"
+  ]
 }
