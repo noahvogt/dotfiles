@@ -67,6 +67,7 @@ alias gsetkey="git config --add --local core.sshCommand \'ssh -i \$GIT_SSH_KEY\'
 alias clone="git clone -c core.sshCommand='/usr/bin/ssh -i \$GIT_SSH_KEY'"
 alias gs='git status'
 alias gd='git diff'
+alias gr='git remote -v'
 alias add='git add'
 alias commit='git commit'
 alias fetch='git fetch'

@@ -2,5 +2,6 @@
 dot-config/norisa.local
 dot-config/newsboat/urls
 dot-config/Xauth/auth
+dot-config/mpv/watch_later/
 local-share/gnupg/
 error.log

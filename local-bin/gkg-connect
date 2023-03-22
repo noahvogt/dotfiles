@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# script to connect to weird wifis
+# script to connect to weird educational wifis
 
 # make sure that script is run with root privileges
 [ $EUID -ne 0 ] && { echo -e "\e[0;30;101m Error: Please run this script with root privileges \e[0m"; exit; }
@@ -10,13 +10,13 @@ echo -e "\e[0;30;42m List of Wifi interfaces (iwconfig): \e[0m\n"
 iwconfig
 
 # get user input
-echo -e "\e[0;30;46m Select Wifi Interface: \e[0m" 
+echo -e "\e[0;30;46m Select Wifi Interface: \e[0m"
 read -rp " >>> " interface
 
-echo -e "\n\e[0;30;46m Username: \e[0m" 
+echo -e "\n\e[0;30;46m Username: \e[0m"
 read -rp " >>> " username
 
-echo -e "\n\e[0;30;46m Password: \e[0m" 
+echo -e "\n\e[0;30;46m Password: \e[0m"
 echo -n " >>> "
 read -rs password
 printf "\n"

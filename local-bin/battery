@@ -12,9 +12,9 @@
 #fi
 #batterypercent=$(echo "$BATTERYSTATE" | tr -d 'Ch' | sed 's/cargng:/?/')
 
-percent="$(cat /sys/class/power_supply/BAT0/capacity)"
+percent="$(cat /sys/class/power_supply/BAT*/capacity)"
 
-if grep -q 'Discharging' /sys/class/power_supply/BAT0/status; then
+if grep -q 'Discharging' /sys/class/power_supply/BAT*/status; then
     if [ "$percent" -gt 89 ]; then
         icon=" "
     elif [ "$percent" -gt 74 ]; then
@@ -26,12 +26,12 @@ if grep -q 'Discharging' /sys/class/power_supply/BAT0/status; then
     else
         icon=" "
     fi
-elif grep -q 'Charging' /sys/class/power_supply/BAT0/status; then
+elif grep -q 'Charging' /sys/class/power_supply/BAT*/status; then
     icon=" "
     if [ "$percent" -eq 100 ]; then
         percent="99"
     fi
-elif grep -q 'Full' /sys/class/power_supply/BAT0/status; then
+elif grep -q 'Full' /sys/class/power_supply/BAT*/status; then
     icon=" "
 else
     icon=" "

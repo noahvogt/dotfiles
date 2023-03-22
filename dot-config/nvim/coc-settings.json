@@ -5,7 +5,7 @@
    "coc.preferences.enableMessageDialog": true,
    "python.formatting.provider": "black",
    "python.formatting.blackPath": "/usr/bin/black",
-   "coc.preferences.formatOnSaveFiletypes": ["python", "java"],
+   "coc.preferences.formatOnSaveFiletypes": ["python", "java", "verilog"],
 
 
   "diagnostic-languageserver.filetypes": {
@@ -17,6 +17,10 @@
   },
   "python.linting.pylintEnabled": true,
   "languageserver": {
+    "veridian": {
+      "command": "veridian",
+      "filetypes": ["systemverilog", "verilog"]
+    },
     "ccls": {
       "command": "ccls",
       "filetypes": [
@@ -45,7 +49,7 @@
   // "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar",
   "snippets.userSnippetsDirectory": "~/.config/nvim/snips",
   "suggest.noselect": true,
-  "java.format.settings.url": "/home/based/.config/coc/extensions/node_modules/redhat.java/eclipse-formatter.xml",
+  "java.format.settings.url": "/home/based/.config/coc/extensions/node_modules/redhat.java/",
   "coc.source.vimtex.filetypes": [
     "tex",
     "plaintex"
