@@ -39,6 +39,9 @@ export TEXMFVAR="$XDG_CACHE_HOME/texlive/texmf-var"
 export TEXMFCONFIG="$XDG_CONFIG_HOME/texlive/texmf-config"
 export MBSYNCRC="$XDG_CONFIG_HOME/mbsync/mbsyncrc"
 export BOTO_CONFIG="$XDG_CONFIG_HOME/gsutil/config"
+export ANSIBLE_GALAXY_CACHE_DIR="${XDG_CACHE_HOME}/ansible/galaxy_cache"
+export ANSIBLE_HOME="${XDG_DATA_HOME}/ansible"
+export ANSIBLE_CONFIG="${XDG_DATA_HOME}/ansible.cfg"
 
 # quick acces to my latex templates
 export PATH=$PATH:~/.config/setup/templates/latex
