@@ -1,0 +1,21 @@
+#!/bin/sh
+
+REPO_BASE_PATH=""
+URL_PART_BEFORE_REPONAME=""
+URL_PART_AFTER_REPONAME=""
+
+[ -z "$1" ] && echo "Error: please give a repository name as argument" && exit 1
+[ -d "$REPO_BASE_PATH/$1.git" ] && echo "Error: repository '$1' already exists" && exit 1
+
+error_exit() {
+    "Error: couldn't create the repository '$1'"
+    exit 1
+}
+
+mkdir -v "$REPO_BASE_PATH/$1.git" || exit 1
+cd "$REPO_BASE_PATH/$1.git" || exit 1
+git init --bare || exit 1
+cd - || exit 1
+
+echo "the repo should be available at:"
+echo "${URL_PART_BEFORE_REPONAME}${1}.git${URL_PART_AFTER_REPONAME}"
