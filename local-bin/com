@@ -1,0 +1,6 @@
+#!/bin/sh
+
+gitmessage="$(echo $(showgitmessage))"
+
+[ -n "$gitmessage" ] && git commit -m "$gitmessage"
+rmgitmessage
