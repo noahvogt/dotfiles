@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# edit preliminary git message in .git/message
+
+error_exit() {
+    echo "Fatal: not a git repository (or any of the parent directories): .git"
+    exit 1
+}
+
+cd_to_dotgit_dir() {
+    while [ ! -d '.git' ]; do
+        [ "$PWD" = "/" ] && error_exit
+        cd ..
+    done
+    cd ".git" || error_exit
+}
+
+cd_to_dotgit_dir
+"$EDITOR" "message"

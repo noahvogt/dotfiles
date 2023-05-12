@@ -23,7 +23,7 @@ alias resource='source ${ZDOTDIR:-$HOME}/.zshrc'
 
 # frequently used programs aliases
 alias r='ranger'
-alias ca='calcurse'
+alias ca='calcurse-caldav && calcurse && calcurse-caldav'
 alias py='python'
 #alias wget='wget --hsts-file ~/.cache/wget/wget-hsts'
 alias si='devour sxiv'
@@ -33,6 +33,7 @@ alias llp='devour llpp'
 alias d='devour'
 alias nb='newsboat'
 alias mutt='neomutt'
+alias ne='neomutt'
 
 # copy and paste using xclip package
 alias copy="xclip -sel clip"
@@ -65,7 +66,7 @@ alias mv='mv -i'
 # git aliases
 alias gsetkey="git config --add --local core.sshCommand \'ssh -i \$GIT_SSH_KEY\'"
 alias clone="git clone -c core.sshCommand='/usr/bin/ssh -i \$GIT_SSH_KEY'"
-alias gs='git status'
+alias gs='showgitmessage; git status'
 alias gd='git diff'
 alias gr='git remote -v'
 alias add='git add'
@@ -93,7 +94,7 @@ alias nst="st > /dev/null 2> /dev/null &disown"
 
 # sane ytdl shortcuts
 alias yt="youtube-dl --add-metadata -i"
-alias yta="yt -x -f 140/bestaudio/best"
+alias yta="yt -x -f bestaudio/best/140"
 
 # imagemagick shortcuts
 alias dpi="identify -format '%x\n' -units PixelsPerInch"
