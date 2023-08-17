@@ -1,0 +1,4 @@
+#!/bin/sh
+
+makepkg -fC
+sendreportmail

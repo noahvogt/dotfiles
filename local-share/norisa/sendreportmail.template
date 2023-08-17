@@ -1,0 +1,13 @@
+smtp_server =
+smtp_port =
+smtp_connection =
+
+from_address =
+password =
+
+to_address =
+
+log_file =
+tail_value =
+
+package_type =

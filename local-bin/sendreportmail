@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+
+import smtplib
+import ssl
+from email.message import EmailMessage
+from configparser import ConfigParser
+
+PACKAGE_TYPES = "arch"
+
+
+def get_xdg_dir(env_var: str, fallback_dir: str) -> str:
+    xdg_dir = os.getenv(env_var)
+    if xdg_dir is None or xdg_dir == "":
+        xdg_dir = "{}/{}".format(get_home(), fallback_dir)
+
+    return xdg_dir
+
+
+def get_home() -> str:
+    home = os.getenv("HOME")
+
+    if home is None or home == "":
+        print("Error: $HOME not accessible")
+        sys.exit(1)
+
+    return home
+
+
+class ConfigFile:
+    def __init__(self, path: str):
+        config_parser = self.get_config_parser(path)
+
+        try:
+            self.smtp_server = config_parser["dummy_section"]["smtp_server"]
+            self.smtp_port = int(config_parser["dummy_section"]["smtp_port"])
+            self.smtp_connection = config_parser["dummy_section"][
+                "smtp_connection"
+            ]
+            if self.smtp_connection not in ("ssl", "starttls"):
+                print(
+                    "Error: 'smtp_connection' must be either 'ssl' or 'starttls'"
+                )
+                sys.exit(1)
+            self.from_address = config_parser["dummy_section"]["from_address"]
+            self.password = config_parser["dummy_section"]["password"]
+            self.to_address = config_parser["dummy_section"]["to_address"]
+            self.log_file = config_parser["dummy_section"]["log_file"]
+            self.tail_value = int(config_parser["dummy_section"]["tail_value"])
+            self.package_type = config_parser["dummy_section"]["package_type"]
+
+            if self.package_type not in [PACKAGE_TYPES]:
+                print(
+                    "Error: use one of the supported packges types: {}".format(
+                        PACKAGE_TYPES
+                    )
+                )
+                sys.exit(1)
+        except KeyError as missing_entry:
+            print("Error: needed config entry missing {}".format(missing_entry))
+            sys.exit(1)
+        except ValueError as wrong_value:
+            print("Error: {}".format(wrong_value))
+            sys.exit(1)
+
+    def get_config_parser(self, config_path) -> ConfigParser:
+        try:
+            with open(config_path, "r", encoding="utf-8") as config_reader:
+                config_string = "[dummy_section]\n" + config_reader.read()
+        except (FileNotFoundError, PermissionError, IOError):
+            print("Error: could not access config at '{}'".format(config_path))
+            sys.exit(1)
+
+        config_parser = ConfigParser()
+        config_parser.read_string(config_string)
+        return config_parser
+
+
+def set_subject(
+    message: EmailMessage, package: str, body: str, config_file: ConfigFile
+) -> None:
+    if config_file.package_type == "arch":
+        if "Finished making" in body[body.rfind("\n") :]:
+            message["Subject"] = "BUILD SUCCESS: '{}'".format(package)
+        else:
+            message["Subject"] = "BUILD FAILURE: '{}'".format(package)
+
+
+def set_addresses(conf: ConfigFile, message: EmailMessage) -> None:
+    message["From"] = conf.from_address
+    message["To"] = conf.to_address
+
+
+def get_pkgname() -> str:
+    cwd = os.getcwd()
+    return cwd[cwd.rfind("/") + 1 :]
+
+
+def get_log_from_file(conf: ConfigFile) -> str:
+    if conf.tail_value < 1:
+        print("Error: tailvalue cannot be smaller than 1")
+        sys.exit(1)
+
+    try:
+        with open(conf.log_file, "r", encoding="utf-8") as log_file_reader:
+            log = log_file_reader.readlines()
+    except (FileNotFoundError, PermissionError, IOError):
+        print("Error: could not access log at '{}'".format(conf.log_file))
+        sys.exit(1)
+
+    log.reverse()
+
+    tail_lines = []
+
+    tail_index = 1
+
+    for line in log:
+        if tail_index == conf.tail_value:
+            break
+        tail_lines.append(line)
+        tail_index += 1
+
+    tail_lines.reverse()
+    tail_lines[-1] = tail_lines[-1][:-1]
+
+    mail_text = "".join(tail_lines)
+
+    return mail_text
+
+
+def send_email_via_smtp(conf: ConfigFile, message: EmailMessage) -> None:
+    context = ssl.create_default_context()
+
+    if conf.smtp_connection == "starttls":
+        with smtplib.SMTP_SSL(conf.smtp_server, conf.smtp_port) as server:
+            server.starttls(context=context)
+            server.login(conf.from_address, conf.password)
+            server.send_message(message)
+    else:
+        with smtplib.SMTP_SSL(
+            conf.smtp_server, conf.smtp_port, context=context
+        ) as server:
+            server.login(conf.from_address, conf.password)
+            server.send_message(message)
+
+
+def main() -> None:
+    config_file_path = os.path.join(
+        get_xdg_dir("XDG_CONFIG_HOME", ".config"), "sendreportmail", "config"
+    )
+    config = ConfigFile(config_file_path)
+
+    msg = EmailMessage()
+    email_body = get_log_from_file(config)
+    msg.set_content(email_body)
+
+    pkgname = get_pkgname()
+
+    set_subject(msg, pkgname, email_body, config)
+    set_addresses(config, msg)
+
+    send_email_via_smtp(config, msg)
+
+
+if __name__ == "__main__":
+    main()
