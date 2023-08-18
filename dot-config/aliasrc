@@ -20,6 +20,7 @@ alias sx='startx "$XDG_CONFIG_HOME/X11/xinitrc" --'
 alias ll='ls -l'
 alias la='ls -A'
 alias resource='source ${ZDOTDIR:-$HOME}/.zshrc'
+alias removeorphanedpkgs='pacman -Qtdq | doas pacman -Rns -'
 
 # frequently used programs aliases
 alias r='ranger'
@@ -148,3 +149,4 @@ djangokeygen() { python -c 'from django.core.management.utils import get_random_
 }
 
 alias ab='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild &!'
+alias abc='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -c &!'

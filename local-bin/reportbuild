@@ -2,3 +2,7 @@
 
 makepkg -fC
 sendreportmail
+if echo "$1" | grep -q "c"; then
+    cr
+fi
+sudo systemctl suspend
