@@ -1,0 +1,9 @@
+#!/bin/sh
+
+gpu_num="$(sudo nvidia-smi | grep 00: | sed 's/|//; s/^.*00://; s/:.*$//')"
+
+sudo nvidia-smi -i 0000:"$gpu_num":00.0 -pm 0
+sudo nvidia-smi drain -p 0000:"$gpu_num":00.0 -m 1
+if ! nvidia-smi | grep -q 00: ; then
+    sudo systemctl suspend
+fi
