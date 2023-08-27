@@ -84,6 +84,7 @@ def set_subject(
     if config_file.package_type == "arch":
         if "Finished making" in body[body.rfind("\n") :]:
             message["Subject"] = "BUILD SUCCESS: '{}'".format(package)
+            print("BUILD SUCCESS")
         else:
             message["Subject"] = "BUILD FAILURE: '{}'".format(package)
 
