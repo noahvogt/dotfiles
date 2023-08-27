@@ -1,8 +1,9 @@
 #!/bin/sh
 
 makepkg -fC
-sendreportmail
-if echo "$1" | grep -q "c"; then
-    cr
+if sendreportmail | grep -q "BUILD SUCCESS"; then
+    if echo "$1" | grep -q "c"; then
+        cr
+    fi
 fi
 sudo systemctl suspend
