@@ -1,0 +1,80 @@
+#!/bin/sh
+
+# open a stream or media copied to the clipboard or given as argument
+
+if [ $# != 1 ]; then
+    clipboard=$(xclip -out -sel clip | sed 's/!/\\!/')
+    echo "$clipboard"
+else
+    clipboard="$1"
+fi
+
+# default: media is video/audio
+media='videoAudio'
+
+showpdf() {
+    pdfViewers=$(printf "llpp\nmupdf\nsave\nprint\n")
+    viewer=$(echo "$pdfViewers" | dmenu -i -l 30)
+    case "$viewer" in
+        save) cachedir="${XDG_CACHE_HOME:-$HOME/.cache}/norisa/stream"
+            [ -d "$cachedir" ] || mkdir -p "$cachedir"
+            indexlist=$(ls -1 "$cachedir" | sort -h)
+            [ -z "$indexlist" ] && touch "$cachedir/index0.pdf" &&
+                indexlist="index0.pdf"
+            index=$(echo "$indexlist" | tail -n 1 | sed 's/index//; s/.pdf//')
+            : $((index = index + 1))
+            cp "/tmp/index.pdf" "$cachedir/$index";;
+        print) lp "/tmp/index.pdf";;
+        *) devour "$viewer" "/tmp/index.pdf";;
+    esac
+}
+
+# check media type
+if echo "$clipboard" | grep -q "^magnet:?xt="; then media='torrent'; fi
+
+notify-send "opening" "$media"
+
+case "$media" in
+    videoAudio) streamType=$(printf "stream\ndownload\nbackground\ncopy link\n" | \
+                             dmenu -i -l 30)
+        case "$streamType" in
+            stream) mpv "$clipboard";;
+            download) downFormat="$(youtube-dl -F "$clipboard" | \
+                sed '1,/format code/d' | dmenu -i -l 30 | awk '{print $1}')"
+                if [ -z "$downFormat" ]; then
+                    youtube-dl "$clipboard" -o \
+                    "$HOME/dl/%(title)s-%(id)s.%(ext)s" &&
+                    notify-send "downloading" "finished"
+                else
+                    youtube-dl -f "$downFormat" "$clipboard" -o \
+                    "$HOME/dl/%(title)s-%(id)s.%(ext)s" &&
+                    notify-send "downloading" "finished"
+                fi;;
+            background) mpv --no-video "$clipboard";;
+            "copy link") echo "$clipboard" | xclip -sel clip;;
+            *) exit 1;;
+        esac
+        ;;
+
+    torrent)
+        [ -d "/tmp/torrent-stream" ] &&
+            notify-send "torrent" "clearing stream cache" &&
+            rm -rf "/tmp/torrent-stream/"
+
+        killall peerflix
+        peerflix "$clipboard" -q &
+        sleep 4
+        while true; do
+           find "/tmp/torrent-stream/" -type f
+           target="$(find "/tmp/torrent-stream/" -type f | \
+                     sed '/\/$/d; /\.torrent$/d')"
+           if [ -n "$target" ]; then
+               notify-send "torrent" "opening"
+               mpv "$target" && break
+           fi
+           sleep 1
+        done
+        # TODO: add downloading option + more than audioVideo (maybe recognition)
+        # add garbage collector that kills the peerflix process when unused
+        ;;
+esac
