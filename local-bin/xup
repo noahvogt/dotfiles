@@ -1,0 +1,33 @@
+#!/bin/sh
+
+XDG_REPO_BASE="$HOME/.local/src/xdg-repo"
+XDG_REPO_ARCH="x86_64"
+
+xdg_repo_path="$XDG_REPO_BASE/$XDG_REPO_ARCH"
+more_than_one_arguemt_given=0
+commit_msg="updated"
+
+for file in "$@"; do
+    pkgver="$(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"
+    pkgname="${file%%-"$pkgver"*}"
+
+    for old_pkg in "$xdg_repo_path/$pkgname"*.pkg.tar.zst; do
+        if [ -e "$old_pkg" ]; then
+            rm "$xdg_repo_path/$pkgname"*.pkg.tar.zst
+            if [ "$more_than_one_arguemt_given" = 0 ]; then
+                more_than_one_arguemt_given=1
+                commit_msg="$commit_msg $pkgname -> $pkgver"
+            else
+                commit_msg="$commit_msg + $pkgname -> $pkgver"
+            fi
+            mv "$file" "$xdg_repo_path"
+            break
+        fi
+    done
+done
+
+
+cd "$XDG_REPO_BASE" || exit 1
+./signpkgs
+git add .
+git commit -m "$commit_msg"
