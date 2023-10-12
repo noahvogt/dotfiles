@@ -14,16 +14,17 @@ for file in "$@"; do
     for old_pkg in "$xdg_repo_path/$pkgname"*.pkg.tar.zst; do
         if [ -e "$old_pkg" ]; then
             rm "$xdg_repo_path/$pkgname"*.pkg.tar.zst
-            if [ "$more_than_one_arguemt_given" = 0 ]; then
-                more_than_one_arguemt_given=1
-                commit_msg="$commit_msg $pkgname -> $pkgver"
-            else
-                commit_msg="$commit_msg + $pkgname -> $pkgver"
-            fi
-            mv "$file" "$xdg_repo_path"
             break
         fi
     done
+
+    if [ "$more_than_one_arguemt_given" = 0 ]; then
+        more_than_one_arguemt_given=1
+        commit_msg="$commit_msg $pkgname -> $pkgver"
+    else
+        commit_msg="$commit_msg + $pkgname -> $pkgver"
+    fi
+    mv "$file" "$xdg_repo_path"
 done
 
 
