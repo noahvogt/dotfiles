@@ -29,6 +29,7 @@ done
 
 
 cd "$XDG_REPO_BASE" || exit 1
+git pull
 ./signpkgs
 git add .
 git commit -m "$commit_msg"
