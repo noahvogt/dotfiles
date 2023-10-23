@@ -8,13 +8,15 @@ more_than_one_arguemt_given=0
 commit_msg="updated"
 
 for file in "$@"; do
+    # TODO: add epoch to $pkgver
     pkgver="$(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"
     pkgname="${file%%-"$pkgver"*}"
 
     for old_pkg in "$xdg_repo_path/$pkgname"*.pkg.tar.zst; do
         if [ -e "$old_pkg" ]; then
             rm "$xdg_repo_path/$pkgname"*.pkg.tar.zst
-            break
+            # TODO: broken, use another way to break out of inner loop
+            # break
         fi
     done
 
