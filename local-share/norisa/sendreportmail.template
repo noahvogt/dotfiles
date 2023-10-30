@@ -1,13 +1,13 @@
 smtp_server =
-smtp_port =
-smtp_connection =
+smtp_port = 465
+smtp_connection = ssl
 
 from_address =
 password =
 
 to_address =
 
-log_file =
-tail_value =
+log_file = nohup.out
+tail_value = 30
 
-package_type =
+package_type = arch
