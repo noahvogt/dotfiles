@@ -6,4 +6,4 @@ if sendreportmail | grep -q "BUILD SUCCESS"; then
         cr
     fi
 fi
-sudo systemctl suspend
+loginctl suspend || sudo systemctl suspend
