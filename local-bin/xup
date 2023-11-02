@@ -14,7 +14,7 @@ for file in "$@"; do
 
     for old_pkg in "$xdg_repo_path/$pkgname"*.pkg.tar.zst; do
         if [ -e "$old_pkg" ]; then
-            rm "$xdg_repo_path/$pkgname"*.pkg.tar.zst
+            rm "$xdg_repo_path/$pkgname"*.pkg.tar.zst*
             # TODO: broken, use another way to break out of inner loop
             # break
         fi
