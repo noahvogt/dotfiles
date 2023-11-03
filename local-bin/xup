@@ -1,7 +1,23 @@
 #!/bin/sh
 
-XDG_REPO_BASE="$HOME/.local/src/xdg-repo"
+SRC_BASE="$HOME/.local/src"
+XDG_REPO_BASE="$SRC_BASE/xdg-repo"
 XDG_REPO_ARCH="x86_64"
+
+handle_bin_ver_pkg_upgrade() {
+    if [ -e PKGBUILD ]; then
+        binary_version="$(grep "^# binary version of this package (-bin):" PKGBUILD | head -n 1 | awk '{print $8}' | sed 's/^.*\///')"
+        if [ -n "$binary_version" ]; then
+            cd "$SRC_BASE/$binary_version" || return
+            git pull || return
+            updpkgsums || return
+            makepkg --printsrcinfo > .SRCINFO
+            add .SRCINFO PKGBUILD || return
+            uppkg || return
+            git push
+        fi
+    fi
+}
 
 xdg_repo_path="$XDG_REPO_BASE/$XDG_REPO_ARCH"
 more_than_one_arguemt_given=0
@@ -29,6 +45,7 @@ for file in "$@"; do
     mv "$file" "$xdg_repo_path"
 done
 
+handle_bin_ver_pkg_upgrade
 
 cd "$XDG_REPO_BASE" || exit 1
 git pull
