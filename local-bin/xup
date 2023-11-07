@@ -4,16 +4,33 @@ SRC_BASE="$HOME/.local/src"
 XDG_REPO_BASE="$SRC_BASE/xdg-repo"
 XDG_REPO_ARCH="x86_64"
 
+get_pkgver() {
+    grep "^\s*pkgver" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//;"
+}
+
+get_pkgrel() {
+    grep "^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgrel\s*=\s*//;"
+}
+
+# TODO: add epoch to $pkgver
+get_full_pkgver() {
+    echo "$(get_pkgver)-$(get_pkgrel)"
+}
+
 handle_bin_ver_pkg_upgrade() {
     if [ -e PKGBUILD ]; then
         binary_version="$(grep "^# binary version of this package (-bin):" PKGBUILD | head -n 1 | awk '{print $8}' | sed 's/^.*\///')"
         if [ -n "$binary_version" ]; then
+            pkgver="$(get_pkgver)"
+            pkgrel="$(get_pkgrel)"
             cd "$SRC_BASE/$binary_version" || return
             git pull || return
+            sed -i "s/^\s*pkgver\s*=.*$/pkgver=$pkgver/" PKGBUILD
+            sed -i "s/^\s*pkgrel\s*=.*$/pkgrel=$pkgrel/" PKGBUILD
             updpkgsums || return
             makepkg --printsrcinfo > .SRCINFO
-            add .SRCINFO PKGBUILD || return
-            uppkg || return
+            git add .SRCINFO PKGBUILD || return
+            git commit -m "uppkg -> $(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")" || return
             git push
         fi
     fi
@@ -24,8 +41,7 @@ more_than_one_arguemt_given=0
 commit_msg="updated"
 
 for file in "$@"; do
-    # TODO: add epoch to $pkgver
-    pkgver="$(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"
+    pkgver="$(get_full_pkgver)"
     pkgname="${file%%-"$pkgver"*}"
 
     for old_pkg in "$xdg_repo_path/$pkgname"*.pkg.tar.zst; do
