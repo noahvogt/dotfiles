@@ -12,9 +12,15 @@ get_pkgrel() {
     grep "^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgrel\s*=\s*//;"
 }
 
-# TODO: add epoch to $pkgver
+get_epoch() {
+    raw_epoch="$(grep "^\s*epoch" .SRCINFO | sed "s/^\s*epoch\s*=\s*//;")"
+    if [ -n "$raw_epoch" ]; then
+        echo "$raw_epoch:"
+    fi
+}
+
 get_full_pkgver() {
-    echo "$(get_pkgver)-$(get_pkgrel)"
+    echo "$(get_epoch)$(get_pkgver)-$(get_pkgrel)"
 }
 
 handle_bin_ver_pkg_upgrade() {
@@ -23,13 +29,18 @@ handle_bin_ver_pkg_upgrade() {
         if [ -n "$binary_version" ]; then
             pkgver="$(get_pkgver)"
             pkgrel="$(get_pkgrel)"
+            epoch="$(get_epoch)"
             cd "$SRC_BASE/$binary_version" || return
             git pull || return
+            if [ -n "$epoch" ]; then
+                sed -i "s/^\s*epoch\s*=.*$/epoch=$epoch/" PKGBUILD
+            fi
             sed -i "s/^\s*pkgver\s*=.*$/pkgver=$pkgver/" PKGBUILD
             sed -i "s/^\s*pkgrel\s*=.*$/pkgrel=$pkgrel/" PKGBUILD
             updpkgsums || return
             makepkg --printsrcinfo > .SRCINFO
             git add .SRCINFO PKGBUILD || return
+            # TODO: add epoch to uppkg
             git commit -m "uppkg -> $(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")" || return
             git push
         fi
