@@ -124,7 +124,8 @@ c() {
     popd > /dev/null
 }
 
-alias uppkg='git commit -m "uppkg -> $(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"'
+alias uppkg='git commit -m "uppkg -> $(raw_pkgver="$(grep "^\s*epoch\|^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "/^\s*epoch/ {s/:$/::/;t;s/$/:/}; s/^\s*epoch\s*=\s*//; s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/")"; if echo "$raw_pkgver" | grep -q ":"; then raw_pkgver="$(echo "$raw_pkgver" | sed "1{N;h;d};3G")"; fi; echo "$raw_pkgver" | tr -d "\n")"'
+
 
 # useful extended system aliases
 alias perm="stat -c \"%a %n\" --"
