@@ -2,6 +2,10 @@
 
 # script to make a screenshot from the desired selection
 
-[ ! -d "$HOME/pix/screenshots" ] && mkdir -p "$HOME/pix/screenshots"
+[ ! -d "$HOME/dox/screenshots" ] && mkdir -p "$HOME/dox/screenshots"
 
-import "pix/screenshots/$(date +"%F--%H-%M-%S--%N").jpg"
+if [ -f "$HOME/dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm.jpg" ]; then
+    import "dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm_$(date +"%N").jpg"
+else
+    import "dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm.jpg"
+fi
