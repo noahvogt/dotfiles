@@ -96,6 +96,7 @@ alias nst="st > /dev/null 2> /dev/null &disown"
 # sane ytdl shortcuts
 alias yt="youtube-dl --add-metadata -i"
 alias yta="yt -x -f bestaudio/best/140"
+alias ytas='yta "$(paste | sed "s/\?.*$//")"'
 
 # imagemagick shortcuts
 alias dpi="identify -format '%x\n' -units PixelsPerInch"
