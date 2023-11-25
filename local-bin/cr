@@ -1,10 +1,12 @@
 #!/bin/sh
 
 delete_oldest_release() {
-    tag_to_be_deleted="$(gh release list | grep -v Latest | tail -n 1 | awk '{print $1}')"
+    tag_to_be_deleted="$(gh release list | grep -v Latest | tail -n 1 | \
+    awk '{print $1}')"
     gh release delete "$tag_to_be_deleted" --yes --cleanup-tag
 }
 
-tag_to_be_released="$(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"
-gh release create "$tag_to_be_released" --notes "$tag_to_be_released" -- *$tag_to_be_released*.zst && delete_oldest_release
-
+tag_to_be_released="$(grep "^\s*pkgver\|^\s*pkgrel" .SRCINFO | \
+    sed "s/^\s*pkgver\s*=\s*//; s/^\s*pkgrel\s*=\s*/-/"| tr -d "\n")"
+gh release create "$tag_to_be_released" --notes "$tag_to_be_released" -- \
+    *$tag_to_be_released*.zst && delete_oldest_release

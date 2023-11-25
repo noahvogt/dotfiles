@@ -51,7 +51,6 @@
   "suggest.noselect": true,
   "java.format.settings.url": "/home/based/.config/coc/extensions/node_modules/redhat.java/",
   "coc.source.vimtex.filetypes": [
-    "tex",
-    "plaintex"
+    "tex"
   ]
 }
