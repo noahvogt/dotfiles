@@ -9,8 +9,8 @@
 
 # get brightness device
 device=$(brightnessctl -l | grep "class 'backlight'" | tail -n +2 | awk '{print $2}' | tr -d "'")
-if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'intel_backlight'"; then
-    device="intel_backlight"
+if brightnessctl -l | grep "class 'backlight'" | grep -q "^Device 'intel_backlight'\|^Device 'acpi_video"; then
+    device="$(brightnessctl -l | grep "class 'backlight'" | awk '{print $2}' | tr -d "'")"
 fi
 
 # get brightness percentage
