@@ -151,4 +151,6 @@ djangokeygen() { python -c 'from django.core.management.utils import get_random_
 }
 
 alias ab='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild &!'
+alias abx='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -x &!'
 alias abc='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -c &!'
+alias abcx='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -c -x &!'

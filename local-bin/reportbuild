@@ -2,8 +2,12 @@
 
 makepkg -fC
 if sendreportmail | grep -q "BUILD SUCCESS"; then
-    if echo "$1" | grep -q "c"; then
+    git push
+    if echo "$1$2" | grep -q "c"; then
         cr
     fi
+    if echo "$1$2" | grep -q "x"; then
+        xup *.pkg.tar.zst
+    fi
 fi
-loginctl suspend || sudo systemctl suspend
+sudo systemctl suspend
