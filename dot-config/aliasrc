@@ -105,7 +105,7 @@ alias rmexif="exiftool -overwrite_original -all="
 
 alias lf='lfub'
 
-alias loc='find -type f | xargs wc -l | sort -h'
+alias loc='find -type f | grep -v "README\|\.git\|LICENSE" | xargs wc -l | sort -h'
 
 # fast dir switching
 s() {

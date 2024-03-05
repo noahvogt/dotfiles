@@ -5,7 +5,7 @@
 [ ! -d "$HOME/dox/screenshots" ] && mkdir -p "$HOME/dox/screenshots"
 
 if [ -f "$HOME/dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm.jpg" ]; then
-    import "dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm_$(date +"%N").jpg"
+    import "$HOME/dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm_$(date +"%N").jpg"
 else
-    import "dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm.jpg"
+    import "$HOME/dox/screenshots/Screenshot_$(date +"%Y%m%d-%H%M%S")_dwm.jpg"
 fi
