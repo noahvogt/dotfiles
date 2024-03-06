@@ -85,7 +85,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/nvim-treesitter-refactor'
 
 " adds indentation guides to all lines
-Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim', { 'tag': 'v2.20.8' }
 
 " add editorconfig support
 Plug 'editorconfig/editorconfig-vim'
