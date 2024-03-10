@@ -1,6 +1,7 @@
 #!/bin/sh
 
-makepkg -fC
+sudo ccm64 s
+rm *-debug*.pkg.tar.zst
 if sendreportmail | grep -q "BUILD SUCCESS"; then
     git push
     if echo "$1$2" | grep -q "c"; then
