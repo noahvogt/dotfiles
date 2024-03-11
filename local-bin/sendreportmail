@@ -82,9 +82,8 @@ def set_subject(
     message: EmailMessage, package: str, body: str, config_file: ConfigFile
 ) -> None:
     if config_file.package_type == "arch":
-        if "Finished making" in body[body.rfind("\n") :]:
+        if "Finished making: " in body:
             message["Subject"] = "BUILD SUCCESS: '{}'".format(package)
-            print("BUILD SUCCESS")
         else:
             message["Subject"] = "BUILD FAILURE: '{}'".format(package)
 
