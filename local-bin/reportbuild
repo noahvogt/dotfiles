@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo ccm64 s
+sudo GNUPGHOME=/home/builder/.local/share/gnupg ccm64 s
 rm *-debug*.pkg.tar.zst
 if sendreportmail | grep -q "BUILD SUCCESS"; then
     git push
