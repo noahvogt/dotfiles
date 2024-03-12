@@ -155,4 +155,5 @@ alias abx='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -x &!'
 alias abc='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -c &!'
 alias abx='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -x &!'
 alias abcx='[ -f nohup.out ] && rm -f nohup.out; nohup reportbuild -c -x &!'
-alias cb='sudo GNUPGHOME=/home/builder/.local/share/gnupg ccm64 s'
+alias cb="sudo GNUPGHOME=$XDG_DATA_HOME/gnupg ccm64 s"
+alias rep="sudo GNUPGHOME=$XDG_DATA_HOME/gnupg makerepropkg -d"
