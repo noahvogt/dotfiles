@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-sudo GNUPGHOME=/home/builder/.local/share/gnupg ccm64 s
+for (( i=0; i < 3; i++ )); do
+    sudo GNUPGHOME=/home/builder/.local/share/gnupg ccm64 s && break
+done
 rm *-debug*.pkg.tar.zst
 if sendreportmail | grep -q "BUILD SUCCESS"; then
     git push
