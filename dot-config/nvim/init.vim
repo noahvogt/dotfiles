@@ -30,5 +30,10 @@ source $XDG_CONFIG_HOME/nvim/keys/tex-macros.vim
 " get autocommands
 source $XDG_CONFIG_HOME/nvim/general/auto.vim
 
+" fix black (python formatter)
+let g:black_virtualenv = ''
+let g:black_use_virtualenv = 0
+
+
 " disalbe automatic identation (should be at the end???)
 filetype indent off
