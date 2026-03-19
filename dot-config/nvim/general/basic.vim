@@ -1,5 +1,3 @@
-set nocompatible
-
 " set vim paths
 set undodir="~/.cache/vim/undo"
 set runtimepath+="~/.config/vim"
@@ -27,12 +25,8 @@ set smartcase
 set noswapfile
 set nobackup
 
-set incsearch
 set spelllang=de_ch,en
 set noshowmode
-
-" if hidden is not set, TextEdit might fail.
-set hidden
 
 " set height below statusline
 set cmdheight=1
@@ -45,12 +39,6 @@ set signcolumn=yes
 
 set colorcolumn=80
 
-" set encoding
-set encoding=utf-8
-
-" enable mouse
-set mouse=a
-
 " horizontal splits will automatically be below
 set splitbelow
 
@@ -59,9 +47,6 @@ set splitright
 
 " so that I can see `` in markdown files
 set conceallevel=0
-
-" make sure to enable syntax highlighting
-syntax enable
 
 " always show tabs
 "set showtabline=2

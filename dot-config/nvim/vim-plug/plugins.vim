@@ -16,9 +16,6 @@ Plug 'morhetz/gruvbox'
 Plug 'itchyny/landscape.vim'
 Plug 'joshdick/onedark.vim'
 
-" better syntax support
-"Plug 'sheerun/vim-polyglot'
-
 " fuzzy find files
 Plug 'ctrlpvim/ctrlp.vim'
 
@@ -87,15 +84,11 @@ Plug 'nvim-treesitter/nvim-treesitter-refactor'
 " adds indentation guides to all lines
 Plug 'lukas-reineke/indent-blankline.nvim', { 'tag': 'v2.20.8' }
 
-" add editorconfig support
-Plug 'editorconfig/editorconfig-vim'
-
 " highly extensible fuzzy finder
 Plug 'nvim-telescope/telescope.nvim'
 " w/ media preview
 Plug 'nvim-telescope/telescope-media-files.nvim'
 " w/ dependencies
-Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 
 " a more adventurous wildmenu
