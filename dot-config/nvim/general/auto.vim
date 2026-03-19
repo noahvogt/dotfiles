@@ -97,3 +97,10 @@ augroup END
 augroup fixVimSpectorLogFile
 autocmd User VimspectorDebugEnded call system("mv ~/.vimspector.log " . $XDG_CACHE_HOME."/vim/")
 augroup END
+
+" Highlight references on CursorHold
+augroup LspHighlight
+  autocmd!
+  autocmd CursorHold * lua vim.lsp.buf.document_highlight()
+  autocmd CursorMoved * lua vim.lsp.buf.clear_references()
+augroup END

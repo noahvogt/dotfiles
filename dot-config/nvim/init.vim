@@ -2,9 +2,12 @@
 
 " 1. Essential Neovim 0.11+ fixes and environment setup
 lua << EOF
--- Ensure site directory is in rtp for Treesitter
-vim.opt.runtimepath:prepend(vim.fn.expand("~/.local/share/nvim/site"))
-vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
+-- Add paths to RTP
+local site = vim.fn.expand("~/.local/share/nvim/site/")
+local ts_runtime = vim.fn.expand("~/.cache/vim/plugged/nvim-treesitter/runtime/")
+
+vim.opt.runtimepath:prepend(site)
+vim.opt.runtimepath:prepend(ts_runtime)
 
 -- Disable built-in LSP mappings (using native LSP in lsp.lua)
 local builtins = { 'grn', 'gra', 'grr', 'gri', 'grt' }
@@ -36,9 +39,10 @@ source $XDG_CONFIG_HOME/nvim/plug-conf/vimspector.vim
 " 4. Lua configurations
 lua require 'treesitter'
 lua require 'lsp'
+lua require 'telescope-conf'
+lua require 'refactoring-conf'
 lua require 'gitsigns-conf'
 lua require 'indent-blankline'
-lua require 'telescope'
 lua require 'whichkey'
 lua require 'colorizer'.setup()
 

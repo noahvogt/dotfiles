@@ -58,6 +58,10 @@ nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
 
 nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
+" LSP code actions (Extract function, organize imports, etc.)
+nnoremap <leader>a <cmd>lua vim.lsp.buf.code_action()<CR>
+xnoremap <leader>a <cmd>lua vim.lsp.buf.code_action()<CR>
+
 " switch (back and forth) to (and from) the last opened file
 nmap <leader>b <c-^><cr>
 

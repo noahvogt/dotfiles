@@ -40,6 +40,7 @@ Plug 'lewis6991/gitsigns.nvim'
 
 " native LSP support
 Plug 'neovim/nvim-lspconfig'
+Plug 'ThePrimeagen/refactoring.nvim'
 " modern completion engine
 Plug 'Saghen/blink.cmp'
 " snippet support

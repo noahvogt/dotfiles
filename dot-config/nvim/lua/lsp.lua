@@ -33,7 +33,7 @@ end
 local capabilities = blink.get_lsp_capabilities()
 
 -- Basic servers
-local servers = { 'pyright', 'bashls', 'html', 'cssls', 'jdtls' }
+local servers = { 'pyright', 'ruff', 'bashls', 'html', 'cssls', 'jdtls' }
 for _, server in ipairs(servers) do
   vim.lsp.config(server, {
     capabilities = capabilities,
