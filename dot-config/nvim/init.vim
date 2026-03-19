@@ -9,13 +9,13 @@ local ts_runtime = vim.fn.expand("~/.cache/vim/plugged/nvim-treesitter/runtime/"
 vim.opt.runtimepath:prepend(site)
 vim.opt.runtimepath:prepend(ts_runtime)
 
--- Disable built-in LSP mappings (using native LSP in lsp.lua)
+-- Disable built-in LSP mappings
 local builtins = { 'grn', 'gra', 'grr', 'gri', 'grt' }
 for _, k in ipairs(builtins) do
   pcall(vim.keymap.del, 'n', k, { builtin = true })
 end
 
--- Disable built-in commentary to favor tpope/vim-commentary
+-- Disable built-in commentary
 vim.g.loaded_commentary = 1
 EOF
 
@@ -24,7 +24,10 @@ source $XDG_CONFIG_HOME/nvim/general/basic.vim
 " get plugins
 source $XDG_CONFIG_HOME/nvim/vim-plug/plugins.vim
 
-" 3. get plugin configs
+" 3. Load Theme FIRST (important for Treesitter highlight groups)
+source $XDG_CONFIG_HOME/nvim/theme/theme.vim
+
+" 4. get plugin configs
 source $XDG_CONFIG_HOME/nvim/plug-conf/fern.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/emmet.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/ctrlp.vim
@@ -36,7 +39,7 @@ source $XDG_CONFIG_HOME/nvim/plug-conf/vcoolor.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/better-whitespace.vim
 source $XDG_CONFIG_HOME/nvim/plug-conf/vimspector.vim
 
-" 4. Lua configurations
+" 5. Lua configurations (LSP and Treesitter)
 lua require 'treesitter'
 lua require 'lsp'
 lua require 'telescope-conf'
@@ -46,8 +49,7 @@ lua require 'indent-blankline'
 lua require 'whichkey'
 lua require 'colorizer'.setup()
 
-" 5. get theme, keybinds, and autocommands
-source $XDG_CONFIG_HOME/nvim/theme/theme.vim
+" 6. get keybinds and autocommands
 source $XDG_CONFIG_HOME/nvim/keys/bindings.vim
 source $XDG_CONFIG_HOME/nvim/keys/tex-macros.vim
 source $XDG_CONFIG_HOME/nvim/general/auto.vim

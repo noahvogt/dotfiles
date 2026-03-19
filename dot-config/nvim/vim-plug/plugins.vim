@@ -74,7 +74,7 @@ Plug 'csch0/vim-startify-renderer-nerdfont'
 Plug 'tpope/vim-surround'
 
 " use treesitter inside nvim
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'main', 'do': ':TSUpdate' }
 
 " adds indentation guides to all lines
 Plug 'lukas-reineke/indent-blankline.nvim'
