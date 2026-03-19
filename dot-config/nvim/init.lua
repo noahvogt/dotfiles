@@ -1,13 +1,6 @@
 -- Noah's Neovim Configuration (init.lua)
 
 -- 1. Essential Neovim 0.11+ fixes and environment setup
--- Add paths to RTP
-local site = vim.fn.expand("~/.local/share/nvim/site/")
-local ts_runtime = vim.fn.expand("~/.cache/vim/plugged/nvim-treesitter/runtime/")
-
-vim.opt.runtimepath:prepend(site)
-vim.opt.runtimepath:prepend(ts_runtime)
-
 -- Disable built-in LSP mappings
 local builtins = { 'grn', 'gra', 'grr', 'gri', 'grt' }
 for _, k in ipairs(builtins) do
@@ -20,8 +13,8 @@ vim.g.loaded_commentary = 1
 -- 2. Load basic settings
 require('options')
 
--- 3. Load plugins (Vimscript)
-vim.cmd('source $XDG_CONFIG_HOME/nvim/vim-plug/plugins.vim')
+-- 3. Load plugins (lazy.nvim)
+require('plugins')
 
 -- 4. Load Theme (Important for Treesitter highlight groups)
 require('theme')

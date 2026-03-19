@@ -17,6 +17,9 @@ blink.setup({
   sources = {
     default = { 'lsp', 'path', 'buffer', 'snippets' },
   },
+  fuzzy = {
+    implementation = "prefer_rust",
+  },
   signature = { enabled = true }
 })
 
