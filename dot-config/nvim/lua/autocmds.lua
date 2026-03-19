@@ -72,33 +72,12 @@ autocmd({ "BufNewFile", "BufRead" }, {
   end,
 })
 
--- Fern settings
-augroup("OnEnteringFernWindow", { clear = true })
-autocmd("FileType", {
-  group = "OnEnteringFernWindow",
-  pattern = "fern",
-  callback = function()
-    vim.api.nvim_buf_set_keymap(0, "n", "<CR>", "<Plug>(fern-action-open:select)", { silent = true })
-    -- Add more fern local mappings here if needed
-  end,
-})
-
 -- Emmet Enabler
 augroup("EmmetEnabler", { clear = true })
 autocmd("FileType", {
   group = "EmmetEnabler",
   pattern = { "html", "css" },
   command = "EmmetInstall",
-})
-
--- Glyph palette
-augroup("my-glyph-palette", { clear = true })
-autocmd("FileType", {
-  group = "my-glyph-palette",
-  pattern = { "fern", "startify" },
-  callback = function()
-    vim.fn["glyph_palette#apply"]()
-  end,
 })
 
 -- Relative line numbers
@@ -121,6 +100,7 @@ autocmd({ "BufLeave", "FocusLost", "InsertEnter" }, {
     end
   end,
 })
+
 
 -- Vimspector log file fix
 augroup("fixVimSpectorLogFile", { clear = true })

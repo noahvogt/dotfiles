@@ -54,8 +54,8 @@ keymap({ "n", "x" }, "<leader>a", vim.lsp.buf.code_action, opts)
 -- Switch to last opened file
 keymap("n", "<leader>b", "<c-^><cr>")
 
--- Fern
-keymap("", "<Leader>f", ":Fern . -drawer -reveal=% -toggle -width=35<CR><C-w>=", opts)
+-- NvimTree Toggle
+keymap("n", "<Leader>f", ":NvimTreeToggle<CR>", opts)
 
 -- Tab navigation
 for i = 1, 9 do

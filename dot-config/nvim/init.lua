@@ -21,7 +21,7 @@ require('theme')
 
 -- 5. Load Plugin configurations (some are still in vimscript)
 local plug_confs = {
-  'fern', 'emmet', 'ctrlp', 'sneak', 'airline', 
+  'emmet', 'ctrlp', 'sneak', 'airline',
   'startify', 'wilder', 'vcoolor', 'better-whitespace', 'vimspector'
 }
 for _, conf in ipairs(plug_confs) do
@@ -31,6 +31,7 @@ end
 -- 6. Load Lua-specific configurations
 require('treesitter')
 require('lsp')
+require('nvim-tree-conf')
 require('telescope-conf')
 require('refactoring-conf')
 require('gitsigns-conf')

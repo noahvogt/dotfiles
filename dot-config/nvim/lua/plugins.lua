@@ -19,20 +19,11 @@ require("lazy").setup({
   -- Fuzzy find files
   'ctrlpvim/ctrlp.vim',
 
-  -- Fern
-  { 
-    'lambdalisue/fern.vim', 
-    branch = 'main',
-    priority = 100, -- Load it early
+  -- File Explorer (NvimTree)
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
-  'lambdalisue/nerdfont.vim',
-  { 
-    'lambdalisue/fern-renderer-nerdfont.vim',
-    dependencies = { 'lambdalisue/fern.vim', 'lambdalisue/nerdfont.vim' }
-  },
-  { 'lambdalisue/fern-git-status.vim', dependencies = { 'lambdalisue/fern.vim' } },
-  { 'lambdalisue/glyph-palette.vim', dependencies = { 'lambdalisue/fern.vim' } },
-  { 'yuki-yano/fern-preview.vim', dependencies = { 'lambdalisue/fern.vim' } },
 
   -- Airline
   'vim-airline/vim-airline',
