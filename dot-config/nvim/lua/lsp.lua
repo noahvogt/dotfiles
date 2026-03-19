@@ -33,7 +33,7 @@ end
 local capabilities = blink.get_lsp_capabilities()
 
 -- Basic servers
-local servers = { 'pyright', 'ruff', 'bashls', 'html', 'cssls', 'jdtls' }
+local servers = { 'pyright', 'ruff', 'bashls', 'html', 'cssls', 'jdtls', 'rust_analyzer' }
 for _, server in ipairs(servers) do
   vim.lsp.config(server, {
     capabilities = capabilities,
@@ -70,6 +70,7 @@ conform.setup({
     python = { "black" },
     java = { "google-java-format" },
     sh = { "shfmt" },
+    rust = { "rustfmt" },
   },
   format_on_save = {
     timeout_ms = 500,
@@ -82,6 +83,7 @@ local lint = require("lint")
 lint.linters_by_ft = {
   python = { "pylint" },
   sh = { "shellcheck" },
+  rust = { "clippy", "cspell" },
 }
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   callback = function()
