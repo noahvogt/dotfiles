@@ -43,27 +43,23 @@ vnoremap <leader>Y "+Y
 nmap <leader>p "+p
 nmap <leader>P "+P
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
 " Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nnoremap <silent> [g <cmd>lua vim.diagnostic.goto_prev()<CR>
+nnoremap <silent> ]g <cmd>lua vim.diagnostic.goto_next()<CR>
+
+" Use <leader>d to manually open diagnostic popup
+nnoremap <leader>d <cmd>lua vim.diagnostic.open_float()<CR>
 
 " Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gy <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> gi <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> gr <cmd>lua vim.lsp.buf.references()<CR>
 
-nmap <leader>rn <Plug>(coc-rename)
-
-vmap <leader>f  <Plug>(coc-format-selected)
+nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
 
 " switch (back and forth) to (and from) the last opened file
 nmap <leader>b <c-^><cr>
-
-nmap <leader>f  <Plug>(coc-format-selected)
 
 noremap <silent> <Leader>f :Fern . -drawer -reveal=% -toggle -width=35<CR><C-w>=
 
@@ -97,14 +93,9 @@ function! FernInit() abort
   nmap <buffer><nowait> > <Plug>(fern-action-enter)
 endfunction
 
-" use (shift-)TAB to autocomplete w/ coc
-inoremap <expr> <Tab> coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
-inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
-" use Ctrl + Space to trigger autocomplete box
-inoremap <silent><expr> <c-space> coc#refresh()
-
 " Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
+command! -nargs=0 Format :lua require("conform").format()
+cabbrev Black Format
 
 " Go to tab by number
 noremap <leader>1 1gt
@@ -118,19 +109,6 @@ noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
 
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Run the Code Lens action on the current line.
-nmap <leader>cl  <Plug>(coc-codelens-action)
-
 " auto center view when walking through searches
 nnoremap n nzzzv
 nnoremap N Nzzzv
@@ -140,15 +118,6 @@ nmap <leader>g :TagbarToggle<CR>
 
 " please write
 cmap w!! w !doas tee %
-
-" navigate chunks of current buffer
-nmap [h <Plug>(coc-git-prevchunk)
-nmap ]h <Plug>(coc-git-nextchunk)
-
-" navigate conflicts of current buffer
-nmap [c <Plug>(coc-git-prevconflict)
-nmap ]c <Plug>(coc-git-nextconflict)
-
 
 function! WinMove(key)
     let t:curwin = winnr()
@@ -189,25 +158,14 @@ nnoremap <leader>cw :StripWhitespace<CR>
 nnoremap ]w :NextTrailingWhitespace<CR>
 nnoremap [w :PrevTrailingWhitespace<CR>
 
-" trigger snippet expand
-imap <C-l> <Plug>(coc-snippets-expand)
-
-" select text for visual placeholder of snippet
-vmap <C-j> <Plug>(coc-snippets-select)
-
-" jump to next placeholder
-let g:coc_snippet_next = '<c-n>'
-
-" jump to previous placeholder
-let g:coc_snippet_prev = '<c-b>'
-
-" for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
+" spell jump
+nnoremap ]s ]s
+nnoremap [s [s
 
 nnoremap <leader>da :call vimspector#Launch()<CR>
 nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
 nnoremap <leader>dv :call GotoWindow(g:vimspector_session_windows.variables)<CR>
-nnoremap <leader>dw :call GotoWindow(g:vimspector_session_windows.watches)<CR>
+nnoremap <leader>dw :call vimspector#ClearBreakpoints()<CR>
 nnoremap <leader>ds :call GotoWindow(g:vimspector_session_windows.stack_trace)<CR>
 nnoremap <leader>do :call GotoWindow(g:vimspector_session_windows.output)<CR>
 nnoremap <leader>di :call AddToWatch()<CR>

@@ -12,9 +12,8 @@ function! UpdateRemotePlugins(...)
 call plug#begin('~/.cache/vim/plugged')
 
 " colorshemes
-Plug 'morhetz/gruvbox'
+Plug 'navarasu/onedark.nvim'
 Plug 'itchyny/landscape.vim'
-Plug 'joshdick/onedark.vim'
 
 " fuzzy find files
 Plug 'ctrlpvim/ctrlp.vim'
@@ -30,9 +29,6 @@ Plug 'lambdalisue/glyph-palette.vim'
 " and a floating, scrollable preview window
 Plug 'yuki-yano/fern-preview.vim'
 
-" asynchronous lint engine
-"Plug 'dense-analysis/ale'
-
 " nice statusline for vim
 Plug 'vim-airline/vim-airline'
 " plus themes
@@ -40,21 +36,21 @@ Plug 'vim-airline/vim-airline-themes'
 
 " some git integration
 Plug 'tpope/vim-fugitive'
+Plug 'lewis6991/gitsigns.nvim'
 
-" intellisense
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" native LSP support
+Plug 'neovim/nvim-lspconfig'
+" modern completion engine
+Plug 'Saghen/blink.cmp'
+" snippet support
+Plug 'L3MON4D3/LuaSnip'
+
+" formatting and linting
+Plug 'stevearc/conform.nvim'
+Plug 'mfussenegger/nvim-lint'
 
 " auto disable search highlighting
 Plug 'romainl/vim-cool'
-
-" graphical debugger
-"Plug 'puremourning/vimspector'
-
-" use when there are too many parentheses
-"Plug 'kien/rainbow_parentheses.vim'
-
-" auto close pairs, etc.
-Plug 'jiangmiao/auto-pairs'
 
 " easy commenting
 Plug 'tpope/vim-commentary'
@@ -78,11 +74,9 @@ Plug 'tpope/vim-surround'
 
 " use treesitter inside nvim
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-" w/ refactoring capabilites
-Plug 'nvim-treesitter/nvim-treesitter-refactor'
 
 " adds indentation guides to all lines
-Plug 'lukas-reineke/indent-blankline.nvim', { 'tag': 'v2.20.8' }
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 " highly extensible fuzzy finder
 Plug 'nvim-telescope/telescope.nvim'
@@ -106,14 +100,11 @@ Plug 'ntpeters/vim-better-whitespace'
 " access an external colorpicker directly from neovim
 Plug 'KabbAmine/vCoolor.vim'
 
-" repo for some code snippets
-Plug 'honza/vim-snippets'
-
 " easier buffer resizing
 Plug 'ahonn/resize.vim'
 
 " fast colorizer
-Plug 'norcalli/nvim-colorizer.lua'
+Plug 'NvChad/nvim-colorizer.lua'
 
 " for android dev
 Plug 'hsanson/vim-android'

@@ -1,6 +1,5 @@
 " set vim paths
 set undodir="~/.cache/vim/undo"
-set runtimepath+="~/.config/vim"
 
 " make :find recursive
 set path+=**
