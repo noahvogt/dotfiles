@@ -1,0 +1,71 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 34,
+    "margin-top": 10,
+    "margin-left": 20,
+    "margin-right": 20,
+    "spacing": 4,
+
+    "modules-left": [
+        "hyprland/workspaces"
+    ],
+    "modules-center": ["clock"],
+    "modules-right": ["network#vpn", "network", "pulseaudio"],
+
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "all-outputs": true,
+        "active-only": false,
+        "persistent-workspaces": {
+            "*": 10
+        },
+        "format-icons": {
+            "active": "",
+            "default": ""
+        },
+        "on-scroll-up": "hyprctl dispatch workspace e+1",
+        "on-scroll-down": "hyprctl dispatch workspace e-1"
+    },
+
+    "clock": {
+        "format": "  {:%H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "  {:%A, %d %B %Y}"
+    },
+
+    "network": {
+        "format-wifi": "   {essid}",
+        "format-ethernet": "󰈀   {ipaddr}/{cidr}",
+        "format-linked": "󰈀   {ifname} (No IP)",
+        "format-disconnected": "󰖪   Disconnected",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    "network#vpn": {
+        "interface": "tun*",
+        "format-wifi": "   VPN Connected",
+        "format-ethernet": "   VPN Connected",
+        "format-disconnected": "",
+        "tooltip-format": "VPN Active",
+        "interval": 5
+    },
+
+    "pulseaudio": {
+        "format": "{icon}   {volume}%",
+        "format-bluetooth": "󰂯  {icon}   {volume}%",
+        "format-muted": "󰝟   Muted",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "pavucontrol"
+    }
+}

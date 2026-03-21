@@ -1,0 +1,95 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
+    font-size: 14px;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: rgba(26, 27, 38, 0.8);
+    color: #ffffff;
+    transition-property: background-color;
+    transition-duration: .5s;
+    border-radius: 10px;
+}
+
+#workspaces {
+    background-color: rgba(26, 27, 38, 0.5);
+    margin: 5px;
+    padding: 0 5px;
+    border-radius: 10px;
+}
+
+/* Styling for our workspaces module */
+#workspaces button {
+    padding: 0 10px;
+    color: #565f89;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+#workspaces button:hover {
+    background-color: rgba(122, 162, 247, 0.2);
+    box-shadow: inset 0 0 0 1px #7aa2f7;
+}
+
+#workspaces button.active {
+    color: #33ccff;
+    border-bottom: 2px solid #33ccff;
+    background: linear-gradient(45deg, rgba(51, 204, 255, 0.2), rgba(0, 255, 153, 0.2));
+}
+
+#workspaces button.urgent {
+    color: #f7768e;
+}
+
+#workspaces button.persistent {
+    color: #565f89;
+}
+
+#workspaces button.occupied {
+    color: #bb9af7;
+}
+
+#clock,
+#network,
+#pulseaudio,
+#custom-vpn {
+    padding: 0 15px;
+    margin: 5px;
+    background-color: rgba(36, 40, 59, 0.8);
+    border-radius: 8px;
+}
+
+#clock {
+    color: #7aa2f7;
+}
+
+#network {
+    color: #9ece6a;
+}
+
+#network.vpn {
+    color: #bb9af7;
+    margin-right: 0;
+    padding-right: 5px;
+}
+
+#pulseaudio {
+    color: #f7768e;
+}
+
+#pulseaudio.muted {
+    color: #565f89;
+}
+
+tooltip {
+    background: rgba(26, 27, 38, 0.9);
+    border: 1px solid #33ccff;
+    border-radius: 10px;
+}
+
+tooltip label {
+    color: #ffffff;
+}
