@@ -1,0 +1,16 @@
+@define-color bg rgba(26, 27, 38, 0.8);
+@define-color bg_workspace rgba(26, 27, 38, 0.5);
+@define-color bg_module rgba(36, 40, 59, 0.8);
+@define-color text #ffffff;
+@define-color active_text #33ccff;
+@define-color inactive_text #565f89;
+@define-color urgent #f7768e;
+@define-color occupied #bb9af7;
+@define-color active_border #33ccff;
+@define-color active_bg1 rgba(51, 204, 255, 0.2);
+@define-color active_bg2 rgba(0, 255, 153, 0.2);
+@define-color hover_bg rgba(122, 162, 247, 0.2);
+@define-color hover_border #7aa2f7;
+@define-color clock #7aa2f7;
+@define-color network #9ece6a;
+@define-color tooltip_bg rgba(26, 27, 38, 0.9);

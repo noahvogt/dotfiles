@@ -1,3 +1,5 @@
+@import "theme.css";
+
 * {
     border: none;
     border-radius: 0;
@@ -7,49 +9,48 @@
 }
 
 window#waybar {
-    background-color: rgba(26, 27, 38, 0.8);
-    color: #ffffff;
+    background-color: @bg;
+    color: @text;
     transition-property: background-color;
     transition-duration: .5s;
     border-radius: 10px;
 }
 
 #workspaces {
-    background-color: rgba(26, 27, 38, 0.5);
+    background-color: @bg_workspace;
     margin: 5px;
     padding: 0 5px;
     border-radius: 10px;
 }
 
-/* Styling for our workspaces module */
 #workspaces button {
     padding: 0 10px;
-    color: #565f89;
+    color: @inactive_text;
     transition: all 0.3s ease;
     border-radius: 8px;
 }
 
 #workspaces button:hover {
-    background-color: rgba(122, 162, 247, 0.2);
-    box-shadow: inset 0 0 0 1px #7aa2f7;
+    background-color: @hover_bg;
+    box-shadow: inset 0 0 0 1px @hover_border;
 }
 
 #workspaces button.active {
-    color: #33ccff;
-    border-bottom: 2px solid #33ccff;
-    background: linear-gradient(45deg, rgba(51, 204, 255, 0.2), rgba(0, 255, 153, 0.2));
+    color: @active_text;
+    border-bottom: 2px solid @active_border;
+    background: linear-gradient(45deg, @active_bg1, @active_bg2);
 }
 
 #workspaces button.urgent {
-    color: #f7768e;
+    color: @urgent;
 }
 
 #workspaces button.persistent {
-    color: #565f89;
+    color: @inactive_text;
 }
 
 #workspaces button.occupied {
-    color: #bb9af7;
+    color: @occupied;
 }
 
 #clock,
@@ -58,38 +59,38 @@ window#waybar {
 #custom-vpn {
     padding: 0 15px;
     margin: 5px;
-    background-color: rgba(36, 40, 59, 0.8);
+    background-color: @bg_module;
     border-radius: 8px;
 }
 
 #clock {
-    color: #7aa2f7;
+    color: @clock;
 }
 
 #network {
-    color: #9ece6a;
+    color: @network;
 }
 
 #network.vpn {
-    color: #bb9af7;
+    color: @occupied;
     margin-right: 0;
     padding-right: 5px;
 }
 
 #pulseaudio {
-    color: #f7768e;
+    color: @urgent;
 }
 
 #pulseaudio.muted {
-    color: #565f89;
+    color: @inactive_text;
 }
 
 tooltip {
-    background: rgba(26, 27, 38, 0.9);
-    border: 1px solid #33ccff;
+    background: @tooltip_bg;
+    border: 1px solid @active_border;
     border-radius: 10px;
 }
 
 tooltip label {
-    color: #ffffff;
+    color: @text;
 }
