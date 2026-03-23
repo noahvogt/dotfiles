@@ -60,3 +60,6 @@ opt.sidescrolloff = 5
 
 -- Needed for colorizer plugin
 opt.termguicolors = true
+
+-- Disable Mouse
+vim.opt.mouse = ""
