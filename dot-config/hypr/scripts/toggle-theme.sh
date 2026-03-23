@@ -19,3 +19,5 @@ fi
 
 # Send SIGUSR2 to Waybar so it dynamically reloads style.css (which now imports theme.css)
 killall -SIGUSR2 waybar
+# same thing for for neovim
+killall -SIGUSR1 nvim

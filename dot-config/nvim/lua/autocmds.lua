@@ -159,3 +159,12 @@ autocmd("FileType", {
   end,
 })
 
+-- Sync theme on focus
+augroup("theme_sync", { clear = true })
+autocmd("FocusGained", {
+  group = "theme_sync",
+  callback = function()
+    require('theme').sync_theme()
+  end,
+})
+
