@@ -25,6 +25,13 @@ require("lazy").setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
   },
 
+  -- CMake Tools
+  {
+    'Civitasv/cmake-tools.nvim',
+    lazy = true,
+    cmd = { "CMakeGenerate", "CMakeBuild", "CMakeRun", "CMakeDebugTarget" },
+  },
+
   -- Airline
   'vim-airline/vim-airline',
   'vim-airline/vim-airline-themes',
@@ -57,10 +64,10 @@ require("lazy").setup({
   'tpope/vim-surround',
 
   -- Treesitter
-  { 
-    'nvim-treesitter/nvim-treesitter', 
-    branch = 'main', 
-    build = ':TSUpdate' 
+  {
+    'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    build = ':TSUpdate'
   },
 
   -- Indentation
@@ -73,9 +80,9 @@ require("lazy").setup({
   },
 
   -- Wilder
-  { 
-    'gelguy/wilder.nvim', 
-    build = ':UpdateRemotePlugins' 
+  {
+    'gelguy/wilder.nvim',
+    build = ':UpdateRemotePlugins'
   },
 
   -- Markdown Preview

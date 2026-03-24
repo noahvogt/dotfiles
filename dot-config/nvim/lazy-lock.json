@@ -1,6 +1,7 @@
 {
   "LuaSnip": { "branch": "master", "commit": "dae4f5aaa3574bd0c2b9dd20fb9542a02c10471c" },
   "blink.cmp": { "branch": "main", "commit": "612f4bd2bc29d9e7dc7be1dde960908951bedad1" },
+  "cmake-tools.nvim": { "branch": "master", "commit": "5fc40e9e252a113be945019ab16301b851eb98d1" },
   "conform.nvim": { "branch": "master", "commit": "086a40dc7ed8242c03be9f47fbcee68699cc2395" },
   "ctrlp.vim": { "branch": "master", "commit": "86872f021c4e245e3c583054fda82fb820a2faee" },
   "emmet-vim": { "branch": "master", "commit": "cc8b1a9f2241e087330195c76651c5f9d9519e2f" },

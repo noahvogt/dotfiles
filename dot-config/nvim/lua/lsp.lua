@@ -3,7 +3,7 @@ local lspconfig = require('lspconfig')
 
 -- 1. Setup blink.cmp
 blink.setup({
-  keymap = { 
+  keymap = {
     preset = 'default',
     ['<CR>'] = { 'accept', 'fallback' },
     ['<Tab>'] = { 'select_next', 'fallback' },
@@ -36,7 +36,7 @@ end
 local capabilities = blink.get_lsp_capabilities()
 
 -- Basic servers
-local servers = { 'pyright', 'ruff', 'bashls', 'html', 'cssls', 'jdtls', 'rust_analyzer' }
+local servers = { 'pyright', 'ruff', 'bashls', 'html', 'cssls', 'jdtls', 'rust_analyzer', 'clangd' }
 for _, server in ipairs(servers) do
   vim.lsp.config(server, {
     capabilities = capabilities,
@@ -54,18 +54,6 @@ vim.lsp.config('veridian', {
 })
 vim.lsp.enable('veridian')
 
--- Custom CCLS setup (C/C++)
-vim.lsp.config('ccls', {
-  init_options = {
-    cache = { directory = "/tmp/ccls-cache" },
-    client = { snippetSupport = true }
-  },
-  root_patterns = { ".ccls-root", "compile_commands.json", ".git" },
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-vim.lsp.enable('ccls')
-
 -- 4. Formatting (Replaces coc's formatOnSave)
 local conform = require("conform")
 conform.setup({
@@ -74,6 +62,9 @@ conform.setup({
     java = { "google-java-format" },
     sh = { "shfmt" },
     rust = { "rustfmt" },
+    c = { "clang-format" },
+    cpp = { "clang-format" },
+    cmake = { "cmake_format" },
   },
   format_on_save = {
     timeout_ms = 2000,
