@@ -56,7 +56,10 @@ window#waybar {
 #clock,
 #network,
 #pulseaudio,
-#custom-vpn {
+#custom-vpn,
+#backlight,
+#battery,
+#bluetooth {
     padding: 0 15px;
     margin: 5px;
     background-color: @bg_module;
@@ -83,6 +86,39 @@ window#waybar {
 
 #pulseaudio.muted {
     color: @inactive_text;
+}
+
+#backlight {
+    color: @backlight;
+}
+
+#battery {
+    color: @battery;
+}
+
+#battery.critical:not(.charging) {
+    background-color: @urgent;
+    color: @text;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#bluetooth {
+    color: @bluetooth;
+}
+
+#bluetooth.connected {
+    color: @active_text;
+}
+
+@keyframes blink {
+    to {
+        background-color: @bg_module;
+        color: @urgent;
+    }
 }
 
 tooltip {

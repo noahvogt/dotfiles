@@ -13,4 +13,7 @@
 @define-color hover_border #04a5e5;
 @define-color clock #1e66f5;
 @define-color network #40a02b;
+@define-color backlight #df8e1d;
+@define-color battery #1e66f5;
+@define-color bluetooth #8839ef;
 @define-color tooltip_bg rgba(225, 226, 231, 0.95);
