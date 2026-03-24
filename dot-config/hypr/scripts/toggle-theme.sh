@@ -17,7 +17,7 @@ else
     notify-send "Dark Mode" -a "System"
 fi
 
-# Send SIGUSR2 to Waybar so it dynamically reloads style.css (which now imports theme.css)
+# Sends signals to these processes to speed up the theme switch
 killall -SIGUSR2 waybar
-# same thing for for neovim
 killall -SIGUSR1 nvim
+pkill -SIGHUP wezterm

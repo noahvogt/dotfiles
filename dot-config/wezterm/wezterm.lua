@@ -68,56 +68,23 @@ end
 config.cursor_blink_rate = 0
 config.disable_default_key_bindings = true
 config.keys = {
-  {
-    key = 'c',
-    mods = 'ALT',
-    action = wezterm.action.CopyTo('Clipboard'),
-  },
-  {
-    key = 'v',
-    mods ='ALT',
-    action = wezterm.action.PasteFrom('Clipboard')
-  },
-  {
-    key = 'k',
-    mods = 'ALT|SHIFT',
-    action = wezterm.action.IncreaseFontSize
-  },
-  {
-    key = 'j',
-    mods = 'ALT|SHIFT',
-    action = wezterm.action.DecreaseFontSize
-  },
-  {
-    key = '0',
-    mods = 'ALT',
-    action = wezterm.action.ResetFontSize
-  },
-  {
-    key = 'u',
-    mods = 'ALT',
-    action = wezterm.action.ScrollByPage(-1)
-  },
-  {
-    key = 'd',
-    mods = 'ALT',
-    action = wezterm.action.ScrollByPage(1)
-  },
-  {
-    key = 'k',
-    mods = 'ALT',
-    action = wezterm.action.ScrollByLine(-1)
-  },
-  {
-    key = 'j',
-    mods = 'ALT',
-    action = wezterm.action.ScrollByLine(1)
-  },
-  {
-    key = 'f',
-    mods = 'ALT',
-    action = wezterm.action.Search { CaseInSensitiveString = '' },
-  },
+  -- Copy
+  { key = 'c', mods = 'ALT', action = wezterm.action.CopyTo('Clipboard') },
+  { key = 'c', mods = 'CTRL|SHIFT', action = wezterm.action.CopyTo('Clipboard') },
+  -- Paste
+  { key = 'v', mods = 'ALT', action = wezterm.action.PasteFrom('Clipboard') },
+  { key = 'v', mods = 'CTRL|SHIFT', action = wezterm.action.PasteFrom('Clipboard') },
+  -- Font Size
+  { key = 'k', mods = 'ALT|SHIFT', action = wezterm.action.IncreaseFontSize },
+  { key = 'j', mods = 'ALT|SHIFT', action = wezterm.action.DecreaseFontSize },
+  { key = '0', mods = 'ALT', action = wezterm.action.ResetFontSize },
+  -- Scrolling
+    { key = 'u', mods = 'ALT', action = wezterm.action.ScrollByPage(-1) },
+    { key = 'd', mods = 'ALT', action = wezterm.action.ScrollByPage(1) },
+    { key = 'k', mods = 'ALT', action = wezterm.action.ScrollByLine(-1) },
+    { key = 'j', mods = 'ALT', action = wezterm.action.ScrollByLine(1) },
+    -- Search
+    { key = 'f', mods = 'ALT', action = wezterm.action.Search { CaseInSensitiveString = '' } },
 }
 
 return config
