@@ -21,3 +21,9 @@ wk.setup({
   },
   show_help = true,
 })
+
+wk.add({
+  { "<leader>d", group = "Debug" },
+  { "<leader>l", group = "LSP/Telescope" },
+  { "<leader>m", group = "Markdown" },
+})

@@ -16,10 +16,10 @@ require('options')
 -- 3. Load plugins (lazy.nvim)
 require('plugins')
 
--- 4. Load Plugin configurations (some are still in vimscript)
+-- 4. Load vimscript Plugin configurations
 local plug_confs = {
-  'emmet', 'ctrlp', 'sneak', 'airline',
-  'startify', 'wilder', 'vcoolor', 'better-whitespace', 'vimspector'
+  'emmet', 'sneak', 'airline',
+  'startify', 'wilder', 'vcoolor', 'better-whitespace'
 }
 for _, conf in ipairs(plug_confs) do
   vim.cmd('source $XDG_CONFIG_HOME/nvim/plug-conf/' .. conf .. '.vim')
@@ -28,6 +28,7 @@ end
 -- 5. Load Lua-specific configurations
 require('treesitter')
 require('lsp')
+require('dap-conf')
 require('nvim-tree-conf')
 require('telescope-conf')
 require('refactoring-conf')

@@ -16,9 +16,6 @@ require("lazy").setup({
   { 'navarasu/onedark.nvim', priority = 1000 },
   'itchyny/landscape.vim',
 
-  -- Fuzzy find files
-  'ctrlpvim/ctrlp.vim',
-
   -- File Explorer (NvimTree)
   {
     'nvim-tree/nvim-tree.lua',
@@ -35,6 +32,15 @@ require("lazy").setup({
   -- Airline
   'vim-airline/vim-airline',
   'vim-airline/vim-airline-themes',
+
+  -- Automatically close pairs like (), {}, etc.
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = true
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
+  },
 
   -- Git
   'tpope/vim-fugitive',
@@ -112,5 +118,16 @@ require("lazy").setup({
   'NvChad/nvim-colorizer.lua',
 
   -- Android
-  'hsanson/vim-android'
+  'hsanson/vim-android',
+
+  -- Debugging (DAP)
+  {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+      'nvim-neotest/nvim-nio',
+      'theHamsta/nvim-dap-virtual-text',
+      'mfussenegger/nvim-dap-python',
+    },
+  }
 })

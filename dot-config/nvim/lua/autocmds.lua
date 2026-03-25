@@ -102,16 +102,6 @@ autocmd({ "BufLeave", "FocusLost", "InsertEnter" }, {
 })
 
 
--- Vimspector log file fix
-augroup("fixVimSpectorLogFile", { clear = true })
-autocmd("User", {
-  group = "fixVimSpectorLogFile",
-  pattern = "VimspectorDebugEnded",
-  callback = function()
-    vim.fn.system("mv ~/.vimspector.log " .. vim.fn.expand("$XDG_CACHE_HOME") .. "/vim/")
-  end,
-})
-
 -- LSP Highlight
 augroup("LspHighlight", { clear = true })
 autocmd("CursorHold", {

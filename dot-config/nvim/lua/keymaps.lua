@@ -1,8 +1,6 @@
 local keymap = vim.keymap.set
 local opts = { silent = true }
 
-vim.g.mapleader = " "
-
 -- Move text buffer in visual mode
 keymap("v", "K", ":m '<-2<CR>gv=gv")
 keymap("v", "J", ":m '>+1<CR>gv=gv")
@@ -39,7 +37,7 @@ keymap("n", "<leader>P", "\"+P")
 -- Diagnostic navigation
 keymap("n", "[g", vim.diagnostic.goto_prev, opts)
 keymap("n", "]g", vim.diagnostic.goto_next, opts)
-keymap("n", "<leader>d", vim.diagnostic.open_float, opts)
+keymap("n", "gl", vim.diagnostic.open_float, opts)
 
 -- LSP gotos
 keymap("n", "gd", vim.lsp.buf.definition, opts)
@@ -71,7 +69,7 @@ keymap("n", "N", "Nzzzv")
 keymap("n", "<leader>g", ":TagbarToggle<CR>")
 
 -- Source vim config
-keymap("n", "<Leader>sv", ":source $XDG_CONFIG_HOME/nvim/init.vim<CR>")
+keymap("n", "<Leader>sv", ":source $XDG_CONFIG_HOME/nvim/init.lua<CR>")
 
 -- Telescope
 keymap("n", "<leader>l", ":Telescope live_grep<CR>")
@@ -95,22 +93,3 @@ keymap("n", "<C-h>", function() utils.win_move('h') end, opts)
 keymap("n", "<C-j>", function() utils.win_move('j') end, opts)
 keymap("n", "<C-k>", function() utils.win_move('k') end, opts)
 keymap("n", "<C-l>", function() utils.win_move('l') end, opts)
-
--- Vimspector
-keymap("n", "<leader>da", ":call vimspector#Launch()<CR>")
-keymap("n", "<leader>dc", ":call GotoWindow(g:vimspector_session_windows.code)<CR>")
-keymap("n", "<leader>dv", ":call GotoWindow(g:vimspector_session_windows.variables)<CR>")
-keymap("n", "<leader>dw", ":call vimspector#ClearBreakpoints()<CR>")
-keymap("n", "<leader>ds", ":call GotoWindow(g:vimspector_session_windows.stack_trace)<CR>")
-keymap("n", "<leader>do", ":call GotoWindow(g:vimspector_session_windows.output)<CR>")
-keymap("n", "<leader>di", ":call AddToWatch()<CR>")
-keymap("n", "<leader>dx", ":call vimspector#Reset()<CR>")
-keymap("n", "<leader>dX", ":call vimspector#ClearBreakpoints()<CR>")
-keymap("n", "<S-k>", ":call vimspector#StepOut()<CR>")
-keymap("n", "<S-l>", ":call vimspector#StepInto()<CR>")
-keymap("n", "<S-j>", ":call vimspector#StepOver()<CR>")
-keymap("n", "<leader>d_", ":call vimspector#Restart()<CR>")
-keymap("n", "<leader>dn", ":call vimspector#Continue()<CR>")
-keymap("n", "<leader>drc", ":call vimspector#RunToCursor()<CR>")
-keymap("n", "<leader>dh", ":call vimspector#ToggleBreakpoint()<CR>")
-keymap("n", "<leader>de", ":call vimspector#ToggleConditionalBreakpoint()<CR>")
