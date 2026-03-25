@@ -1,7 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# Script to toggle between light / dark mode
 
 # Set this to where Waybar reads its config files
 WAYBAR_DIR="$HOME/.config/waybar"
+SWAYNC_DIR="$HOME/.config/swaync"
 
 CURRENT_SCHEME=$(gsettings get org.gnome.desktop.interface color-scheme)
 
@@ -9,11 +12,13 @@ if [ "$CURRENT_SCHEME" == "'prefer-dark'" ]; then
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
     # Copy the light theme to theme.css
     cp "$WAYBAR_DIR/light.css" "$WAYBAR_DIR/theme.css"
+    cp "$SWAYNC_DIR/light.css" "$SWAYNC_DIR/theme.css"
     notify-send "Light Mode" -a "System"
 else
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     # Copy the dark theme to theme.css
     cp "$WAYBAR_DIR/dark.css" "$WAYBAR_DIR/theme.css"
+    cp "$SWAYNC_DIR/dark.css" "$SWAYNC_DIR/theme.css"
     notify-send "Dark Mode" -a "System"
 fi
 
@@ -21,3 +26,6 @@ fi
 killall -SIGUSR2 waybar
 killall -SIGUSR1 nvim
 pkill -SIGHUP wezterm
+
+# Reload SwayNC CSS styling cleanly
+swaync-client -rs

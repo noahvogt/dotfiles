@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# script to make a screenshot from the desired selection
+# script to make a screenshot from the desired selection (X11)
 
 [ ! -d "$HOME/dox/screenshots" ] && mkdir -p "$HOME/dox/screenshots"
 

@@ -1,0 +1,8 @@
+@define-color bg rgba(225, 226, 231, 0.95);
+@define-color bg_module rgba(204, 208, 218, 0.9);
+@define-color text #4c4f69;
+@define-color active_text #1e66f5;
+@define-color inactive_text #8c8fa1;
+@define-color urgent #d20f39;
+@define-color active_border #1e66f5;
+@define-color hover_bg rgba(4, 165, 229, 0.2);

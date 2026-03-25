@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# script to make a screenshot of the full screen area
+# script to make a screenshot of the full screen area (X11)
 
 [ ! -d "$HOME/pix/screenshots" ] && mkdir-p "$HOME/pix/screenshots"
 

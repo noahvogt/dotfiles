@@ -59,7 +59,8 @@ window#waybar {
 #custom-vpn,
 #backlight,
 #battery,
-#bluetooth {
+#bluetooth,
+#custom-notification {
     padding: 0 15px;
     margin: 5px;
     background-color: @bg_module;

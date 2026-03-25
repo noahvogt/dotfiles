@@ -1,0 +1,173 @@
+@import url("theme.css");
+
+* {
+    font-family: "JetBrainsMono Nerd Font", sans-serif; /* Adjust to your preferred font */
+    font-weight: bold;
+}
+
+.control-center .notification-row:focus,
+.control-center .notification-row:hover {
+    opacity: 1;
+    background: @hover_bg;
+}
+
+.notification-row {
+    outline: none;
+    margin: 5px;
+    padding: 0;
+}
+
+.notification {
+    background: @bg_module;
+    border-radius: 12px;
+    margin: 0px;
+    box-shadow: none;
+    padding: 2px;
+}
+
+.notification-content {
+    background: transparent;
+    padding: 6px;
+    border-radius: 12px;
+}
+
+.close-button {
+    background: @urgent;
+    color: @text;
+    text-shadow: none;
+    padding: 0;
+    border-radius: 100%;
+    margin-top: 5px;
+    margin-right: 5px;
+    box-shadow: none;
+    border: none;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.close-button:hover {
+    box-shadow: none;
+    background: @active_border;
+    transition: all 0.15s ease-in-out;
+}
+
+.notification-default-action,
+.notification-action {
+    padding: 4px;
+    margin: 0;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+    color: @text;
+    transition: all 0.15s ease-in-out;
+}
+
+.notification-default-action:hover,
+.notification-action:hover {
+    -gtk-icon-effect: none;
+    background: @hover_bg;
+}
+
+.summary {
+    font-size: 16px;
+    color: @active_text;
+}
+
+.time {
+    font-size: 12px;
+    color: @inactive_text;
+    margin-right: 24px;
+}
+
+.body {
+    font-size: 14px;
+    font-weight: normal;
+    color: @text;
+}
+
+.control-center {
+    background: @bg;
+    color: @text;
+    border-radius: 16px;
+    border: 2px solid @active_border;
+}
+
+.control-center-list {
+    background: transparent;
+}
+
+.control-center-list-placeholder {
+    opacity: 0.5;
+    color: @text;
+}
+
+.control-center-list-placeholder {
+    font-size: 24px;
+}
+
+/* Widgets */
+.widget-title {
+    color: @text;
+    background: @bg_module;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 12px;
+}
+
+.widget-title > button {
+    font-size: 14px;
+    color: @bg_module;
+    background: @text;
+    border-radius: 8px;
+    border: none;
+}
+
+.widget-title > button:hover {
+    background: @active_border;
+    color: @text;
+}
+
+.widget-dnd {
+    color: @text;
+    background: @bg_module;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 12px;
+}
+
+.widget-dnd > switch {
+    font-size: initial;
+    border-radius: 12px;
+    background: @bg;
+    border: none;
+}
+
+.widget-dnd > switch:checked {
+    background: @active_border;
+}
+
+.widget-dnd > switch slider {
+    background: @text;
+    border-radius: 10px;
+}
+
+/* Fix for weird icon backgrounds and rounding */
+.app-icon,
+.image {
+    background-color: transparent;
+    background: transparent;
+    border-radius: 8px; /* You can adjust this value to match your vibe */
+    box-shadow: none;
+    -gtk-icon-shadow: none;
+    margin-right: 16px;
+}
+
+/* Strip unwanted backgrounds from notification containers */
+.control-center .notification-row,
+.control-center .notification-group,
+.notification-group > box {
+    background: transparent;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+}
