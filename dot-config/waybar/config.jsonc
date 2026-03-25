@@ -58,7 +58,7 @@
 
     "backlight": {
         "device": "intel_backlight",
-        "format": "{icon}   {percent}%",
+        "format": "{icon}  {percent}%",
         "format-icons": ["󰃞", "󰃟", "󰃠"],
         "on-scroll-up": "brightnessctl set 1%+",
         "on-scroll-down": "brightnessctl set 1%-",
@@ -71,26 +71,26 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{icon}   {capacity}%",
-        "format-charging": "󰂄   {capacity}%",
-        "format-plugged": "󰂄   {capacity}%",
-        "format-alt": "{icon}   {time}",
+        "format": "{icon}  {capacity}%",
+        "format-charging": "󰂄  {capacity}%",
+        "format-plugged": "󰂄  {capacity}%",
+        "format-alt": "{icon}  {time}",
         "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     },
 
     "network": {
-        "format-wifi": "   {essid}",
-        "format-ethernet": "󰈀   {ipaddr}/{cidr}",
-        "format-linked": "󰈀   {ifname} (No IP)",
-        "format-disconnected": "󰖪   Disconnected",
+        "format-wifi": "  {essid}",
+        "format-ethernet": "󰈀  {ipaddr}/{cidr}",
+        "format-linked": "󰈀  {ifname} (No IP)",
+        "format-disconnected": "󰖪  Disconnected",
         "tooltip-format": "{ifname} via {gwaddr} ",
         "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },
 
     "network#vpn": {
         "interface": "tun*",
-        "format-wifi": "   VPN Connected",
-        "format-ethernet": "   VPN Connected",
+        "format-wifi": "  VPN",
+        "format-ethernet": "  VPN",
         "format-disconnected": "",
         "tooltip-format": "VPN Active",
         "interval": 5
