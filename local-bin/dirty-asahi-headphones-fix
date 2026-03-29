@@ -1,0 +1,26 @@
+#/bin/sh
+
+# Dirty script to run on Asahi Linux, when the headphones don't work correctly
+# on resume from sleep.
+
+# 1. Stop All Services that make use of the Kernel Modules
+systemctl --user stop pipewire.socket pipewire-pulse.socket wireplumber.service pipewire.service
+sudo systemctl stop speakersafetyd
+
+# 2. Remove Kernel Modules to reset the I2C-Bus
+sudo modprobe -r snd_soc_macaudio
+sudo modprobe -r snd_soc_cs42l83_i2c
+
+# 3. Generous amount of sleep
+sleep 0.5
+
+# 4. Insert the Kernel Modules again
+sudo modprobe snd_soc_macaudio
+sudo modprobe snd_soc_cs42l83_i2c
+
+# 5. Generous amount of sleep
+sleep 0.5
+
+# 6. Start the Audio Services again
+sudo systemctl start speakersafetyd
+systemctl --user start pipewire.socket pipewire-pulse.socket wireplumber.service pipewire.service
