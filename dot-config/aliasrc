@@ -36,9 +36,11 @@ alias nb='newsboat'
 alias mutt='neomutt'
 alias ne='neomutt'
 
-# copy and paste using xclip package
-alias copy="xclip -sel clip"
-alias paste="xclip -out -sel clip"
+# copy and paste
+alias x11-copy="xclip -sel clip"
+alias x11-paste="xclip -out -sel clip"
+alias copy="wl-copy"
+alias paste="wl-paste"
 
 # lockscreen
 alias lock='betterlockscreen -s dim'

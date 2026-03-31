@@ -15,14 +15,12 @@ if [ "$CURRENT_SCHEME" == "'prefer-dark'" ]; then
     cp "$WAYBAR_DIR/light.css" "$WAYBAR_DIR/theme.css"
     cp "$SWAYNC_DIR/light.css" "$SWAYNC_DIR/theme.css"
     ln -sf "$KITTY_DIR/light_theme.conf" "$KITTY_DIR/theme.conf"
-    notify-send "Light Mode" -a "System"
 else
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     # Copy the dark theme to theme.css
     cp "$WAYBAR_DIR/dark.css" "$WAYBAR_DIR/theme.css"
     cp "$SWAYNC_DIR/dark.css" "$SWAYNC_DIR/theme.css"
     ln -sf "$KITTY_DIR/dark_theme.conf" "$KITTY_DIR/theme.conf"
-    notify-send "Dark Mode" -a "System"
 fi
 
 # Sends signals to these processes to speed up the theme switch
