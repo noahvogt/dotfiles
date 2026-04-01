@@ -1,4 +1,5 @@
 #!/bin/sh
-if [ -n "$FIFO_UEBERZUG" ]; then
-	printf '{"action": "remove", "identifier": "PREVIEW"}\n' > "$FIFO_UEBERZUG"
-fi
+# This only runs when the preview needs to be wiped
+# This is the raw Kitty Graphics Protocol escape sequence to delete all images.
+# It is 100% silent and won't trigger those weird symbols like with kitten.
+printf "\033_Gi=31,a=d\033\\" >/dev/tty
