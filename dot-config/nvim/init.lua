@@ -18,7 +18,7 @@ require('plugins')
 
 -- 4. Load vimscript Plugin configurations
 local plug_confs = {
-  'emmet', 'sneak', 'airline',
+  'emmet', 'sneak',
   'startify', 'wilder', 'vcoolor', 'better-whitespace'
 }
 for _, conf in ipairs(plug_confs) do
@@ -35,6 +35,7 @@ require('refactoring-conf')
 require('gitsigns-conf')
 require('indent-blankline')
 require('whichkey')
+require('lualine-conf')
 require('colorizer').setup()
 
 -- 6. Load keybinds and autocommands

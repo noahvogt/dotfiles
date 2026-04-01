@@ -43,10 +43,10 @@ function M.sync_theme()
     vim.api.nvim_set_hl(0, 'SpellLocal', { undercurl = true, sp = '#ffff00' })
     vim.api.nvim_set_hl(0, 'SpellRare',  { undercurl = true, sp = '#ffff00' })
 
-    -- Force airline to refresh
-    vim.g.airline_theme = 'onedark'
-    if vim.fn.exists(':AirlineTheme') == 2 then
-        vim.cmd('AirlineTheme onedark')
+    -- Refresh lualine theme
+    local has_lualine, lualine = pcall(require, 'lualine')
+    if has_lualine then
+        lualine.setup({ options = { theme = 'auto' } })
     end
 
     -- Force a full redraw to fix background issues in some terminals

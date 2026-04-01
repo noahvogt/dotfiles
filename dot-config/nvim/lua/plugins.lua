@@ -29,9 +29,11 @@ require("lazy").setup({
     cmd = { "CMakeGenerate", "CMakeBuild", "CMakeRun", "CMakeDebugTarget" },
   },
 
-  -- Airline
-  'vim-airline/vim-airline',
-  'vim-airline/vim-airline-themes',
+  -- Lualine
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' }
+  },
 
   -- Automatically close pairs like (), {}, etc.
   {
