@@ -29,7 +29,27 @@ require("luasnip.loaders.from_snipmate").lazy_load({ paths = { "~/.config/nvim/s
 
 -- 2. Define on_attach
 local on_attach = function(client, bufnr)
-  -- Keymaps are handled globally in bindings.vim
+  -- Keymaps are handled globally in keymaps.lua (formerly bindings.vim)
+
+  -- Enable CodeLens if supported
+  if client.supports_method("textDocument/codeLens") then
+    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.codelens.refresh({ bufnr = bufnr })
+      end,
+    })
+  end
+
+  -- Format on Type (Commented out - prefer Format on Save in conform.nvim)
+  -- if client.supports_method("textDocument/onTypeFormatting") then
+  --   vim.api.nvim_create_autocmd("InsertLeave", {
+  --     buffer = bufnr,
+  --     callback = function()
+  --       vim.lsp.buf.format({ bufnr = bufnr, async = true })
+  --     end,
+  --   })
+  -- end
 end
 
 -- 3. Configure Servers using Neovim 0.11 API where possible

@@ -49,6 +49,9 @@ keymap("n", "<leader>rn", vim.lsp.buf.rename, opts)
 -- LSP code actions
 keymap({ "n", "x" }, "<leader>a", vim.lsp.buf.code_action, opts)
 
+-- LSP CodeLens
+keymap("n", "<leader>cl", vim.lsp.codelens.run, opts)
+
 -- Switch to last opened file
 keymap("n", "<leader>b", "<c-^><cr>")
 
