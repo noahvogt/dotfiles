@@ -1,0 +1,15 @@
+#!/bin/sh
+
+SRC_DIR="/mnt/fhnwdata/HSI/E2411_Unterrichte_Bachelor/E2411_Unterrichte_I/4Ia/prcpp/"
+TARGET_DIR="$HOME/dox/fh/prcpp/ad/"
+
+error_msg() {
+    echo "Error: $1" >&2
+    exit 1
+}
+
+command -v "rsync" > /dev/null || error_msg "Could not find 'rsync' executable"
+
+[ -d "$SRC_DIR" ] || error_msg "Could not access '$SRC_DIR'"
+
+rsync -uvrP "$SRC_DIR" "$TARGET_DIR"
