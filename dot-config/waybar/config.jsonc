@@ -12,7 +12,7 @@
         "custom/layout"
     ],
     "modules-center": ["clock"],
-    "modules-right": ["network#vpn", "network", "backlight", "battery", "pulseaudio", "bluetooth", "custom/notification"],
+    "modules-right": ["network#vpn", "network", "battery", "pulseaudio", "bluetooth", "custom/notification"],
 
     "custom/notification": {
         "tooltip": false,
@@ -90,12 +90,14 @@
     },
 
     "network": {
-        "format-wifi": "  {essid}",
-        "format-ethernet": "󰈀  {ipaddr}/{cidr}",
-        "format-linked": "󰈀  {ifname} (No IP)",
-        "format-disconnected": "󰖪  Disconnected",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+        "format-wifi": " ",
+        "format-ethernet": "󰈀 ",
+        "format-linked": "󰈀 (No IP)",
+        "format-disconnected": "󰖪 ",
+        "tooltip-format-wifi": "SSID: {essid}\nIP: {ipaddr}",
+        "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}/{cidr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "format-alt": "  {essid} | {ipaddr}/{cidr}"
     },
 
     "network#vpn": {
@@ -125,6 +127,9 @@
 
     "bluetooth": {
         "format": "󰂯  {status}",
+        "format-off": "󰂯  off",
+        "format-disabled": "󰂯  off",
+        "format-on": "󰂯  on",
         "format-connected": "󰂱  {device_alias}",
         "format-connected-battery": "󰂱  {device_alias} {device_battery_percentage}%",
         "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
