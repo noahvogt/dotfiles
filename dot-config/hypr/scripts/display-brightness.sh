@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# Apply the brightness change passed as an argument (e.g., 5%+ or 5%-)
+# script to set the display backlight brightness by the passed amount ($1)
+
 brightnessctl -e4 -n2 set "$1"
 
 PERCENT=$(brightnessctl -m | awk -F, '{print $4}' | tr -d '%')
