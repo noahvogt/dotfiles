@@ -2,7 +2,7 @@
 export EDITOR=nvim
 export VISUAL=nvim
 export BROWSER=chromium
-export PATH=$PATH:~/.local/bin
+export PATH=$PATH:~/.local/bin:~/.cache/cargo/bin:
 export SHELL=/bin/zsh
 
 # set XDG directories
