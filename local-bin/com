@@ -2,5 +2,4 @@
 
 gitmessage="$(echo $(showgitmessage))"
 
-[ -n "$gitmessage" ] && git commit -m "$gitmessage"
-rmgitmessage
+[ -n "$gitmessage" ] && git commit -m "$gitmessage" && rmgitmessage
