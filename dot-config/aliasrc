@@ -86,6 +86,7 @@ alias branch='git branch'
 alias lsc='git log --graph --oneline --decorate --all'
 alias lsb="git log --graph --simplify-by-decoration --pretty=format:'%d' --all"
 alias lst="git log --graph --decorate --all --date=short --abbrev-commit --oneline --pretty=format:'%h%x09%an%x09%ad%x09%s'"
+alias dev2main='git checkout dev && git pull && git checkout main && git pull && git merge dev && git push'
 
 # ~/ cleanup
 alias yarn="yarn --use-yarnrc $XDG_CONFIG_HOME/yarn/config"

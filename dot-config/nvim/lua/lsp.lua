@@ -74,12 +74,29 @@ vim.lsp.config('veridian', {
 })
 vim.lsp.enable('veridian')
 
--- 4. Formatting (Replaces coc's formatOnSave)
+-- Official JetBrains Kotlin LSP
+vim.lsp.config('kotlin_lsp', {
+  cmd = { 'kotlin-lsp' },
+  filetypes = { 'kotlin' },
+  -- Tell the LSP to attach at the root of your Android Gradle project
+  root_markers = { 'settings.gradle.kts', 'settings.gradle', 'build.gradle.kts', 'build.gradle' },
+  capabilities = capabilities,
+  on_attach = on_attach,
+
+  -- Note: We drop the old fwcd/kotlin-language-server 'settings' block.
+  -- The JetBrains server is much smarter and infers JVM targets, hints,
+  -- and completions directly from IntelliJ's internal engine and your Gradle model.
+})
+vim.lsp.set_log_level("trace")
+vim.lsp.enable('kotlin_lsp')
+
+-- 4. Formatting
 local conform = require("conform")
 conform.setup({
   formatters_by_ft = {
+    kotlin = { "ktlint" },
     python = { "black" },
-    java = { "google-java-format" },
+    java = { "lsp" },
     sh = { "shfmt" },
     rust = { "rustfmt" },
     c = { "clang-format" },
@@ -92,7 +109,7 @@ conform.setup({
   },
 })
 
--- 5. Linting (Replaces coc's pylint and shellcheck)
+-- 5. Linting
 local lint = require("lint")
 lint.linters_by_ft = {
   python = { "pylint" },
