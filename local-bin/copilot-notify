@@ -1,0 +1,139 @@
+#!/bin/bash
+
+# Wrapper script for copilot to get clickable focus notifications via swaync
+
+set -euo pipefail
+
+notify_focus() {
+    local action="$1"
+    local win_addr="$2"
+    [ -n "$action" ] || return 0
+    [ "$action" = "f" ] && [ -n "$win_addr" ] && hyprctl dispatch focuswindow address:"$win_addr" >/dev/null 2>&1 || true
+}
+
+notify_action_required() {
+    local win_addr="$1"
+    local action
+    action=$(notify-send "Copilot" "✋ Action required" --action="f=Focus" -u critical -a "Copilot" -i ~/dl/copilot.png || true)
+    notify_focus "$action" "$win_addr"
+}
+
+notify_task_finished() {
+    local win_addr="$1"
+    local action
+    action=$(notify-send "Copilot" "✅ Task finished" --action="f=Focus" -u normal -a "Copilot" -i ~/dl/copilot.png || true)
+    notify_focus "$action" "$win_addr"
+}
+
+start_interactive_monitor() {
+    local win_addr="$1"
+    local started_epoch="$2"
+    local log_file
+    local line
+    local busy=0
+    local ask_user_pending=0
+
+    # Wait for the process log created by this copilot invocation.
+    for _ in $(seq 1 60); do
+        log_file=$(find "$HOME/.copilot/logs" -maxdepth 1 -name 'process-*.log' -newermt "@$started_epoch" -print 2>/dev/null | sort | tail -n1 || true)
+        if [ -n "${log_file:-}" ]; then
+            break
+        fi
+        sleep 0.1
+    done
+
+    [ -n "${log_file:-}" ] || return 0
+
+    tail -n0 -F "$log_file" 2>/dev/null | while IFS= read -r line; do
+        if [ "$ask_user_pending" -gt 0 ]; then
+            ask_user_pending=$((ask_user_pending - 1))
+        fi
+
+        case "$line" in
+        *"kind: assistant_turn_start"*)
+            busy=1
+            ;;
+        *'"name": "ask_user"'*)
+            # "ask_user" appears in tool schema on every turn; only alert if a
+            # real tool call follows immediately with a question payload.
+            ask_user_pending=8
+            ;;
+        *'"arguments": "{\"question\":'*)
+            if [ "$ask_user_pending" -gt 0 ]; then
+                notify_action_required "$win_addr"
+                ask_user_pending=0
+            fi
+            ;;
+        *"kind: session_idle"*)
+            if [ "$busy" -eq 1 ]; then
+                notify_task_finished "$win_addr"
+                busy=0
+            fi
+            ask_user_pending=0
+            ;;
+        esac
+    done
+}
+
+is_prompt_run=0
+for arg in "$@"; do
+    case "$arg" in
+    -p | --prompt | -i | --interactive)
+        is_prompt_run=1
+        break
+        ;;
+    esac
+done
+
+win_addr="$(hyprctl activewindow -j | jq -r '.address // empty')"
+
+if [ "$is_prompt_run" -eq 0 ] || [ "$#" -eq 0 ]; then
+    started_epoch=$(date +%s)
+
+    if [ -d "$HOME/.copilot/logs" ]; then
+        start_interactive_monitor "$win_addr" "$started_epoch" &
+        monitor_pid=$!
+        trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
+    fi
+
+    # Debug logs include structured telemetry markers needed by the monitor.
+    has_log_level=0
+    for arg in "$@"; do
+        case "$arg" in
+        --log-level | --log-level=*)
+            has_log_level=1
+            break
+            ;;
+        esac
+    done
+
+    set +e
+    if [ "$has_log_level" -eq 1 ]; then
+        copilot "$@"
+    else
+        copilot --log-level debug "$@"
+    fi
+    exit_code=$?
+    set -e
+    kill "${monitor_pid:-}" 2>/dev/null || true
+    exit "$exit_code"
+fi
+
+copilot --output-format json "$@" |
+    tee >(
+        jq -Rrc '
+     (fromjson? | select(. != null)) as $e |
+     if $e.type=="result" then {"kind":"done","code":($e.exitCode // 0)}
+     elif $e.type=="tool.execution_start" and ($e.data.toolName=="ask_user") then {"kind":"action"}
+     else empty end
+   ' |
+            while read -r ev; do
+                kind="$(jq -r '.kind' <<<"$ev")"
+                if [ "$kind" = "action" ]; then
+                    notify_action_required "$win_addr"
+                else
+                    notify_task_finished "$win_addr"
+                fi
+            done
+    ) |
+    jq -Rr '(fromjson? | select(.type=="assistant.message") | (.data.content // empty))'

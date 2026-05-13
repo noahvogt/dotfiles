@@ -164,3 +164,6 @@ alias rep="sudo GNUPGHOME=$XDG_DATA_HOME/gnupg makerepropkg -d"
 # uni specific
 alias fhu='doas umount -l /mnt/fhnwdata'
 alias fhv='QT_QPA_PLATFORM=wayland ~/.local/share/oc-sso-venv/bin/openconnect-sso'
+
+# ai stuff
+alias cn="copilot-notify"
