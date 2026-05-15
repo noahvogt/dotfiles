@@ -64,6 +64,10 @@ start_interactive_monitor() {
                 ask_user_pending=0
             fi
             ;;
+        *"kind: permission_prompt"*)
+            notify_action_required "$win_addr"
+            ask_user_pending=0
+            ;;
         *"kind: session_idle"*)
             if [ "$busy" -eq 1 ]; then
                 notify_task_finished "$win_addr"
