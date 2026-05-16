@@ -28,10 +28,43 @@ notify_task_finished() {
 start_interactive_monitor() {
     local win_addr="$1"
     local started_epoch="$2"
+    local monitor_pid="$BASHPID"
     local log_file
     local line
     local busy=0
     local ask_user_pending=0
+    local permission_pending=0
+    local permission_notified=0
+    local permission_timer_pid=""
+    local tool_calls_count=0
+
+    clear_permission_state() {
+        permission_pending=0
+        permission_notified=0
+        if [ -n "${permission_timer_pid:-}" ]; then
+            kill "$permission_timer_pid" 2>/dev/null || true
+            permission_timer_pid=""
+        fi
+    }
+
+    start_permission_timer() {
+        if [ -n "${permission_timer_pid:-}" ]; then
+            kill "$permission_timer_pid" 2>/dev/null || true
+            permission_timer_pid=""
+        fi
+        (
+            sleep 1
+            kill -USR1 "$monitor_pid" 2>/dev/null || true
+        ) &
+        permission_timer_pid=$!
+    }
+
+    trap '
+        if [ "$permission_pending" -eq 1 ] && [ "$permission_notified" -eq 0 ]; then
+            notify_action_required "$win_addr"
+            permission_notified=1
+        fi
+    ' USR1
 
     # Wait for the process log created by this copilot invocation.
     for _ in $(seq 1 60); do
@@ -44,14 +77,20 @@ start_interactive_monitor() {
 
     [ -n "${log_file:-}" ] || return 0
 
-    tail -n0 -F "$log_file" 2>/dev/null | while IFS= read -r line; do
+    while IFS= read -r line; do
         if [ "$ask_user_pending" -gt 0 ]; then
             ask_user_pending=$((ask_user_pending - 1))
         fi
 
         case "$line" in
+        *"Tool calls count: "*)
+            tool_calls_count="${line##*Tool calls count: }"
+            tool_calls_count="${tool_calls_count%%[^0-9]*}"
+            [ -n "$tool_calls_count" ] || tool_calls_count=0
+            ;;
         *"kind: assistant_turn_start"*)
             busy=1
+            clear_permission_state
             ;;
         *'"name": "ask_user"'*)
             # "ask_user" appears in tool schema on every turn; only alert if a
@@ -64,19 +103,46 @@ start_interactive_monitor() {
                 ask_user_pending=0
             fi
             ;;
-        *"kind: permission_prompt"*)
-            notify_action_required "$win_addr"
+        *"Permission request (kind="*"): routing via PermissionService"*)
+            # PermissionService handles all tool calls; only notify if the
+            # request stays unresolved for a moment (likely a real prompt).
+            permission_pending=1
+            permission_notified=0
+            start_permission_timer
             ask_user_pending=0
+            ;;
+        *"respondToPermission:"*)
+            clear_permission_state
+            ask_user_pending=0
+            ;;
+        *"kind: tool_call_executed"*)
+            # Single-tool turns that auto-approve complete quickly; suppress
+            # stale timer notifications in that common case.
+            if [ "$permission_pending" -eq 1 ] && [ "$tool_calls_count" -le 1 ]; then
+                clear_permission_state
+            fi
+            ;;
+        *"kind: permission_prompt"*)
+            # Emitted when a decision is submitted; don't notify here.
+            clear_permission_state
+            ask_user_pending=0
+            ;;
+        *"kind: assistant_turn_end"*)
+            clear_permission_state
             ;;
         *"kind: session_idle"*)
             if [ "$busy" -eq 1 ]; then
                 notify_task_finished "$win_addr"
                 busy=0
             fi
+            clear_permission_state
             ask_user_pending=0
             ;;
         esac
-    done
+    done < <(tail -n0 -F "$log_file" 2>/dev/null)
+
+    clear_permission_state
+    trap - USR1
 }
 
 is_prompt_run=0
