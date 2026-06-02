@@ -96,3 +96,8 @@ keymap("n", "<C-h>", function() utils.win_move('h') end, opts)
 keymap("n", "<C-j>", function() utils.win_move('j') end, opts)
 keymap("n", "<C-k>", function() utils.win_move('k') end, opts)
 keymap("n", "<C-l>", function() utils.win_move('l') end, opts)
+
+-- gradle stuff
+keymap("n", "<leader>ga", ":GradleSync<CR>")
+keymap("n", "<leader>gb", ":Gradle assembleDebug<CR>")
+keymap("n", "<leader>gr", ":Gradle installDebug<CR>")

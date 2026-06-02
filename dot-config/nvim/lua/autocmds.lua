@@ -102,21 +102,6 @@ autocmd({ "BufLeave", "FocusLost", "InsertEnter" }, {
 })
 
 
--- LSP Highlight
-augroup("LspHighlight", { clear = true })
-autocmd("CursorHold", {
-  group = "LspHighlight",
-  callback = function()
-    vim.lsp.buf.document_highlight()
-  end,
-})
-autocmd("CursorMoved", {
-  group = "LspHighlight",
-  callback = function()
-    vim.lsp.buf.clear_references()
-  end,
-})
-
 -- TeX Macros
 augroup("texMacros", { clear = true })
 local function map(mode, lhs, rhs, opts)
