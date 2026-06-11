@@ -106,8 +106,6 @@ alias dpi="identify -format '%x\n' -units PixelsPerInch"
 
 alias rmexif="exiftool -overwrite_original -all="
 
-alias lf='lfub'
-
 alias loc='find -type f | grep -v "README\|\.git\|LICENSE" | xargs wc -l | sort -h'
 
 # fast dir switching
