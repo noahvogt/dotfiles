@@ -83,13 +83,13 @@ end
 
 -- cspell LSP integration (using the arch package cspell-lsp)
 vim.lsp.config('cspell', {
-  cmd = { 'cspell-lsp', '--stdio' },
+  cmd = { 'env', 'NODE_PATH=' .. vim.fn.expand('~/.local/share/npm/lib/node_modules'), 'cspell-lsp', '--stdio' },
   filetypes = {
     "python", "sh", "rust", "kotlin", "java", "c", "cpp", "cmake",
     "markdown", "text", "gitcommit", "lua", "json", "yaml"
   },
     -- Explicitly tell Neovim where to look for the project root
-  root_markers = { 'cspell.config.yaml', 'cspell.json', '.cspell.json', 'package.json', '.git' },
+  root_markers = { 'cspell.config.yaml', 'cspell.json', '.cspell.json' },
   capabilities = capabilities,
   -- initializationOptions often helps where 'settings' fails
   initializationOptions = {
@@ -99,9 +99,18 @@ vim.lsp.config('cspell', {
   on_init = function(client)
     local root = client.root_dir
     if root then
-      local config_file = root .. "/cspell.config.yaml"
-      client.config.settings.cSpell.configFile = config_file
-      client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
+      local config_file
+      if vim.fn.filereadable(root .. "/cspell.json") == 1 then
+        config_file = root .. "/cspell.json"
+      elseif vim.fn.filereadable(root .. "/cspell.config.yaml") == 1 then
+        config_file = root .. "/cspell.config.yaml"
+      elseif vim.fn.filereadable(root .. "/.cspell.json") == 1 then
+        config_file = root .. "/.cspell.json"
+      end
+      if config_file then
+        client.config.settings.cSpell.configFile = config_file
+        client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
+      end
     end
     return true
   end,
