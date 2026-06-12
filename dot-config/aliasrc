@@ -110,7 +110,7 @@ alias loc='find -type f | grep -v "README\|\.git\|LICENSE" | xargs wc -l | sort 
 
 # fast dir switching
 s() {
-    cd "$(ls -d ~/.local/src/* | fzf)"
+    cd "$(ls -d ~/dox/src/* | fzf)"
 }
 
 b() {
@@ -119,7 +119,7 @@ b() {
 }
 
 c() {
-    pushd "$HOME/.local/src/dotfiles" > /dev/null || exit 1
+    pushd "$HOME/dox/src/dotfiles" > /dev/null || exit 1
     file="$(find dot-config -type f | fzf)"
     [ -n "$file" ] &&
         "$EDITOR" "${file/dot-config\//${XDG_CONFIG_HOME:-$HOME/.config}/}"
@@ -165,4 +165,3 @@ alias fhv='QT_QPA_PLATFORM=wayland ~/.local/share/oc-sso-venv/bin/openconnect-ss
 
 # ai stuff
 alias cn="copilot-notify"
-alias agya="agy --cwd \$(pwd)"
