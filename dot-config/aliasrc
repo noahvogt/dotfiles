@@ -165,3 +165,4 @@ alias fhv='QT_QPA_PLATFORM=wayland ~/.local/share/oc-sso-venv/bin/openconnect-ss
 
 # ai stuff
 alias cn="copilot-notify"
+alias agya="agy --cwd \$(pwd)"
