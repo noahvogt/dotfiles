@@ -98,19 +98,20 @@ vim.lsp.config('cspell', {
   -- Force absolute path in on_init to stop it from creating cspell.json
   on_init = function(client)
     local root = client.root_dir
-    if root then
-      local config_file
-      if vim.fn.filereadable(root .. "/cspell.json") == 1 then
-        config_file = root .. "/cspell.json"
-      elseif vim.fn.filereadable(root .. "/cspell.config.yaml") == 1 then
-        config_file = root .. "/cspell.config.yaml"
-      elseif vim.fn.filereadable(root .. "/.cspell.json") == 1 then
-        config_file = root .. "/.cspell.json"
-      end
-      if config_file then
-        client.config.settings.cSpell.configFile = config_file
-        client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
-      end
+    if not root then
+      return false -- Prevent LSP from attaching if no config file is found (single-file mode)
+    end
+    local config_file
+    if vim.fn.filereadable(root .. "/cspell.json") == 1 then
+      config_file = root .. "/cspell.json"
+    elseif vim.fn.filereadable(root .. "/cspell.config.yaml") == 1 then
+      config_file = root .. "/cspell.config.yaml"
+    elseif vim.fn.filereadable(root .. "/.cspell.json") == 1 then
+      config_file = root .. "/.cspell.json"
+    end
+    if config_file then
+      client.config.settings.cSpell.configFile = config_file
+      client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
     end
     return true
   end,
@@ -134,6 +135,14 @@ vim.lsp.config('cspell', {
     }
   },
   on_attach = function(client, bufnr)
+    if not client.root_dir then
+      vim.schedule(function()
+        if vim.lsp.buf_detach_client then
+          vim.lsp.buf_detach_client(bufnr, client.id)
+        end
+      end)
+      return
+    end
     on_attach(client, bufnr)
     -- Visual confirmation that cspell is handling this buffer
     vim.notify("CSpell LSP Active (nospell)", vim.log.levels.INFO)
