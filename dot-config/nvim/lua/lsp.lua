@@ -90,6 +90,7 @@ vim.lsp.config('cspell', {
   },
     -- Explicitly tell Neovim where to look for the project root
   root_markers = { 'cspell.config.yaml', 'cspell.json', '.cspell.json' },
+  workspace_required = true,
   capabilities = capabilities,
   -- initializationOptions often helps where 'settings' fails
   initializationOptions = {
