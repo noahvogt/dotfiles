@@ -75,8 +75,6 @@ require("lazy").setup({
   'preservim/tagbar',
   'mattn/emmet-vim',
   'justinmk/vim-sneak',
-  'mhinz/vim-startify',
-  'csch0/vim-startify-renderer-nerdfont',
   'tpope/vim-surround',
 
   -- Treesitter
