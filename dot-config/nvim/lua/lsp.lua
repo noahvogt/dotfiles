@@ -173,7 +173,6 @@ vim.lsp.config('kotlin_lsp', {
   -- The JetBrains server is much smarter and infers JVM targets, hints,
   -- and completions directly from IntelliJ's internal engine and your Gradle model.
 })
-vim.lsp.set_log_level("trace")
 vim.lsp.enable('kotlin_lsp')
 
 -- 4. Formatting

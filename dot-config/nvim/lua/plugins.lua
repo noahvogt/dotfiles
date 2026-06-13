@@ -50,9 +50,17 @@ require("lazy").setup({
 
   -- LSP & Completion
   'neovim/nvim-lspconfig',
-  'ThePrimeagen/refactoring.nvim',
+  {
+    'ThePrimeagen/refactoring.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'lewis6991/async.nvim',
+    }
+  },
   {
     'Saghen/blink.cmp',
+    dependencies = { 'saghen/blink.lib' },
     build = 'cargo build --release',
   },
   'L3MON4D3/LuaSnip',
@@ -131,5 +139,11 @@ require("lazy").setup({
       'theHamsta/nvim-dap-virtual-text',
       'mfussenegger/nvim-dap-python',
     },
+  },
+
+  -- Firenvim (neovim embedded in the browser)
+  {
+    'glacambre/firenvim',
+    build = ":call firenvim#install(0)"
   }
 })
