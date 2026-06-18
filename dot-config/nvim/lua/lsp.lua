@@ -1,6 +1,14 @@
 local blink = require('blink.cmp')
 local lspconfig = require('lspconfig')
 
+-- 0. Setup Mason
+require("mason").setup()
+require("mason-tool-installer").setup({
+  ensure_installed = {
+    "php-cs-fixer",
+  },
+})
+
 -- 1. Setup blink.cmp
 blink.setup({
   keymap = {
@@ -182,6 +190,7 @@ conform.setup({
   formatters_by_ft = {
     kotlin = { "ktlint" },
     python = { "black" },
+    php = { "php_cs_fixer" },
     java = { "lsp" },
     sh = { "shfmt" },
     rust = { "rustfmt" },
@@ -199,9 +208,12 @@ conform.setup({
 local lint = require("lint")
 lint.linters_by_ft = {
   python = { "pylint" },
+  php = { "psalm" },
   sh = { "shellcheck" },
   rust = { "clippy" },
 }
+
+lint.linters.psalm.ignore_exitcode = true
 
 vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
   callback = function()

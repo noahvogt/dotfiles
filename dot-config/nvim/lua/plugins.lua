@@ -49,6 +49,8 @@ require("lazy").setup({
   'lewis6991/gitsigns.nvim',
 
   -- LSP & Completion
+  'williamboman/mason.nvim',
+  'WhoIsSethDaniel/mason-tool-installer.nvim',
   'neovim/nvim-lspconfig',
   {
     'ThePrimeagen/refactoring.nvim',
