@@ -51,3 +51,7 @@ export PATH=$PATH:~/.config/setup/templates/xournalpp
 
 # fix android studio for dwm
 export _JAVA_AWT_WM_NONREPARENTING=1
+
+# rust: use llvm from /usr/bin instead of rustup
+export LLVM_COV=llvm-cov
+export LLVM_PROFDATA=llvm-profdata
