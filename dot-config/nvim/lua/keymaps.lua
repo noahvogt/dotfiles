@@ -35,8 +35,8 @@ keymap("n", "<leader>p", "\"+p")
 keymap("n", "<leader>P", "\"+P")
 
 -- Diagnostic navigation
-keymap("n", "[g", vim.diagnostic.goto_prev, opts)
-keymap("n", "]g", vim.diagnostic.goto_next, opts)
+keymap("n", "[g", function() vim.diagnostic.jump({ count = -1 }) end, opts)
+keymap("n", "]g", function() vim.diagnostic.jump({ count = 1 }) end, opts)
 keymap("n", "gl", vim.diagnostic.open_float, opts)
 
 -- LSP gotos
