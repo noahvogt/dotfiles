@@ -89,76 +89,86 @@ for _, server in ipairs(servers) do
   vim.lsp.enable(server)
 end
 
--- cspell LSP integration (using the arch package cspell-lsp)
-vim.lsp.config('cspell', {
-  cmd = { 'env', 'NODE_PATH=' .. vim.fn.expand('~/.local/share/npm/lib/node_modules'), 'cspell-lsp', '--stdio' },
-  filetypes = {
-    "python", "sh", "rust", "kotlin", "java", "c", "cpp", "cmake",
-    "markdown", "text", "gitcommit", "lua", "json", "yaml"
-  },
-    -- Explicitly tell Neovim where to look for the project root
-  root_markers = { 'cspell.config.yaml', 'cspell.json', '.cspell.json' },
-  workspace_required = true,
-  capabilities = capabilities,
-  -- initializationOptions often helps where 'settings' fails
-  initializationOptions = {
-    enabled = true,
-  },
-  -- Force absolute path in on_init to stop it from creating cspell.json
-  on_init = function(client)
-    local root = client.root_dir
-    if not root then
-      return false -- Prevent LSP from attaching if no config file is found (single-file mode)
-    end
-    local config_file
-    if vim.fn.filereadable(root .. "/cspell.json") == 1 then
-      config_file = root .. "/cspell.json"
-    elseif vim.fn.filereadable(root .. "/cspell.config.yaml") == 1 then
-      config_file = root .. "/cspell.config.yaml"
-    elseif vim.fn.filereadable(root .. "/.cspell.json") == 1 then
-      config_file = root .. "/.cspell.json"
-    end
-    if config_file then
-      client.config.settings.cSpell.configFile = config_file
-      client.notify('workspace/didChangeConfiguration', { settings = client.config.settings })
-    end
-    return true
-  end,
-  -- Boost severity so we actually "see" the spell errors clearly (they default to Information)
-  handlers = {
-    ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
-      if result and result.diagnostics then
-        for _, diagnostic in ipairs(result.diagnostics) do
-          if diagnostic.source == "cSpell" then
-            -- Map to HINT so we can color it separately from code WARNings
-            diagnostic.severity = vim.diagnostic.severity.HINT
-          end
-        end
-      end
-      vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+-- cspell integration using none-ls and cspell.nvim
+local null_ls = require("null-ls")
+local cspell = require("cspell")
+
+local filetypes = {
+  "python", "sh", "rust", "kotlin", "java", "c", "cpp", "cmake",
+  "markdown", "text", "gitcommit", "lua", "json", "yaml"
+}
+
+local cspell_config = {
+  config = {
+    on_add_to_json = function(payload)
+      -- Format with jq and sort the words array alphabetically
+      os.execute(
+        string.format(
+          "jq '.words |= sort' %s > %s.tmp && mv %s.tmp %s",
+          payload.cspell_config_path,
+          payload.cspell_config_path,
+          payload.cspell_config_path,
+          payload.cspell_config_path
+        )
+      )
     end,
   },
-  settings = {
-    cSpell = {
-      enabled = true,
-    }
-  },
-  on_attach = function(client, bufnr)
-    if not client.root_dir then
-      vim.schedule(function()
-        if vim.lsp.buf_detach_client then
-          vim.lsp.buf_detach_client(bufnr, client.id)
+}
+
+null_ls.setup({
+  sources = {
+    cspell.diagnostics.with({
+      condition = function(utils)
+        return utils.root_has_file({ "cspell.json" })
+      end,
+      config = cspell_config.config,
+      filetypes = filetypes,
+      env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
+      extra_args = function(params)
+        local args = {}
+        local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
+        if cspell_json_path then
+          local ok, content = pcall(vim.fn.readfile, cspell_json_path)
+          if ok then
+            local ok_json, json = pcall(vim.fn.json_decode, table.concat(content, "\n"))
+            if ok_json and json.language then
+              table.insert(args, "--locale")
+              table.insert(args, json.language)
+            end
+          end
         end
-      end)
-      return
-    end
-    on_attach(client, bufnr)
-    -- Visual confirmation that cspell is handling this buffer
-    vim.notify("CSpell LSP Active (nospell)", vim.log.levels.INFO)
-    vim.opt_local.spell = false
-  end,
+        return args
+      end,
+      -- Set diagnostic level to HINT so it matches your previous setup
+      diagnostics_postprocess = function(diagnostic)
+        diagnostic.severity = vim.diagnostic.severity.HINT
+      end,
+    }),
+    cspell.code_actions.with({
+      condition = function(utils)
+        return utils.root_has_file({ "cspell.json" })
+      end,
+      config = cspell_config.config,
+      filetypes = filetypes,
+      env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
+      extra_args = function(params)
+        local args = {}
+        local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
+        if cspell_json_path then
+          local ok, content = pcall(vim.fn.readfile, cspell_json_path)
+          if ok then
+            local ok_json, json = pcall(vim.fn.json_decode, table.concat(content, "\n"))
+            if ok_json and json.language then
+              table.insert(args, "--locale")
+              table.insert(args, json.language)
+            end
+          end
+        end
+        return args
+      end,
+    }),
+  },
 })
-vim.lsp.enable('cspell')
 
 -- Custom Veridian setup (Verilog)
 vim.lsp.config('veridian', {

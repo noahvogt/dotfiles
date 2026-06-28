@@ -70,6 +70,13 @@ require("lazy").setup({
   -- Formatting & Linting
   'stevearc/conform.nvim',
   'mfussenegger/nvim-lint',
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "davidmh/cspell.nvim",
+    },
+  },
 
   -- Search & Edit utilities
   'romainl/vim-cool',
