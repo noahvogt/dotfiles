@@ -92,16 +92,16 @@ end
 -- cspell integration using none-ls and cspell.nvim
 local null_ls = require("null-ls")
 local cspell = require("cspell")
-
-local filetypes = {
-  "python", "sh", "rust", "kotlin", "java", "c", "cpp", "cmake",
-  "markdown", "text", "gitcommit", "lua", "json", "yaml"
+local cspell_filetypes = {
+  "python", "sh", "rust", "java", "c", "cpp", "cmake",
+  "markdown", "text", "gitcommit", "lua", "json", "yaml",
+  "typescript", "vue", "toml", "javascript", "sql",
+  "html", "css", "conf", "ini", "make", "dockerfile"
 }
-
 local cspell_config = {
   config = {
     on_add_to_json = function(payload)
-      -- Format with jq and sort the words array alphabetically
+      -- format with jq and sort the words array alphabetically
       os.execute(
         string.format(
           "jq '.words |= sort' %s > %s.tmp && mv %s.tmp %s",
@@ -114,16 +114,19 @@ local cspell_config = {
     end,
   },
 }
-
 null_ls.setup({
   sources = {
     cspell.diagnostics.with({
+      -- require cspell.json as root marker
       condition = function(utils)
         return utils.root_has_file({ "cspell.json" })
       end,
+      -- apply config + cspell filetypes
       config = cspell_config.config,
-      filetypes = filetypes,
+      filetypes = cspell_filetypes,
+      -- use global node modules
       env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
+      -- fix hardcoded 'en' locale when overwriting cspell.json via code action
       extra_args = function(params)
         local args = {}
         local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
@@ -139,18 +142,22 @@ null_ls.setup({
         end
         return args
       end,
-      -- Set diagnostic level to HINT so it matches your previous setup
+      -- set diagnostic level to HINT
       diagnostics_postprocess = function(diagnostic)
         diagnostic.severity = vim.diagnostic.severity.HINT
       end,
     }),
     cspell.code_actions.with({
+      -- require cspell.json as root marker
       condition = function(utils)
         return utils.root_has_file({ "cspell.json" })
       end,
+      -- apply config + cspell filetypes
       config = cspell_config.config,
-      filetypes = filetypes,
+      filetypes = cspell_filetypes,
+      -- use global node modules
       env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
+      -- fix hardcoded 'en' locale when overwriting cspell.json via code action
       extra_args = function(params)
         local args = {}
         local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
