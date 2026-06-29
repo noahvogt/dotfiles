@@ -102,11 +102,7 @@ require("lazy").setup({
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-media-files.nvim' }
   },
 
-  -- Wilder
-  {
-    'gelguy/wilder.nvim',
-    build = ':UpdateRemotePlugins'
-  },
+
 
   -- Markdown Preview
   {

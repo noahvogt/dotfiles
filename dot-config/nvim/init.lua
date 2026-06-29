@@ -19,7 +19,7 @@ require('plugins')
 -- 4. Load vimscript Plugin configurations
 local plug_confs = {
   'emmet', 'sneak',
-  'wilder', 'vcoolor', 'better-whitespace'
+  'vcoolor', 'better-whitespace'
 }
 for _, conf in ipairs(plug_confs) do
   vim.cmd('source $XDG_CONFIG_HOME/nvim/plug-conf/' .. conf .. '.vim')
