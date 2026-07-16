@@ -12,7 +12,7 @@
         "custom/layout"
     ],
     "modules-center": ["clock"],
-    "modules-right": ["network#vpn", "network", "battery", "pulseaudio", "bluetooth", "custom/notification"],
+    "modules-right": ["custom/vpn", "network", "battery", "pulseaudio", "bluetooth", "custom/notification"],
 
     "custom/notification": {
         "tooltip": false,
@@ -100,13 +100,10 @@
         "format-alt": "  {essid} | {ipaddr}/{cidr}"
     },
 
-    "network#vpn": {
-        "interface": "tun*",
-        "format-wifi": "  VPN",
-        "format-ethernet": "  VPN",
-        "format-disconnected": "",
-        "tooltip-format": "VPN Active",
-        "interval": 5
+    "custom/vpn": {
+        "format": "{}",
+        "exec": "~/.config/waybar/scripts/vpn-status.sh",
+        "tooltip": false
     },
 
     "pulseaudio": {

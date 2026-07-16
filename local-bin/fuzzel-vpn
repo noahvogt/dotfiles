@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Script to select or disconnect from available VPN's
+
+# Fetch all connections of type wireguard or vpn
+vpns=$(nmcli -t -f NAME,TYPE connection show | grep -E ':(wireguard|vpn)$' | cut -d: -f1)
+
+# If no VPNs are configured, exit early
+if [ -z "$vpns" ]; then
+    notify-send "VPN" "No VPNs configured in NetworkManager"
+    exit 1
+fi
+
+# Check for active VPNs
+active_vpns=$(nmcli -t -f NAME,TYPE connection show --active | grep -E ':(wireguard|vpn)$' | cut -d: -f1)
+
+# Build options list
+if [ -n "$active_vpns" ]; then
+    options="Disconnect
+$vpns"
+else
+    options="$vpns"
+fi
+
+# Prompt the user with fuzzel
+chosen=$(printf "%s\n" "$options" | fuzzel -d -p "VPN: ")
+
+# Exit if the user pressed Escape or closed fuzzel
+if [ -z "$chosen" ]; then
+    exit 0
+fi
+
+if [ "$chosen" = "Disconnect" ]; then
+    # We already know there are active VPNs to reach here
+    printf "%s\n" "$active_vpns" | while IFS= read -r vpn; do
+        nmcli connection down "$vpn"
+    done
+else
+    # Connect to the chosen VPN
+    if ! nmcli connection up "$chosen"; then
+        notify-send "VPN" "Failed to connect to $chosen"
+    fi
+fi
