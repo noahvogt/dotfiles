@@ -8,9 +8,9 @@ WS_ID=$(echo "$WS_INFO" | jq -r '.id')
 CURRENT_LAYOUT=$(echo "$WS_INFO" | jq -r '.tiledLayout')
 
 if [ "$CURRENT_LAYOUT" = "master" ]; then
-    hyprctl keyword "workspace $WS_ID,layout:monocle"
+    hyprctl eval "hl.workspace_rule({ workspace = \"$WS_ID\", layout = \"monocle\" })" >/dev/null 2>&1
 else
-    hyprctl keyword "workspace $WS_ID,layout:master"
+    hyprctl eval "hl.workspace_rule({ workspace = \"$WS_ID\", layout = \"master\" })" >/dev/null 2>&1
 fi
 
 # Signal the persistent layout script accurately (by pid file)
