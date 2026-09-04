@@ -86,8 +86,8 @@ hl.config({
         rounding = 10,
         rounding_power = 2,
         -- Change transparency of focused and unfocused windows
-        active_opacity = 0.95,
-        inactive_opacity = 0.95,
+        active_opacity = 1.0,
+        inactive_opacity = 1.0,
         shadow = {
             enabled = true,
             range = 4,
@@ -377,15 +377,6 @@ hl.window_rule({
     },
     move = { 20, "monitor_h-120" },
     float = true,
-})
-
-hl.window_rule({
-    name  = "browser-opacity-and-workspace",
-    match = {
-        class = "^(" .. browser .. ")$",
-    },
-    opacity = "1.0 override 1.0 override",
-    opaque = true,
 })
 
 hl.window_rule({
