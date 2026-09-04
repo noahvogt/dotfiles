@@ -382,11 +382,10 @@ hl.window_rule({
 hl.window_rule({
     name  = "browser-opacity-and-workspace",
     match = {
-        class = "^($browser)$",
+        class = "^(" .. browser .. ")$",
     },
     opacity = "1.0 override 1.0 override",
     opaque = true,
-    workspace = 2,
 })
 
 hl.window_rule({
@@ -436,4 +435,5 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("syncthing")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("xwaylandvideobridge")
+    hl.exec_cmd("wlsunset -l 47 -L 8") -- 47 N, 8 E (Switzerland coordinates)
 end)
