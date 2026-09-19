@@ -11,8 +11,62 @@ HISTFILE=~/.cache/zsh/history
 autoload -U compinit
 zstyle ':completion:*' menu select
 zmodload zsh/complist
+# Personal completions must be on fpath BEFORE compinit runs. A second compinit
+# later in this file will NOT rebind a completer already loaded from /usr/share,
+# so anything added after this point is silently ignored.
+fpath=("$HOME/.local/share/zsh/site-functions" $fpath)
 compinit
 _comp_options+=(globdots)		# Include hidden files.
+
+# --- just: complete recipes only --------------------------------------------
+# just's packaged completer delegates to clap's dynamic completer, which offers
+# recipes, every flag and every file through one untagged _describe. Complete
+# recipes only, and hand flags / option-arguments back to the upstream one.
+_just_upstream() {
+    if (( ! $+functions[_clap_dynamic_completer_just] )); then
+        source <(JUST_COMPLETE=zsh just) 2>/dev/null
+        # That script's last line is
+        #   compdef _clap_dynamic_completer_just just
+        # which hijacks the `just` binding for the rest of the session. Without
+        # undoing it, a single `just --<TAB>` permanently disables this
+        # completer until a new shell is opened.
+        compdef _just just
+    fi
+    (( $+functions[_clap_dynamic_completer_just] )) || return 1
+    _clap_dynamic_completer_just "$@"
+}
+
+_just() {
+    local -a recipes lines
+    local line name doc
+
+    # Flags themselves, and option arguments such as `--justfile <TAB>`.
+    if [[ ${words[CURRENT]} == -* || ${words[CURRENT-1]} == -* ]]; then
+        _just_upstream "$@"
+        return
+    fi
+
+    lines=(${(f)"$(just --list --list-heading '' --list-prefix '' 2>/dev/null)"})
+
+    for line in $lines; do
+        [[ -n $line ]] || continue
+        # `name ARG1 ARG2   # doc comment` -> name, doc comment
+        name=${line%%[[:space:]]*}
+        if [[ $line == *'# '* ]]; then
+            doc=${line#*'# '}
+        else
+            doc=''
+        fi
+        recipes+=( "${name}:${doc}" )
+    done
+
+    (( ${#recipes} )) || return 1
+
+    # just runs several recipes in one invocation, so offer them at every word.
+    _describe -t recipes 'just recipe' recipes
+}
+
+compdef _just just
 
 # vi mode
 bindkey -v
