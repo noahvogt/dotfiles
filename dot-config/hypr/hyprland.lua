@@ -254,6 +254,7 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "down", hl.dsp.window.move({ dir
 hl.bind(mainMod .. " + " .. "H", hl.dsp.layout("mfact -0.05"), { repeating = true })
 hl.bind(mainMod .. " + " .. "L", hl.dsp.layout("mfact +0.05"), { repeating = true })
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "L", hl.dsp.exec_cmd("systemctl suspend"))
+hl.bind(mainMod .. " + " .. "Escape", hl.dsp.exec_cmd("loginctl lock-session"))
 hl.bind(mainMod .. " + " .. "F", hl.dsp.window.fullscreen())
 
 -- Master Layout Control
