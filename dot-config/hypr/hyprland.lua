@@ -227,6 +227,7 @@ hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
 
 -- dwindle
 hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("chromium"))
+hl.bind(mainMod .. " + " .. "O", hl.dsp.exec_cmd("~/.local/bin/open-stream"))
 
 -- bind = $mainMod, J, layoutmsg, togglesplit # dwindle
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "T", hl.dsp.exec_cmd("~/.config/hypr/scripts/toggle-theme.sh"))

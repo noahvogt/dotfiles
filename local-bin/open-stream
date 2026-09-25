@@ -3,7 +3,7 @@
 # open a stream or media copied to the clipboard or given as argument
 
 if [ $# != 1 ]; then
-    clipboard=$(xclip -out -sel clip | sed 's/!/\\!/')
+    clipboard=$(wl-paste -n | sed 's/!/\\!/')
     echo "$clipboard"
 else
     clipboard="$1"
@@ -14,7 +14,7 @@ media='videoAudio'
 
 showpdf() {
     pdfViewers=$(printf "llpp\nmupdf\nsave\nprint\n")
-    viewer=$(echo "$pdfViewers" | dmenu -i -l 30)
+    viewer=$(echo "$pdfViewers" | fuzzel --dmenu --lines 30)
     case "$viewer" in
         save) cachedir="${XDG_CACHE_HOME:-$HOME/.cache}/norisa/stream"
             [ -d "$cachedir" ] || mkdir -p "$cachedir"
@@ -36,11 +36,11 @@ notify-send "opening" "$media"
 
 case "$media" in
     videoAudio) streamType=$(printf "stream\ndownload\nbackground\ncopy link\n" | \
-                             dmenu -i -l 30)
+                             fuzzel --dmenu --lines 30)
         case "$streamType" in
             stream) mpv "$clipboard";;
             download) downFormat="$(youtube-dl -F "$clipboard" | \
-                sed '1,/format code/d' | dmenu -i -l 30 | awk '{print $1}')"
+                sed '1,/format code/d' | fuzzel --dmenu --lines 30 | awk '{print $1}')"
                 if [ -z "$downFormat" ]; then
                     youtube-dl "$clipboard" -o \
                     "$HOME/dl/%(title)s-%(id)s.%(ext)s" &&
@@ -51,7 +51,7 @@ case "$media" in
                     notify-send "downloading" "finished"
                 fi;;
             background) mpv --no-video "$clipboard";;
-            "copy link") echo "$clipboard" | xclip -sel clip;;
+            "copy link") echo "$clipboard" | wl-copy;;
             *) exit 1;;
         esac
         ;;
