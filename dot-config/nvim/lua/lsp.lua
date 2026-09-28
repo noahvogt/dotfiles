@@ -89,6 +89,12 @@ for _, server in ipairs(servers) do
   vim.lsp.enable(server)
 end
 
+-- Markdown (AUR: marksman-bin), only if installed
+if vim.fn.executable('marksman') == 1 then
+  vim.lsp.config('marksman', { capabilities = capabilities, on_attach = on_attach })
+  vim.lsp.enable('marksman')
+end
+
 -- cspell integration using none-ls and cspell.nvim
 local null_ls = require("null-ls")
 local cspell = require("cspell")
@@ -215,10 +221,14 @@ conform.setup({
     cpp = { "clang-format" },
     cmake = { "cmake_format" },
   },
-  format_on_save = {
-    timeout_ms = 2000,
-    lsp_fallback = true,
-  },
+  format_on_save = function(bufnr)
+    -- notebooks: black would parse the .ipynb as JSON, and formatting the whole
+    -- file would touch locked nbgrader cells (use <leader>jf per cell instead)
+    if vim.api.nvim_buf_get_name(bufnr):match("%.ipynb$") then
+      return
+    end
+    return { timeout_ms = 2000, lsp_fallback = true }
+  end,
 })
 
 -- 5. Linting

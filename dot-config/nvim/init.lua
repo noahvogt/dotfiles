@@ -36,6 +36,7 @@ require('gitsigns-conf')
 require('indent-blankline')
 require('whichkey')
 require('lualine-conf')
+require('jupyter')
 require('colorizer').setup()
 
 -- 6. Load keybinds and autocommands

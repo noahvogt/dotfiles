@@ -115,6 +115,17 @@ require("lazy").setup({
     ft = { "markdown" },
   },
 
+  -- Jupyter (edit .ipynb as py:percent, run cells on a kernel, inline images)
+  { 'GCBallesteros/jupytext.nvim', lazy = false },
+  { 'MeanderingProgrammer/render-markdown.nvim', dependencies = { 'nvim-treesitter/nvim-treesitter' } },
+  { '3rd/image.nvim', build = false },
+  {
+    'benlubas/molten-nvim',
+    version = '^1.0.0',
+    dependencies = { '3rd/image.nvim' },
+    build = ':UpdateRemotePlugins',
+  },
+
   -- Which-Key
   'folke/which-key.nvim',
 

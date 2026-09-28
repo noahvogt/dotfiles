@@ -24,6 +24,7 @@ wk.setup({
 
 wk.add({
   { "<leader>d", group = "Debug" },
+  { "<leader>j", group = "Jupyter" },
   { "<leader>l", group = "LSP/Telescope" },
   { "<leader>m", group = "Markdown" },
 })
