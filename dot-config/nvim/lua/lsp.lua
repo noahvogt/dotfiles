@@ -40,7 +40,7 @@ local on_attach = function(client, bufnr)
   -- Keymaps are handled globally in keymaps.lua (formerly bindings.vim)
 
   -- Enable CodeLens if supported
-  if client.supports_method("textDocument/codeLens") then
+  if client:supports_method("textDocument/codeLens") then
     vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
       buffer = bufnr,
       callback = function()
@@ -50,7 +50,7 @@ local on_attach = function(client, bufnr)
   end
 
   -- Enable Document Highlight if supported
-  if client.supports_method("textDocument/documentHighlight") then
+  if client:supports_method("textDocument/documentHighlight") then
     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
       buffer = bufnr,
       callback = function()
@@ -66,7 +66,7 @@ local on_attach = function(client, bufnr)
   end
 
   -- Format on Type (Commented out - prefer Format on Save in conform.nvim)
-  -- if client.supports_method("textDocument/onTypeFormatting") then
+  -- if client:supports_method("textDocument/onTypeFormatting") then
   --   vim.api.nvim_create_autocmd("InsertLeave", {
   --     buffer = bufnr,
   --     callback = function()
