@@ -1,9 +1,10 @@
 ; extends
 
-; Markdown cells of Jupyter notebooks (py:percent, see lua/jupyter.lua):
-; highlight each "# text" comment line as markdown
+; Markdown cells of Jupyter notebooks (py:percent, see lua/jupyter.lua): all
+; "# text" lines form one markdown document, so multi-line constructs like
+; $$ blocks parse (the range skips the "# " prefix and includes the newline)
 ((comment) @injection.content
-  (#lua-match? @injection.content "^# ")
   (#jupyter-markdown-cell? @injection.content)
-  (#offset! @injection.content 0 2 0 0)
-  (#set! injection.language "markdown"))
+  (#jupyter-markdown-range! @injection.content)
+  (#set! injection.language "markdown")
+  (#set! injection.combined))

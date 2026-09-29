@@ -1,0 +1,4 @@
+#!/bin/sh
+# render-markdown latex converter for notebooks (see lua/jupyter.lua): multi-line
+# $$ blocks arrive with the "# " comment prefix on every line, drop it first
+sed 's/^# \{0,1\}//' | latex2text

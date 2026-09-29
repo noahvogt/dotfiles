@@ -43,13 +43,29 @@ vim.treesitter.query.add_predicate("jupyter-markdown-cell?", function(match, _, 
   return markdown_rows(source)[node:start()] == true
 end, { force = true })
 
+-- Injected range of a markdown-cell line: after the "# " prefix up to the start
+-- of the next line, so the newline is part of the combined markdown document
+vim.treesitter.query.add_directive("jupyter-markdown-range!", function(match, _, _, pred, metadata)
+  local id = pred[2]
+  local nodes = match[id]
+  local node = type(nodes) == "table" and nodes[1] or nodes
+  if not node then
+    return
+  end
+  local row, col, _, end_col = node:range()
+  local prefix = end_col - col >= 2 and 2 or 1 -- "# text" or a bare "#"
+  metadata[id] = metadata[id] or {}
+  metadata[id].range = { row, col + prefix, row + 1, 0 }
+end, { force = true })
+
 -- Render the injected markdown (conceal markup, headings, latex as unicode),
--- only in notebooks. Latex needs `latex2text` (python-pylatexenc) or `utftex`.
+-- only in notebooks. Latex needs `latex2text` (python-pylatexenc).
 require("render-markdown").setup({
   file_types = { "python" },
   ignore = function(bufnr)
     return not is_notebook(bufnr)
   end,
+  latex = { converter = { vim.fn.stdpath("config") .. "/bin/jupyter-latex2text" } },
 })
 
 -- Hide the "# " prefix of markdown lines and the metadata of "# %%" headers
