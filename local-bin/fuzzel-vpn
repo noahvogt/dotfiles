@@ -35,6 +35,10 @@ if [ "$chosen" = "Disconnect" ]; then
     printf "%s\n" "$active_vpns" | while IFS= read -r vpn; do
         nmcli connection down "$vpn"
     done
+elif [ "$(nmcli -g vpn.service-type connection show "$chosen")" \
+    = "org.freedesktop.NetworkManager.openconnect" ]; then
+    # Openconnect needs an SSO login to fetch a cookie before connecting
+    fhnw-vpn-up
 else
     # Connect to the chosen VPN
     if ! nmcli connection up "$chosen"; then

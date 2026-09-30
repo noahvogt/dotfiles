@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# Log into the FHNW VPN with ocma and hand the cookie to NetworkManager
+#
+# The connection is created on first use. It stores the gateway's public key
+# pin, because vpn.fhnw.ch does not serve a complete certificate chain and
+# openconnect refuses it otherwise. Re-pin it when the certificate is rotated:
+#
+#   pin="pin-sha256:$(openssl s_client -connect vpn.fhnw.ch:443 </dev/null \
+#       2>/dev/null | openssl x509 -pubkey -noout | openssl pkey -pubin \
+#       -outform der | openssl dgst -sha256 -binary | base64)"
+#   nmcli connection modify fhnw +vpn.secrets "gwcert=$pin"
+
+CONNECTION="fhnw"
+GATEWAY="vpn.fhnw.ch"
+SECRET_SERVICE="fhnw-vpn"
+
+error_msg() {
+    notify-send "VPN" "$1"
+    echo "Error: $1" >&2
+    exit 1
+}
+
+# Pinning the certificate on creation trusts whatever the gateway presents at
+# that moment. An existing pin is never touched, so a rotated certificate fails
+# loudly instead of being accepted silently.
+create_connection() {
+    notify-send "VPN" "Creating the '$CONNECTION' connection ..."
+
+    pin="pin-sha256:$(openssl s_client -connect "$GATEWAY:443" </dev/null \
+        2>/dev/null | openssl x509 -pubkey -noout | openssl pkey -pubin \
+        -outform der | openssl dgst -sha256 -binary | base64)"
+    [ "$pin" != "pin-sha256:" ] || error_msg "Could not read the certificate of $GATEWAY"
+
+    nmcli connection add type vpn con-name "$CONNECTION" vpn-type openconnect \
+        autoconnect no vpn.data \
+        "gateway=$GATEWAY,protocol=anyconnect,cookie-flags=2,gateway-flags=2,gwcert-flags=0" \
+        >/dev/null || error_msg "Could not create the '$CONNECTION' connection"
+
+    nmcli connection modify "$CONNECTION" +vpn.secrets "gwcert=$pin" ||
+        error_msg "Could not pin the certificate of $GATEWAY"
+}
+
+command -v ocma >/dev/null || error_msg "Could not find 'ocma' executable"
+command -v secret-tool >/dev/null || error_msg "Could not find 'secret-tool' executable"
+command -v openssl >/dev/null || error_msg "Could not find 'openssl' executable"
+
+nmcli -t -f NAME connection show | grep -qx "$CONNECTION" || create_connection
+
+username=$(secret-tool lookup service "$SECRET_SERVICE" type username)
+[ -n "$username" ] || error_msg "No username stored for '$SECRET_SERVICE' in the keyring"
+
+credentials=$(ocma -u "$username" --print-to-stdout \
+    --password-command "secret-tool lookup service $SECRET_SERVICE type password" \
+    --mfa-command "secret-tool lookup service $SECRET_SERVICE type totp") ||
+    error_msg "Microsoft login failed"
+
+eval "$credentials"
+[ -n "${VPN_COOKIE:-}" ] || error_msg "Did not get a VPN cookie"
+
+printf 'vpn.secrets.cookie:%s\nvpn.secrets.gateway:%s\n' "$VPN_COOKIE" "$VPN_HOST" |
+    nmcli connection up "$CONNECTION" passwd-file /dev/stdin >/dev/null ||
+    error_msg "Failed to bring up '$CONNECTION' (gateway certificate rotated?)"
