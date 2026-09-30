@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# Re-pin the FHNW VPN gateway certificate
+#
+# vpn.fhnw.ch does not serve a complete certificate chain, so openconnect only
+# accepts it through a public key pin stored in the NetworkManager connection.
+# When FHNW rotates the certificate, connecting starts failing with
+# 'Cookie was rejected by server' and the pin has to be replaced.
+#
+# A changed pin is either that rotation or somebody in the middle, so the old
+# and the new value are shown and have to be confirmed. Pass -y to skip the
+# confirmation.
+
+CONNECTION="fhnw"
+GATEWAY="vpn.fhnw.ch"
+
+error_msg() {
+    echo "Error: $1" >&2
+    exit 1
+}
+
+stored_pin() {
+    # nmcli escapes the colon of the pin in its terse output
+    nmcli --show-secrets -g vpn.secrets connection show "$CONNECTION" 2>/dev/null |
+        tr ',' '\n' | sed -n 's/^ *gwcert = //p' | sed 's/\\:/:/g'
+}
+
+served_pin() {
+    openssl s_client -connect "$GATEWAY:443" </dev/null 2>/dev/null |
+        openssl x509 -pubkey -noout | openssl pkey -pubin -outform der |
+        openssl dgst -sha256 -binary | base64
+}
+
+command -v nmcli > /dev/null || error_msg "Could not find 'nmcli' executable"
+command -v openssl > /dev/null || error_msg "Could not find 'openssl' executable"
+
+nmcli -t -f NAME connection show | grep -qx "$CONNECTION" ||
+    error_msg "No '$CONNECTION' connection configured in NetworkManager"
+
+served="pin-sha256:$(served_pin)"
+[ "$served" != "pin-sha256:" ] || error_msg "Could not read the certificate of $GATEWAY"
+
+stored=$(stored_pin)
+if [ "$stored" = "$served" ]; then
+    echo "The pin of $GATEWAY is unchanged, nothing to do"
+    exit 0
+fi
+
+echo "stored: ${stored:-none}"
+echo "served: $served"
+
+if [ "$1" != "-y" ]; then
+    printf 'Replace the stored pin? [y/N] '
+    read -r answer
+    case "$answer" in
+        [yY]*) ;;
+        *) echo "Keeping the stored pin"; exit 0 ;;
+    esac
+fi
+
+nmcli connection modify "$CONNECTION" +vpn.secrets "gwcert=$served" ||
+    error_msg "Could not pin the certificate of $GATEWAY"
+
+echo "Pinned the certificate of $GATEWAY"
