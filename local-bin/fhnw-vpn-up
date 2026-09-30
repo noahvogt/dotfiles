@@ -4,12 +4,8 @@
 #
 # The connection is created on first use. It stores the gateway's public key
 # pin, because vpn.fhnw.ch does not serve a complete certificate chain and
-# openconnect refuses it otherwise. Re-pin it when the certificate is rotated:
-#
-#   pin="pin-sha256:$(openssl s_client -connect vpn.fhnw.ch:443 </dev/null \
-#       2>/dev/null | openssl x509 -pubkey -noout | openssl pkey -pubin \
-#       -outform der | openssl dgst -sha256 -binary | base64)"
-#   nmcli connection modify fhnw +vpn.secrets "gwcert=$pin"
+# openconnect refuses it otherwise. Run fhnw-vpn-repin-cert when FHNW rotates
+# the certificate, and fhnw-vpn-keys to store the credentials.
 
 CONNECTION="fhnw"
 GATEWAY="vpn.fhnw.ch"
@@ -50,9 +46,13 @@ nmcli -t -f NAME connection show | grep -qx "$CONNECTION" || create_connection
 username=$(secret-tool lookup service "$SECRET_SERVICE" type username)
 [ -n "$username" ] || error_msg "No username stored for '$SECRET_SERVICE' in the keyring"
 
+# The session of an earlier login is reused when it is still valid, which
+# skips the password and the TOTP code. It is stored again after a full login.
 credentials=$(ocma -u "$username" --print-to-stdout \
     --password-command "secret-tool lookup service $SECRET_SERVICE type password" \
-    --mfa-command "secret-tool lookup service $SECRET_SERVICE type totp") ||
+    --mfa-command "secret-tool lookup service $SECRET_SERVICE type totp" \
+    --session-command "secret-tool lookup service $SECRET_SERVICE type session" \
+    --session-save-command "secret-tool store --label='FHNW VPN session' service $SECRET_SERVICE type session") ||
     error_msg "Microsoft login failed"
 
 eval "$credentials"
