@@ -1,0 +1,83 @@
+#!/bin/sh
+
+# Store or replace the FHNW VPN credentials, also used to set them up on a new
+# machine
+#
+# Without arguments it walks through the username, the password and the TOTP
+# secret, and drops the cached session. Empty input keeps the current value.
+# The gateway certificate is not handled here, see fhnw-vpn-repin-cert.
+
+SECRET_SERVICE="fhnw-vpn"
+
+error_msg() {
+    echo "Error: $1" >&2
+    exit 1
+}
+
+usage() {
+    echo "Usage: ${0##*/} [username] [password] [totp] [session] ..." >&2
+    exit 1
+}
+
+store_secret() {
+    printf '%s' "$3" | secret-tool store --label="$2" service "$SECRET_SERVICE" type "$1" ||
+        error_msg "Could not store the $1 in the keyring"
+    echo "Stored the $1"
+}
+
+# Read a secret without echoing it back to the terminal
+read_secret() {
+    printf '%s' "$1"
+    stty -echo 2>/dev/null
+    read -r secret_value
+    stty echo 2>/dev/null
+    echo ""
+}
+
+set_username() {
+    printf 'Username (empty to keep the current one): '
+    read -r username_value
+    [ -n "$username_value" ] || { echo "Keeping the username"; return; }
+    store_secret username "FHNW VPN username" "$username_value"
+}
+
+set_password() {
+    read_secret 'Password (empty to keep the current one): '
+    [ -n "$secret_value" ] || { echo "Keeping the password"; return; }
+    store_secret password "FHNW VPN password" "$secret_value"
+}
+
+set_totp() {
+    read_secret 'TOTP secret (empty to keep the current one): '
+    [ -n "$secret_value" ] || { echo "Keeping the TOTP secret"; return; }
+
+    # Show the current code, so a typo is caught here instead of at login time
+    code=$(printf '%s' "$secret_value" |
+        python -c 'import sys, pyotp; print(pyotp.TOTP(sys.stdin.read().strip()).now())' 2>/dev/null) ||
+        error_msg "That does not look like a valid TOTP secret"
+
+    store_secret totp "FHNW VPN TOTP" "$secret_value"
+    echo "It generates $code right now, which should match your authenticator"
+}
+
+drop_session() {
+    if secret-tool clear service "$SECRET_SERVICE" type session; then
+        echo "Dropped the stored session, the next login will be a full one"
+    else
+        echo "Found no stored session to drop"
+    fi
+}
+
+command -v secret-tool > /dev/null || error_msg "Could not find 'secret-tool' executable"
+
+[ $# -gt 0 ] || set -- username password totp session
+
+for key in "$@"; do
+    case "$key" in
+        username) set_username ;;
+        password) set_password ;;
+        totp) set_totp ;;
+        session) drop_session ;;
+        *) usage ;;
+    esac
+done
