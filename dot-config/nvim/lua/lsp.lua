@@ -41,12 +41,7 @@ local on_attach = function(client, bufnr)
 
   -- Enable CodeLens if supported
   if client:supports_method("textDocument/codeLens") then
-    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-      buffer = bufnr,
-      callback = function()
-        vim.lsp.codelens.refresh({ bufnr = bufnr })
-      end,
-    })
+    vim.lsp.codelens.enable(true, { bufnr = bufnr })
   end
 
   -- Enable Document Highlight if supported
