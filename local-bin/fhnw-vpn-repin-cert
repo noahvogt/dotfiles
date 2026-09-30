@@ -9,15 +9,33 @@
 #
 # A changed pin is either that rotation or somebody in the middle, so the old
 # and the new value are shown and have to be confirmed. Pass -y to skip the
-# confirmation.
+# confirmation, or -n to only report, which is what fhnw-vpn-up uses to tell a
+# rotated certificate apart from any other failure:
+#
+#   0  the pin is unchanged
+#   1  the pin changed
+#   2  something went wrong, the gateway is probably unreachable
 
 CONNECTION="fhnw"
 GATEWAY="vpn.fhnw.ch"
 
+check_only=0
+force=0
+
 error_msg() {
     echo "Error: $1" >&2
-    exit 1
+    exit 2
 }
+
+case "${1:-}" in
+    -n | --check) check_only=1 ;;
+    -y) force=1 ;;
+    "") ;;
+    *)
+        echo "Usage: ${0##*/} [-y | -n]" >&2
+        exit 2
+        ;;
+esac
 
 stored_pin() {
     # nmcli escapes the colon of the pin in its terse output
@@ -26,8 +44,13 @@ stored_pin() {
 }
 
 served_pin() {
-    openssl s_client -connect "$GATEWAY:443" </dev/null 2>/dev/null |
-        openssl x509 -pubkey -noout | openssl pkey -pubin -outform der |
+    # Without the public key check this digests empty input, which hashes just
+    # fine and would pin a certificate that was never served
+    public_key=$(openssl s_client -connect "$GATEWAY:443" </dev/null 2>/dev/null |
+        openssl x509 -pubkey -noout 2>/dev/null)
+    [ -n "$public_key" ] || return 1
+
+    printf '%s\n' "$public_key" | openssl pkey -pubin -outform der 2>/dev/null |
         openssl dgst -sha256 -binary | base64
 }
 
@@ -37,8 +60,7 @@ command -v openssl > /dev/null || error_msg "Could not find 'openssl' executable
 nmcli -t -f NAME connection show | grep -qx "$CONNECTION" ||
     error_msg "No '$CONNECTION' connection configured in NetworkManager"
 
-served="pin-sha256:$(served_pin)"
-[ "$served" != "pin-sha256:" ] || error_msg "Could not read the certificate of $GATEWAY"
+served="pin-sha256:$(served_pin)" || error_msg "Could not read the certificate of $GATEWAY"
 
 stored=$(stored_pin)
 if [ "$stored" = "$served" ]; then
@@ -49,12 +71,17 @@ fi
 echo "stored: ${stored:-none}"
 echo "served: $served"
 
-if [ "$1" != "-y" ]; then
+[ "$check_only" -eq 0 ] || exit 1
+
+if [ "$force" -eq 0 ]; then
     printf 'Replace the stored pin? [y/N] '
     read -r answer
     case "$answer" in
         [yY]*) ;;
-        *) echo "Keeping the stored pin"; exit 0 ;;
+        *)
+            echo "Keeping the stored pin"
+            exit 0
+            ;;
     esac
 fi
 

@@ -23,10 +23,14 @@ error_msg() {
 create_connection() {
     notify-send "VPN" "Creating the '$CONNECTION' connection ..."
 
-    pin="pin-sha256:$(openssl s_client -connect "$GATEWAY:443" </dev/null \
-        2>/dev/null | openssl x509 -pubkey -noout | openssl pkey -pubin \
-        -outform der | openssl dgst -sha256 -binary | base64)"
-    [ "$pin" != "pin-sha256:" ] || error_msg "Could not read the certificate of $GATEWAY"
+    # The public key check matters: without it an unreachable gateway digests
+    # empty input and pins a certificate that was never served
+    public_key=$(openssl s_client -connect "$GATEWAY:443" </dev/null 2>/dev/null |
+        openssl x509 -pubkey -noout 2>/dev/null)
+    [ -n "$public_key" ] || error_msg "Could not read the certificate of $GATEWAY"
+
+    pin="pin-sha256:$(printf '%s\n' "$public_key" |
+        openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64)"
 
     nmcli connection add type vpn con-name "$CONNECTION" vpn-type openconnect \
         autoconnect no vpn.data \
@@ -59,5 +63,13 @@ eval "$credentials"
 [ -n "${VPN_COOKIE:-}" ] || error_msg "Did not get a VPN cookie"
 
 printf 'vpn.secrets.cookie:%s\nvpn.secrets.gateway:%s\n' "$VPN_COOKIE" "$VPN_HOST" |
-    nmcli connection up "$CONNECTION" passwd-file /dev/stdin >/dev/null ||
-    error_msg "Failed to bring up '$CONNECTION' (gateway certificate rotated?)"
+    nmcli connection up "$CONNECTION" passwd-file /dev/stdin >/dev/null && exit 0
+
+# Only reached when the connection failed, so it is worth the second or two to
+# tell a rotated gateway certificate apart from any other reason
+fhnw-vpn-repin-cert --check >/dev/null 2>&1
+case "$?" in
+    1) error_msg "The certificate of $GATEWAY changed, run fhnw-vpn-repin-cert" ;;
+    2) error_msg "Could not reach $GATEWAY" ;;
+    *) error_msg "Failed to bring up '$CONNECTION'" ;;
+esac
