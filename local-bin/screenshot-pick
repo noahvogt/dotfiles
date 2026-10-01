@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Pick screenshots (newest first) via fzf with kitty image previews and emit
+# them as "@/abs/path" references for coding agents like claude.
+#
+# usage: screenshot-pick                -> print selection to stdout
+#        screenshot-pick <kitty-win-id> -> type selection into that kitty window
+#
+# Tab to multi-select, Esc/ctrl-c to cancel (prints/sends nothing).
+
+dir="${SCREENSHOT_DIR:-$HOME/pix/Screenshots}"
+cd "$dir" || exit 1
+
+selection="$(
+    ls -t -- *.png *.jpg *.jpeg *.webp 2>/dev/null |
+        fzf --multi --no-sort --layout=reverse \
+            --prompt='screenshot> ' \
+            --preview-window='right,65%,border-left' \
+            --preview='kitten icat --clear --transfer-mode=memory --unicode-placeholder --stdin=no --place="${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0" {} | sed "\$d" | sed "\$s/\$/\x1b[m/"'
+)" || exit 0
+
+refs="$(printf '%s\n' "$selection" | sed "s|^|@$dir/|" | tr '\n' ' ')"
+
+if [ -n "$1" ]; then
+    kitten @ send-text --match "id:$1" -- "$refs"
+else
+    printf '%s\n' "$refs"
+fi
