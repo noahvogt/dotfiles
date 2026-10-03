@@ -216,7 +216,7 @@ hl.bind("SUPER + ALT_L", hl.dsp.exec_cmd("fuzzel"), { release = true, device = "
 hl.bind(mainMod .. " + " .. "SUPER_L", hl.dsp.exec_cmd("fuzzel"), { release = true })
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
-hl.bind(mainMod .. " + " .. "N", hl.dsp.exec_cmd("~/.local/bin/fuzzel-vpn"))
+hl.bind(mainMod .. " + " .. "N", hl.dsp.exec_cmd("fuzzel-vpn"))
 hl.bind(mainMod .. " + " .. "Return", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + " .. "Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "Q", hl.dsp.exec_cmd("killall Hyprland"))
@@ -227,7 +227,7 @@ hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
 
 -- dwindle
 hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("chromium"))
-hl.bind(mainMod .. " + " .. "O", hl.dsp.exec_cmd("~/.local/bin/open-stream"))
+hl.bind(mainMod .. " + " .. "O", hl.dsp.exec_cmd("open-stream"))
 
 -- bind = $mainMod, J, layoutmsg, togglesplit # dwindle
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "T", hl.dsp.exec_cmd("~/.config/hypr/scripts/toggle-theme.sh"))
