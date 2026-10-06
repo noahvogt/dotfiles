@@ -11,7 +11,7 @@ ext="${file##*.}"
 
 choosepandoc() {
     [ -z "$template" ] && template="$(ls $HOME/.config/setup/templates/pandoc/* | \
-        sed 's/.*\///g' | dmenu -i -l 30 -p "choose pandoc template: ")"
+        sed 's/.*\///g' | fuzzel -d -l 30 -p "choose pandoc template: ")"
     [ -z "$newext" ] && newext="$(echo "$template" | sed 's/.*\.//; s/latex/pdf/;')"
 }
 
