@@ -426,6 +426,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("waybar")
     hl.exec_cmd("swaync")
     hl.exec_cmd("syncthing serve --no-browser")
+    hl.exec_cmd("systembus-notify") -- forwards earlyoom kill notifications to swaync
     hl.exec_cmd("hypridle")
     hl.exec_cmd("xwaylandvideobridge")
     hl.exec_cmd("wlsunset -l 47 -L 8") -- 47 N, 8 E (Switzerland coordinates)
