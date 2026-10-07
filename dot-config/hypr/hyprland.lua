@@ -20,7 +20,6 @@ local mainMod = "SUPER"
 local terminal = "kitty"
 local fileManager = "nautilus"
 local menu = "fuzzel"
-local browser = "chromium"
 
 --################
 --## AUTOSTART ###
@@ -226,7 +225,7 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "F", hl.dsp.window.float())
 hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
 
 -- dwindle
-hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("chromium"))
+hl.bind(mainMod .. " + " .. "V", hl.dsp.exec_cmd("$BROWSER"))
 hl.bind(mainMod .. " + " .. "O", hl.dsp.exec_cmd("open-stream"))
 
 -- bind = $mainMod, J, layoutmsg, togglesplit # dwindle
