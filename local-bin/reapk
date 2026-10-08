@@ -22,15 +22,15 @@ if [ "$deviceAmount" -lt 3 ]; then
     notify "Error: cannot open any devices"
     exit 1
 elif [ "$deviceAmount" -eq 3 ]; then
-    extraAPKoptions=""
+    extraAPKoptions=()
 else
-    device=$(adb devices -l | sed '/List of devices/d; /^$/d' | dmenu -i -l 30 -p "Selet Device:" | awk '{print $1}')
+    device=$(adb devices -l | sed '/List of devices/d; /^$/d' | fuzzel -d -l 30 -p "Select Device: " | awk '{print $1}')
     if [ -z $device ]; then
         notify "Error: no device selected"
         exit 1
     fi
-    extraAPKoptions="-s $device"
+    extraAPKoptions=(-s "$device")
 fi
 
 # install and notify when action finished
-st-exec "adb install $extraAPKoptions -r $apkFile" && notify "Action Finished !!!"
+kitty -e adb install "${extraAPKoptions[@]}" -r "$apkFile" && notify "Action Finished !!!"
