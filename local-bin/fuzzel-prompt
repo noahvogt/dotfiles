@@ -2,4 +2,4 @@
 
 # script to get a prompt for power options or entering any other command
 
-printf 'lock\nbetterlockscreen -l\nsdn\nreboot' | fuzzel -d -p '$ ' | tee /tmp/prompt-cmd | xargs -0 zsh -ic
+printf 'lock\nloginctl lock-session\nsdn\nreboot' | fuzzel -d -p '$ ' | tee /tmp/prompt-cmd | xargs -0 zsh -ic

@@ -29,7 +29,7 @@ cmd open ${{
     application/vnd*) setsid -f libreoffice "$f" >/dev/null 2>&1;;
 	application/pdf|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
 	application/pgp-encrypted) $EDITOR $fx ;;
-	xopp) devour xournalpp $f;;
+	xopp) setsid -f xournalpp $f >/dev/null 2>&1 ;;
     sc) sc-im $f;;
         *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
     esac

@@ -27,7 +27,7 @@ showpdf() {
         cp "/tmp/index.pdf" "$cachedir/$index"
         ;;
     print) lp "/tmp/index.pdf" ;;
-    *) devour "$viewer" "/tmp/index.pdf" ;;
+    *) setsid -f "$viewer" "/tmp/index.pdf" ;;
     esac
 }
 

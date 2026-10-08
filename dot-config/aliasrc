@@ -26,23 +26,18 @@ alias r='ranger'
 alias ca='calcurse-caldav && calcurse && calcurse-caldav'
 alias py='python'
 #alias wget='wget --hsts-file ~/.cache/wget/wget-hsts'
-alias si='devour sxiv'
-alias lo='devour libreoffice'
-alias mu='devour mupdf'
-alias llp='devour llpp'
-alias d='devour'
+alias lo='libreoffice'
+alias mu='mupdf'
 alias nb='newsboat'
 alias mutt='neomutt'
 alias ne='neomutt'
 
 # copy and paste
-alias x11-copy="xclip -sel clip"
-alias x11-paste="xclip -out -sel clip"
 alias copy="wl-copy"
 alias paste="wl-paste"
 
 # lockscreen
-alias lock='betterlockscreen -s dim'
+alias lock='systemctl suspend'
 
 # faster directory switching
 alias ..='cd ..'
@@ -56,8 +51,7 @@ alias v='vim'
 
 # set background
 setbg() {
-    feh --bg-scale "$1"
-    [ -f "$HOME/.fehbg" ] && mv "$HOME/.fehbg" "$XDG_CACHE_HOME" && bv -u
+    awww img "$1"
 }
 
 # safety features

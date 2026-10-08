@@ -49,7 +49,7 @@ export PATH=$PATH:~/.config/setup/templates/latex
 # quick acces to my xournalpp templates
 export PATH=$PATH:~/.config/setup/templates/xournalpp
 
-# fix android studio for dwm
+# fix java gui apps (e.g. android studio) on non-reparenting wms
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 # rust: use llvm from /usr/bin instead of rustup
