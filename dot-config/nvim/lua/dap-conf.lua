@@ -34,10 +34,10 @@ keymap('n', '<leader>dr', function() require('dap').repl.open() end, opts)
 keymap('n', '<leader>dl', function() require('dap').run_last() end, opts)
 
 -- Widgets
-keymap({'n', 'v'}, '<leader>dh', function()
+keymap({'n', 'x'}, '<leader>dh', function()
   require('dap.ui.widgets').hover()
 end)
-keymap({'n', 'v'}, '<leader>dp', function()
+keymap({'n', 'x'}, '<leader>dp', function()
   require('dap.ui.widgets').preview()
 end)
 keymap('n', '<leader>df', function()

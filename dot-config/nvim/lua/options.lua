@@ -3,8 +3,8 @@ vim.g.maplocalleader = " "
 
 local opt = vim.opt
 
--- Set vim paths
-opt.undodir = vim.fn.expand("~/.cache/vim/undo")
+-- Persistent undo (stored in the default undodir under ~/.local/state/nvim)
+opt.undofile = true
 
 -- Make :find recursive
 opt.path:append("**")

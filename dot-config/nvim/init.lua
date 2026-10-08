@@ -7,9 +7,6 @@ for _, k in ipairs(builtins) do
   pcall(vim.keymap.del, 'n', k, { builtin = true })
 end
 
--- Disable built-in commentary
-vim.g.loaded_commentary = 1
-
 -- 2. Load basic settings
 require('options')
 
@@ -19,10 +16,10 @@ require('plugins')
 -- 4. Load vimscript Plugin configurations
 local plug_confs = {
   'emmet', 'sneak',
-  'vcoolor', 'better-whitespace'
+  'vcoolor', 'better-whitespace', 'vim-android'
 }
 for _, conf in ipairs(plug_confs) do
-  vim.cmd('source $XDG_CONFIG_HOME/nvim/plug-conf/' .. conf .. '.vim')
+  vim.cmd.source(vim.fn.stdpath('config') .. '/plug-conf/' .. conf .. '.vim')
 end
 
 -- 5. Load Lua-specific configurations
@@ -45,6 +42,3 @@ require('autocmds')
 
 -- 7. Load Theme last to ensure it has the final word on background/colors
 require('theme')
-
--- Enable intelligent indentation
-vim.cmd('filetype plugin indent on')

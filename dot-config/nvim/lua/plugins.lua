@@ -14,7 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   -- Colorschemes
   { 'navarasu/onedark.nvim', priority = 1000 },
-  'itchyny/landscape.vim',
 
   -- File Explorer (NvimTree)
   {
@@ -80,7 +79,6 @@ require("lazy").setup({
 
   -- Search & Edit utilities
   'romainl/vim-cool',
-  'tpope/vim-commentary',
   'preservim/tagbar',
   'mattn/emmet-vim',
   'justinmk/vim-sneak',

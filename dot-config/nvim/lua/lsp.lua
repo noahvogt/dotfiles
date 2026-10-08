@@ -1,5 +1,4 @@
 local blink = require('blink.cmp')
-local lspconfig = require('lspconfig')
 
 -- 0. Setup Mason
 require("mason").setup()
@@ -84,7 +83,7 @@ for _, server in ipairs(servers) do
   vim.lsp.enable(server)
 end
 
--- Markdown (AUR: marksman-bin), only if installed
+-- Markdown (AUR: marksman-git), only if installed
 if vim.fn.executable('marksman') == 1 then
   vim.lsp.config('marksman', { capabilities = capabilities, on_attach = on_attach })
   vim.lsp.enable('marksman')
@@ -99,93 +98,61 @@ local cspell_filetypes = {
   "typescript", "vue", "toml", "javascript", "sql",
   "html", "css", "conf", "ini", "make", "dockerfile"
 }
-local cspell_config = {
+-- Options shared by the cspell diagnostics and code actions
+local cspell_opts = {
+  -- require cspell.json as root marker
+  condition = function(utils)
+    return utils.root_has_file({ "cspell.json" })
+  end,
   config = {
     on_add_to_json = function(payload)
       -- format with jq and sort the words array alphabetically
-      os.execute(
-        string.format(
-          "jq '.words |= sort' %s > %s.tmp && mv %s.tmp %s",
-          payload.cspell_config_path,
-          payload.cspell_config_path,
-          payload.cspell_config_path,
-          payload.cspell_config_path
-        )
-      )
+      local path = vim.fn.shellescape(payload.cspell_config_path)
+      os.execute(string.format("jq '.words |= sort' %s > %s.tmp && mv %s.tmp %s", path, path, path, path))
     end,
   },
+  filetypes = cspell_filetypes,
+  -- use global node modules
+  env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
+  -- fix hardcoded 'en' locale when overwriting cspell.json via code action
+  extra_args = function(params)
+    local args = {}
+    local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
+    if cspell_json_path then
+      local ok, content = pcall(vim.fn.readfile, cspell_json_path)
+      if ok then
+        local ok_json, json = pcall(vim.fn.json_decode, table.concat(content, "\n"))
+        if ok_json and json.language then
+          table.insert(args, "--locale")
+          table.insert(args, json.language)
+        end
+      end
+    end
+    return args
+  end,
 }
 null_ls.setup({
   sources = {
-    cspell.diagnostics.with({
-      -- require cspell.json as root marker
-      condition = function(utils)
-        return utils.root_has_file({ "cspell.json" })
-      end,
-      -- apply config + cspell filetypes
-      config = cspell_config.config,
-      filetypes = cspell_filetypes,
-      -- use global node modules
-      env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
-      -- fix hardcoded 'en' locale when overwriting cspell.json via code action
-      extra_args = function(params)
-        local args = {}
-        local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
-        if cspell_json_path then
-          local ok, content = pcall(vim.fn.readfile, cspell_json_path)
-          if ok then
-            local ok_json, json = pcall(vim.fn.json_decode, table.concat(content, "\n"))
-            if ok_json and json.language then
-              table.insert(args, "--locale")
-              table.insert(args, json.language)
-            end
-          end
-        end
-        return args
-      end,
+    cspell.diagnostics.with(vim.tbl_extend("force", cspell_opts, {
       -- set diagnostic level to HINT
       diagnostics_postprocess = function(diagnostic)
         diagnostic.severity = vim.diagnostic.severity.HINT
       end,
-    }),
-    cspell.code_actions.with({
-      -- require cspell.json as root marker
-      condition = function(utils)
-        return utils.root_has_file({ "cspell.json" })
-      end,
-      -- apply config + cspell filetypes
-      config = cspell_config.config,
-      filetypes = cspell_filetypes,
-      -- use global node modules
-      env = vim.tbl_extend("force", vim.fn.environ(), { NODE_PATH = vim.fn.expand('~/.local/share/npm/lib/node_modules') }),
-      -- fix hardcoded 'en' locale when overwriting cspell.json via code action
-      extra_args = function(params)
-        local args = {}
-        local cspell_json_path = require("cspell.helpers").get_config_path(params, params.cwd)
-        if cspell_json_path then
-          local ok, content = pcall(vim.fn.readfile, cspell_json_path)
-          if ok then
-            local ok_json, json = pcall(vim.fn.json_decode, table.concat(content, "\n"))
-            if ok_json and json.language then
-              table.insert(args, "--locale")
-              table.insert(args, json.language)
-            end
-          end
-        end
-        return args
-      end,
-    }),
+    })),
+    cspell.code_actions.with(cspell_opts),
   },
 })
 
--- Custom Veridian setup (Verilog)
-vim.lsp.config('veridian', {
-  cmd = { 'veridian' },
-  filetypes = { 'systemverilog', 'verilog' },
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-vim.lsp.enable('veridian')
+-- Custom Veridian setup (Verilog, AUR: veridian-bin, x86_64 only), only if installed
+if vim.fn.executable('veridian') == 1 then
+  vim.lsp.config('veridian', {
+    cmd = { 'veridian' },
+    filetypes = { 'systemverilog', 'verilog' },
+    capabilities = capabilities,
+    on_attach = on_attach,
+  })
+  vim.lsp.enable('veridian')
+end
 
 -- Official JetBrains Kotlin LSP
 vim.lsp.config('kotlin_lsp', {
@@ -207,7 +174,7 @@ local conform = require("conform")
 conform.setup({
   formatters_by_ft = {
     kotlin = { "ktlint" },
-    python = { "black" },
+    python = { "ruff_format" },
     php = { "php_cs_fixer" },
     java = { "lsp" },
     sh = { "shfmt" },
@@ -222,7 +189,7 @@ conform.setup({
     if vim.api.nvim_buf_get_name(bufnr):match("%.ipynb$") then
       return
     end
-    return { timeout_ms = 2000, lsp_fallback = true }
+    return { timeout_ms = 2000, lsp_format = "fallback" }
   end,
 })
 
@@ -237,7 +204,8 @@ lint.linters_by_ft = {
 
 lint.linters.psalm.ignore_exitcode = true
 
-vim.api.nvim_create_autocmd({ "BufWritePost", "BufEnter" }, {
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost" }, {
+  group = vim.api.nvim_create_augroup("lint", { clear = true }),
   callback = function()
     lint.try_lint()
   end,
@@ -253,11 +221,4 @@ vim.diagnostic.config({
   float = { border = 'rounded' },
 })
 
--- 7. Diagnostic & Spell Highlighting
-vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#ff0000' })
-vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn',  { undercurl = true, sp = '#ff8800' })
-vim.api.nvim_set_hl(0, 'DiagnosticUnderlineHint',  { undercurl = true, sp = '#ffff00' })
-vim.api.nvim_set_hl(0, 'SpellBad',   { undercurl = true, sp = '#ffff00' })
-vim.api.nvim_set_hl(0, 'SpellCap',   { undercurl = true, sp = '#ffff00' })
-vim.api.nvim_set_hl(0, 'SpellLocal', { undercurl = true, sp = '#ffff00' })
-vim.api.nvim_set_hl(0, 'SpellRare',  { undercurl = true, sp = '#ffff00' })
+-- Diagnostic & spell highlighting is set in theme.lua

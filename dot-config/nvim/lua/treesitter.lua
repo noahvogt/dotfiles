@@ -4,7 +4,8 @@ require('nvim-treesitter').setup {
 }
 
 -- Ensure that Treesitter starts on every buffer
-vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter" }, {
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("treesitter_start", { clear = true }),
   callback = function()
     local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
     if lang and vim.api.nvim_buf_is_valid(0) then

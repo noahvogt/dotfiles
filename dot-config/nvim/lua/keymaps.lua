@@ -2,12 +2,11 @@ local keymap = vim.keymap.set
 local opts = { silent = true }
 
 -- Move text buffer in visual mode
-keymap("v", "K", ":m '<-2<CR>gv=gv")
-keymap("v", "J", ":m '>+1<CR>gv=gv")
+keymap("x", "K", ":m '<-2<CR>gv=gv")
+keymap("x", "J", ":m '>+1<CR>gv=gv")
 
 -- Write and quit easier
 keymap("n", "<Leader>w", ":w<CR>")
-keymap("n", "<Leader>z", ":wq<CR>")
 keymap("n", "<Leader>q", ":qa<CR>")
 keymap("n", "<Leader>e", ":q<CR>")
 
@@ -25,12 +24,11 @@ keymap("", "<F5>", ":set spell!<CR>")
 keymap("", "<F6>", ":w<CR>:!glosscompile \"%\" && pkill -HUP mupdf<CR>")
 
 -- Jumper
-keymap("v", "<Space><Space>", "<Esc>/<++><Enter>\"_c4l")
-keymap("", "<Space><Space>", "<Esc>/<++><Enter>\"_c4l")
+keymap({ "n", "x", "o" }, "<Space><Space>", "<Esc>/<++><Enter>\"_c4l")
 
 -- Copy from / to clipboard
-keymap("v", "<leader>y", "\"+y")
-keymap("v", "<leader>Y", "\"+Y")
+keymap("x", "<leader>y", "\"+y")
+keymap("x", "<leader>Y", "\"+Y")
 keymap("n", "<leader>p", "\"+p")
 keymap("n", "<leader>P", "\"+P")
 
@@ -53,16 +51,16 @@ keymap({ "n", "x" }, "<leader>a", vim.lsp.buf.code_action, opts)
 keymap("n", "<leader>cl", vim.lsp.codelens.run, opts)
 
 -- Switch to last opened file
-keymap("n", "<leader>b", "<c-^><cr>")
+keymap("n", "<leader>b", "<c-^>")
 
 -- NvimTree Toggle
 keymap("n", "<Leader>f", ":NvimTreeToggle<CR>", opts)
 
 -- Tab navigation
 for i = 1, 9 do
-  keymap("", "<leader>" .. i, i .. "gt")
+  keymap({ "n", "x", "o" }, "<leader>" .. i, i .. "gt")
 end
-keymap("", "<leader>0", ":tablast<cr>")
+keymap({ "n", "x", "o" }, "<leader>0", ":tablast<cr>")
 
 -- Auto center searches
 keymap("n", "n", "nzzzv")
@@ -72,7 +70,7 @@ keymap("n", "N", "Nzzzv")
 keymap("n", "<leader>g", ":TagbarToggle<CR>")
 
 -- Source vim config
-keymap("n", "<Leader>sv", ":source $XDG_CONFIG_HOME/nvim/init.lua<CR>")
+keymap("n", "<Leader>sv", ":source $MYVIMRC<CR>")
 
 -- Telescope
 keymap("n", "<leader>l", ":Telescope live_grep<CR>")

@@ -20,19 +20,33 @@ autocmd("FileType", {
 })
 
 -- Markdown Math and Liquid highlighting
+-- Matches are window-local, so add them once per window and remove them when
+-- the window switches to another buffer
 local function math_and_liquid()
-  vim.fn.matchadd("math", [[\$\$]])
-  vim.fn.matchadd("math_block", [[\$[^$].\{-}\$]])
-  vim.fn.matchadd("liquid", [[{%.*%}]])
-  vim.fn.matchadd("highlight_block", [[{% highlight .*%}]])
-  vim.fn.matchadd("highlight_block", [[```]])
-
   vim.cmd([[
     hi link math Statement
     hi link liquid Statement
     hi link highlight_block Function
     hi link math_block Function
   ]])
+
+  if vim.w.math_and_liquid then
+    return
+  end
+  vim.w.math_and_liquid = {
+    vim.fn.matchadd("math", [[\$\$]]),
+    vim.fn.matchadd("math_block", [[\$[^$].\{-}\$]]),
+    vim.fn.matchadd("liquid", [[{%.*%}]]),
+    vim.fn.matchadd("highlight_block", [[{% highlight .*%}]]),
+    vim.fn.matchadd("highlight_block", [[```]]),
+  }
+end
+
+local function clear_math_and_liquid()
+  for _, id in ipairs(vim.w.math_and_liquid or {}) do
+    pcall(vim.fn.matchdelete, id)
+  end
+  vim.w.math_and_liquid = nil
 end
 
 augroup("callMathFunction", { clear = true })
@@ -40,6 +54,11 @@ autocmd({ "BufRead", "BufNewFile", "BufEnter" }, {
   group = "callMathFunction",
   pattern = { "*.md", "*.markdown" },
   callback = math_and_liquid,
+})
+autocmd("BufLeave", {
+  group = "callMathFunction",
+  pattern = { "*.md", "*.markdown" },
+  callback = clear_math_and_liquid,
 })
 
 -- Disable automatic comment
