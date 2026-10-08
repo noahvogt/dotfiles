@@ -16,7 +16,6 @@ alias sdn='shutdown now > /dev/null 2> /dev/null || doas /usr/bin/openrc-shutdow
 alias sus='systemctl suspend || loginctl suspend'
 alias re='reboot || doas openrc-shutdown --reboot now '
 alias q='exit'
-alias sx='startx "$XDG_CONFIG_HOME/X11/xinitrc" --'
 alias ll='ls -l'
 alias la='ls -A'
 alias resource='source ${ZDOTDIR:-$HOME}/.zshrc'
@@ -90,7 +89,6 @@ alias dev2main='git checkout dev && git pull && git checkout main && git pull &&
 
 # ~/ cleanup
 alias yarn="yarn --use-yarnrc $XDG_CONFIG_HOME/yarn/config"
-alias xbindkeys="xbindkeys -f $XDG_CONFIG_HOME/xbindkeys/config"
 alias abook="abook --config $XDG_CONFIG_HOME/abook/abookrc --datafile $XDG_DATA_HOME/abook/addressbook"
 
 # always open st in non-interactive mode
