@@ -1,6 +1,36 @@
 # Enable colors and change prompt:
 autoload -U colors && colors
-PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%(1V. %{$fg[cyan]%}%1v.)%{$fg[red]%}]%{$reset_color%}$%b "
+RPROMPT="%(2V.%{$fg[yellow]%}%2v%{$reset_color%}.)"
+
+# Git branch (%1v) and duration of the last command (%2v) for the prompt. Both
+# go through psvar, so a branch name is never expanded as prompt code.
+zmodload zsh/datetime
+autoload -Uz add-zsh-hook
+prompt_timer_start() { _cmd_start=$EPOCHREALTIME }
+prompt_info() {
+    local branch
+    branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null)
+    # Exit status 1 means detached HEAD; anything else is "not a repo".
+    (( $? == 1 )) && branch=$(git rev-parse --short HEAD 2>/dev/null)
+    psvar[1]=$branch
+
+    psvar[2]=
+    if [[ -n $_cmd_start ]]; then
+        local -F 1 elapsed=$(( EPOCHREALTIME - _cmd_start ))
+        local -i s=$elapsed
+        if (( s >= 3600 )); then
+            psvar[2]="$(( s / 3600 ))h$(( s % 3600 / 60 ))m"
+        elif (( s >= 60 )); then
+            psvar[2]="$(( s / 60 ))m$(( s % 60 ))s"
+        elif (( s >= 2 )); then
+            psvar[2]="${elapsed}s"
+        fi
+        unset _cmd_start
+    fi
+}
+add-zsh-hook preexec prompt_timer_start
+add-zsh-hook precmd prompt_info
 
 # History in cache directory:
 HISTSIZE=10000
