@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# script to view and control the hyprland desktop of another machine in
+# gnome-connections. wayvnc only runs on the remote for the duration of the
+# connection and only listens on a unix socket in its XDG_RUNTIME_DIR, which
+# ssh forwards to a local port. so no vnc port is opened on the network and
+# nothing keeps running afterwards. the remote needs sshd and a running
+# hyprland session
+
+[ -n "$1" ] || {
+    echo "usage: ${0##*/} [user@]host [local port]" >&2
+    exit 1
+}
+host=$1
+port=${2:-5959}
+
+ctl=$(mktemp -u "${XDG_RUNTIME_DIR:-/tmp}/remote-desktop.XXXXXX")
+
+cleanup() {
+    [ -n "$waiter" ] && kill "$waiter" 2>/dev/null
+    ssh -S "$ctl" -O exit "$host" 2>/dev/null
+}
+trap cleanup EXIT
+trap 'exit 1' INT TERM HUP
+
+# one authenticated connection that all following ssh calls are multiplexed over
+ssh -M -S "$ctl" -fN "$host" || exit 1
+
+# a wayvnc left over from a connection that did not end cleanly is replaced
+sock=$(ssh -S "$ctl" "$host" '
+    sock=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/wayvnc.sock
+    pkill -x -u "$(id -u)" wayvnc
+    rm -f "$sock"
+    echo "$sock"')
+[ -n "$sock" ] || exit 1
+
+ssh -S "$ctl" -O forward -L "127.0.0.1:$port:$sock" "$host" || exit 1
+
+# open the viewer as soon as wayvnc listens
+(
+    until ssh -S "$ctl" "$host" "test -S '$sock'" 2>/dev/null; do
+        sleep 0.5
+    done
+    setsid -f gnome-connections "vnc://127.0.0.1:$port" >/dev/null 2>&1
+) &
+waiter=$!
+
+echo "Sharing the desktop of $host on vnc://127.0.0.1:$port (ctrl-c to stop)"
+
+# -tt so that wayvnc gets hung up when this connection goes away, -e so that
+# it exits once the viewer disconnects
+ssh -S "$ctl" -tt "$host" "
+    wl=\$(hyprctl instances -j | jq -re '.[0].wl_socket') || {
+        echo 'No running hyprland session found' >&2
+        exit 1
+    }
+    WAYLAND_DISPLAY=\$wl exec wayvnc -e 'unix:$sock'"

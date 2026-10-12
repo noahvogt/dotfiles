@@ -1,0 +1,3 @@
+# keysyms sent by the viewer are looked up in this layout. started over ssh
+# there is no XKB_DEFAULT_LAYOUT, so match the hyprland kb_layout here
+xkb_layout=ch
