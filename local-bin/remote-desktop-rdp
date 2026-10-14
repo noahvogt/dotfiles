@@ -17,20 +17,6 @@ port=${2:-3389}
 addr=$(ssh -G "$host" | awk '$1 == "hostname" { print $2 }')
 pass=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
 
-# the viewer sends physical scancodes, which hypr-rdp maps with a plain keymap
-# for the announced layout (0x0807 is ch). so the xkb options of the local
-# keyboard, e.g. a mac one without the alt/win swap, are applied here. the
-# scancodes (see sdl-freerdp3 /list:kbd-scancode) are decimal, as freerdp
-# rejects remap entries longer than 10 characters
-kbd=/kbd:layout:0x0807
-for opt in $(hyprctl devices -j | jq -r '.keyboards[] | select(.main).options' | tr , ' '); do
-    case $opt in
-    caps:swapescape) kbd=$kbd,remap:58=1,remap:1=58 ;;
-    altwin:swap_lalt_lwin) kbd=$kbd,remap:56=347,remap:347=56 ;;
-    lv3:rwin_switch) kbd=$kbd,remap:348=312 ;;
-    esac
-done
-
 ctl=$(mktemp -u "${XDG_RUNTIME_DIR:-/tmp}/remote-desktop-rdp.XXXXXX")
 
 cleanup() {
@@ -51,6 +37,25 @@ pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
     (umask 077 && cat >"$pwfile") && echo "$pwfile"')
 [ -n "$pwfile" ] || exit 1
 
+# the viewer sends physical scancodes, which hypr-rdp maps with the keymap of
+# the remote hyprland (with a password, hypr-rdp 0.1.6 never gets to apply the
+# client layout). so the xkb options only one of the two keyboards uses, e.g.
+# the alt/win swap missing on a mac keyboard, are applied here. the scancodes
+# (see sdl-freerdp3 /list:kbd-scancode) are decimal, as freerdp rejects remap
+# entries longer than 10 characters
+remote_opts=$(ssh -S "$ctl" "$host" '
+    export HYPRLAND_INSTANCE_SIGNATURE=$(hyprctl instances -j | jq -r ".[0].instance")
+    hyprctl getoption input:kb_options -j | jq -r .str')
+local_opts=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main).options')
+kbd=/kbd:layout:0x0807
+for opt in $(printf '%s\n' "$local_opts" "$remote_opts" | tr , '\n' | sort | uniq -u); do
+    case $opt in
+    caps:swapescape) kbd=$kbd,remap:58=1,remap:1=58 ;;
+    altwin:swap_lalt_lwin) kbd=$kbd,remap:56=347,remap:347=56 ;;
+    lv3:rwin_switch) kbd=$kbd,remap:348=312 ;;
+    esac
+done
+
 # open the viewer as soon as hypr-rdp listens, it has read the password by then.
 # the arguments come from stdin so that the password does not show up in ps.
 # closing the viewer ends the connection
@@ -59,8 +64,9 @@ pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
         sleep 0.5
     done
     ssh -S "$ctl" "$host" "rm -f '$pwfile'"
-    printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" "$kbd" /cert:tofu /sound \
-        /smart-sizing /log-level:ERROR | sdl-freerdp3 /args-from:stdin >/dev/null
+    printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" '/auth-pkg-list:!kerberos' \
+        "$kbd" /cert:tofu /sound /smart-sizing /log-level:ERROR |
+        sdl-freerdp3 /args-from:stdin >/dev/null
     ssh -S "$ctl" -O exit "$host" 2>/dev/null
 ) &
 waiter=$!
@@ -78,4 +84,5 @@ ssh -S "$ctl" -tt "$host" "
     export WAYLAND_DISPLAY=\$(hyprctl instances -j | jq -r '.[0].wl_socket')
     mon=\$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')
     exec hypr-rdp --bind 0.0.0.0:$port --username rdp \
-        --password-file '$pwfile' --output \"\$mon\""
+        --password-file '$pwfile' --output \"\$mon\" \
+        --keyboard-layout-policy compositor"
