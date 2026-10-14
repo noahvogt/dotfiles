@@ -16,6 +16,11 @@ usage() {
     exit 1
 }
 
+die() {
+    echo "${0##*/}: $*" >&2
+    exit 1
+}
+
 native=
 while getopts n opt; do
     case $opt in
@@ -27,6 +32,10 @@ shift $((OPTIND - 1))
 [ -n "$1" ] || usage
 host=$1
 port=${2:-3389}
+
+command -v sdl-freerdp3 >/dev/null || die "sdl-freerdp3 not found, install freerdp"
+# hyprctl prints its errors to stdout, which jq would choke on
+hyprctl version >/dev/null || die "no running hyprland session here"
 
 if [ -n "$native" ]; then
     scale=$(hyprctl monitors -j | jq -r '.[] | select(.focused).scale')
@@ -54,23 +63,25 @@ trap 'exit 1' INT TERM HUP
 # one authenticated connection that all following ssh calls are multiplexed over
 ssh -M -S "$ctl" -fN "$host" || exit 1
 
-# a hypr-rdp left over from a connection that did not end cleanly is replaced.
-# the password goes into a file only the remote user can read
-pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
-    while pkill -x -u "$(id -u)" hypr-rdp; do sleep 0.5; done
-    pwfile=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr-rdp.pass
-    (umask 077 && cat >"$pwfile") && echo "$pwfile"')
-[ -n "$pwfile" ] || exit 1
-
 # the viewer sends physical scancodes, which hypr-rdp maps with the keymap of
 # the remote hyprland (with a password, hypr-rdp 0.1.6 never gets to apply the
 # client layout). so the xkb options only one of the two keyboards uses, e.g.
 # the alt/win swap missing on a mac keyboard, are applied here. the scancodes
 # (see sdl-freerdp3 /list:kbd-scancode) are decimal, as freerdp rejects remap
-# entries longer than 10 characters
+# entries longer than 10 characters. without a session, hyprctl instances -j
+# prints a lone ] instead of an empty array, so jq errors are silenced
 remote_opts=$(ssh -S "$ctl" "$host" '
-    export HYPRLAND_INSTANCE_SIGNATURE=$(hyprctl instances -j | jq -r ".[0].instance")
-    hyprctl getoption input:kb_options -j | jq -r .str')
+    command -v hypr-rdp >/dev/null || {
+        echo "hypr-rdp is not installed on $(uname -n)" >&2
+        exit 1
+    }
+    sig=$(hyprctl instances -j 2>/dev/null | jq -re ".[0].instance" 2>/dev/null) || {
+        echo "no running hyprland session on $(uname -n)" >&2
+        exit 1
+    }
+    HYPRLAND_INSTANCE_SIGNATURE=$sig hyprctl getoption input:kb_options -j |
+        jq -r .str') || exit 1
+
 local_opts=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main).options')
 kbd=/kbd:layout:0x0807
 for opt in $(printf '%s\n' "$local_opts" "$remote_opts" | tr , '\n' | sort | uniq -u); do
@@ -80,6 +91,14 @@ for opt in $(printf '%s\n' "$local_opts" "$remote_opts" | tr , '\n' | sort | uni
     lv3:rwin_switch) kbd=$kbd,remap:348=312 ;;
     esac
 done
+
+# a hypr-rdp left over from a connection that did not end cleanly is replaced.
+# the password goes into a file only the remote user can read
+pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
+    while pkill -x -u "$(id -u)" hypr-rdp; do sleep 0.5; done
+    pwfile=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr-rdp.pass
+    (umask 077 && cat >"$pwfile") && echo "$pwfile"')
+[ -n "$pwfile" ] || exit 1
 
 # open the viewer as soon as hypr-rdp listens, it has read the password by then.
 # the arguments come from stdin so that the password does not show up in ps.
@@ -104,8 +123,8 @@ echo "Sharing the desktop of $host on rdp://$addr:$port (ctrl-c to stop)"
 # -tt so that hypr-rdp gets hung up when this connection goes away, which also
 # removes its headless monitor
 ssh -S "$ctl" -tt "$host" "
-    sig=\$(hyprctl instances -j | jq -re '.[0].instance') || {
-        echo 'No running hyprland session found' >&2
+    sig=\$(hyprctl instances -j 2>/dev/null | jq -re '.[0].instance' 2>/dev/null) || {
+        echo \"no running hyprland session on \$(uname -n)\" >&2
         exit 1
     }
     export HYPRLAND_INSTANCE_SIGNATURE=\$sig
@@ -122,7 +141,11 @@ ssh -S "$ctl" -tt "$host" "
         --keyboard-layout-policy compositor &
     pid=\$!
     trap 'kill \$pid' HUP INT TERM
-    # wait returns early when a trap ran, the second one waits for the exit
+    # wait returns early when a trap ran, then it is waited for once more. the
+    # password file is only removed here if hypr-rdp failed before listening
     wait \$pid
-    wait \$pid
-    hyprctl eval \"\$(printf \"\$cursor\" \"\$hw\")\" >/dev/null"
+    rc=\$?
+    kill -0 \$pid 2>/dev/null && { wait \$pid; rc=\$?; }
+    rm -f '$pwfile'
+    hyprctl eval \"\$(printf \"\$cursor\" \"\$hw\")\" >/dev/null
+    exit \$rc"
