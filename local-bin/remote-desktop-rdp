@@ -108,6 +108,18 @@ ssh -S "$ctl" -tt "$host" "
     export HYPRLAND_INSTANCE_SIGNATURE=\$sig
     export WAYLAND_DISPLAY=\$(hyprctl instances -j | jq -r '.[0].wl_socket')
     mon=\$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')
-    exec hypr-rdp --bind 0.0.0.0:$port --username rdp \
+    # hypr-rdp captures without the hardware cursor, so a software cursor is
+    # drawn into the frames while it runs. its session hooks never fire with a
+    # password in 0.1.6, so this shell passes on the hangup and restores it
+    hw=\$(hyprctl getoption cursor:no_hardware_cursors -j | jq -r .int)
+    cursor='hl.config({ cursor = { no_hardware_cursors = %s } })'
+    hyprctl eval \"\$(printf \"\$cursor\" 1)\" >/dev/null
+    hypr-rdp --bind 0.0.0.0:$port --username rdp \
         --password-file '$pwfile' $display \
-        --keyboard-layout-policy compositor"
+        --keyboard-layout-policy compositor &
+    pid=\$!
+    trap 'kill \$pid' HUP INT TERM
+    # wait returns early when a trap ran, the second one waits for the exit
+    wait \$pid
+    wait \$pid
+    hyprctl eval \"\$(printf \"\$cursor\" \"\$hw\")\" >/dev/null"
