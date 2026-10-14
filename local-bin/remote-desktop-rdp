@@ -83,7 +83,10 @@ done
 
 # open the viewer as soon as hypr-rdp listens, it has read the password by then.
 # the arguments come from stdin so that the password does not show up in ps.
-# closing the viewer ends the connection
+# closing the viewer ends the connection. on hyprland, freerdp sizes fullscreen
+# windows with the logical display size, which leaves the picture in the top
+# left corner on a scaled monitor, so that workaround is turned off
+# (it is meant for /f, which therefore fails, but toggling fullscreen works)
 (
     until ssh -S "$ctl" "$host" "ss -Hltn 'sport = :$port' | grep -q ." 2>/dev/null; do
         sleep 0.5
@@ -91,7 +94,7 @@ done
     ssh -S "$ctl" "$host" "rm -f '$pwfile'"
     printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" '/auth-pkg-list:!kerberos' \
         "$kbd" /cert:tofu /sound "$view" /log-level:ERROR |
-        sdl-freerdp3 /args-from:stdin >/dev/null
+        FREERDP_WLROOTS_HACK=0 sdl-freerdp3 /args-from:stdin >/dev/null
     ssh -S "$ctl" -O exit "$host" 2>/dev/null
 ) &
 waiter=$!
