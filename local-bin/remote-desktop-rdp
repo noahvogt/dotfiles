@@ -19,13 +19,15 @@ pass=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
 
 # the viewer sends physical scancodes, which hypr-rdp maps with a plain keymap
 # for the announced layout (0x0807 is ch). so the xkb options of the local
-# keyboard, e.g. a mac one without the alt/win swap, are applied here
+# keyboard, e.g. a mac one without the alt/win swap, are applied here. the
+# scancodes (see sdl-freerdp3 /list:kbd-scancode) are decimal, as freerdp
+# rejects remap entries longer than 10 characters
 kbd=/kbd:layout:0x0807
 for opt in $(hyprctl devices -j | jq -r '.keyboards[] | select(.main).options' | tr , ' '); do
     case $opt in
-    caps:swapescape) kbd=$kbd,remap:0x3a=0x01,remap:0x01=0x3a ;;
-    altwin:swap_lalt_lwin) kbd=$kbd,remap:0x38=0x15b,remap:0x15b=0x38 ;;
-    lv3:rwin_switch) kbd=$kbd,remap:0x15c=0x138 ;;
+    caps:swapescape) kbd=$kbd,remap:58=1,remap:1=58 ;;
+    altwin:swap_lalt_lwin) kbd=$kbd,remap:56=347,remap:347=56 ;;
+    lv3:rwin_switch) kbd=$kbd,remap:348=312 ;;
     esac
 done
 
@@ -57,8 +59,8 @@ pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
         sleep 0.5
     done
     ssh -S "$ctl" "$host" "rm -f '$pwfile'"
-    printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" "$kbd" /cert:tofu /sound /smart-sizing |
-        sdl-freerdp3 /args-from:stdin >/dev/null 2>&1
+    printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" "$kbd" /cert:tofu /sound \
+        /smart-sizing /log-level:ERROR | sdl-freerdp3 /args-from:stdin >/dev/null
     ssh -S "$ctl" -O exit "$host" 2>/dev/null
 ) &
 waiter=$!
