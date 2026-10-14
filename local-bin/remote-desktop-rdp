@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# script to view and control the hyprland desktop of another machine on the
+# local network over rdp. like remote-desktop, hypr-rdp only runs on the remote
+# for the duration of the connection, but it listens on the network directly
+# and is protected by a one-time password. the remote needs sshd, hypr-rdp and
+# a running hyprland session
+
+[ -n "$1" ] || {
+    echo "usage: ${0##*/} [user@]host [port]" >&2
+    exit 1
+}
+host=$1
+port=${2:-3389}
+
+# the ssh host may be an alias, the rdp client needs the real address
+addr=$(ssh -G "$host" | awk '$1 == "hostname" { print $2 }')
+pass=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
+
+ctl=$(mktemp -u "${XDG_RUNTIME_DIR:-/tmp}/remote-desktop-rdp.XXXXXX")
+
+cleanup() {
+    [ -n "$waiter" ] && kill "$waiter" 2>/dev/null
+    ssh -S "$ctl" -O exit "$host" 2>/dev/null
+}
+trap cleanup EXIT
+trap 'exit 1' INT TERM HUP
+
+# one authenticated connection that all following ssh calls are multiplexed over
+ssh -M -S "$ctl" -fN "$host" || exit 1
+
+# a hypr-rdp left over from a connection that did not end cleanly is replaced.
+# the password goes into a file only the remote user can read
+pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
+    while pkill -x -u "$(id -u)" hypr-rdp; do sleep 0.5; done
+    pwfile=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr-rdp.pass
+    (umask 077 && cat >"$pwfile") && echo "$pwfile"')
+[ -n "$pwfile" ] || exit 1
+
+# open the viewer as soon as hypr-rdp listens, it has read the password by then.
+# the arguments come from stdin so that the password does not show up in ps.
+# closing the viewer ends the connection
+(
+    until ssh -S "$ctl" "$host" "ss -Hltn 'sport = :$port' | grep -q ." 2>/dev/null; do
+        sleep 0.5
+    done
+    ssh -S "$ctl" "$host" "rm -f '$pwfile'"
+    printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" /cert:tofu /sound /smart-sizing |
+        sdl-freerdp3 /args-from:stdin >/dev/null 2>&1
+    ssh -S "$ctl" -O exit "$host" 2>/dev/null
+) &
+waiter=$!
+
+echo "Sharing the desktop of $host on rdp://$addr:$port (ctrl-c to stop)"
+
+# -tt so that hypr-rdp gets hung up when this connection goes away. the
+# focused monitor is shared instead of a new headless one, like with wayvnc
+ssh -S "$ctl" -tt "$host" "
+    sig=\$(hyprctl instances -j | jq -re '.[0].instance') || {
+        echo 'No running hyprland session found' >&2
+        exit 1
+    }
+    export HYPRLAND_INSTANCE_SIGNATURE=\$sig
+    export WAYLAND_DISPLAY=\$(hyprctl instances -j | jq -r '.[0].wl_socket')
+    mon=\$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')
+    exec hypr-rdp --bind 0.0.0.0:$port --username rdp \
+        --password-file '$pwfile' --output \"\$mon\""

@@ -1,0 +1,3 @@
+# interpret the scancodes sent by the client with the hyprland keymap instead of
+# guessing a layout from the client, both sides use the ch layout
+keyboard_layout_policy = "compositor"
