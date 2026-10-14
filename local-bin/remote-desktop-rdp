@@ -5,13 +5,38 @@
 # for the duration of the connection, but it listens on the network directly
 # and is protected by a one-time password. the remote needs sshd, hypr-rdp and
 # a running hyprland session
+#
+# by default the focused monitor of the remote is shared like with wayvnc and
+# scaled to the viewer window, which distorts it when the aspect ratios differ.
+# with -n hypr-rdp instead adds a headless monitor to the remote that always
+# has the native size and scale of the viewer window, so nothing is scaled
 
-[ -n "$1" ] || {
-    echo "usage: ${0##*/} [user@]host [port]" >&2
+usage() {
+    echo "usage: ${0##*/} [-n] [user@]host [port]" >&2
     exit 1
 }
+
+native=
+while getopts n opt; do
+    case $opt in
+    n) native=1 ;;
+    *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
+[ -n "$1" ] || usage
 host=$1
 port=${2:-3389}
+
+if [ -n "$native" ]; then
+    scale=$(hyprctl monitors -j | jq -r '.[] | select(.focused).scale')
+    display="--scale $scale"
+    view=/dynamic-resolution
+else
+    # shellcheck disable=SC2016 # $mon is expanded on the remote, see below
+    display='--output "$mon"'
+    view=/smart-sizing
+fi
 
 # the ssh host may be an alias, the rdp client needs the real address
 addr=$(ssh -G "$host" | awk '$1 == "hostname" { print $2 }')
@@ -65,7 +90,7 @@ done
     done
     ssh -S "$ctl" "$host" "rm -f '$pwfile'"
     printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" '/auth-pkg-list:!kerberos' \
-        "$kbd" /cert:tofu /sound /smart-sizing /log-level:ERROR |
+        "$kbd" /cert:tofu /sound "$view" /log-level:ERROR |
         sdl-freerdp3 /args-from:stdin >/dev/null
     ssh -S "$ctl" -O exit "$host" 2>/dev/null
 ) &
@@ -73,8 +98,8 @@ waiter=$!
 
 echo "Sharing the desktop of $host on rdp://$addr:$port (ctrl-c to stop)"
 
-# -tt so that hypr-rdp gets hung up when this connection goes away. the
-# focused monitor is shared instead of a new headless one, like with wayvnc
+# -tt so that hypr-rdp gets hung up when this connection goes away, which also
+# removes its headless monitor
 ssh -S "$ctl" -tt "$host" "
     sig=\$(hyprctl instances -j | jq -re '.[0].instance') || {
         echo 'No running hyprland session found' >&2
@@ -84,5 +109,5 @@ ssh -S "$ctl" -tt "$host" "
     export WAYLAND_DISPLAY=\$(hyprctl instances -j | jq -r '.[0].wl_socket')
     mon=\$(hyprctl monitors -j | jq -r '.[] | select(.focused).name')
     exec hypr-rdp --bind 0.0.0.0:$port --username rdp \
-        --password-file '$pwfile' --output \"\$mon\" \
+        --password-file '$pwfile' $display \
         --keyboard-layout-policy compositor"
