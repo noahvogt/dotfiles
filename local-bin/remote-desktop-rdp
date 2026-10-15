@@ -146,11 +146,6 @@ ssh -S "$ctl" -q -tt "$host" "
     hw=\$(hyprctl getoption cursor:no_hardware_cursors -j | jq -r .int)
     cursor='hl.config({ cursor = { no_hardware_cursors = %s } })'
     hyprctl eval \"\$(printf \"\$cursor\" 1)\" >/dev/null
-    # the remote-desktop rules of hyprland.lua make translucent windows and
-    # waybar opaque or blurred, which h.264 compresses much better
-    rules='hl.window_rule({ name = \"remote-desktop\" }):set_enabled(%s);
-        hl.layer_rule({ name = \"remote-desktop\" }):set_enabled(%s)'
-    hyprctl eval \"\$(printf \"\$rules\" true true)\" >/dev/null
     hypr-rdp --bind '$addr:$port' --username rdp \
         --password-file '$pwfile' $display \
         --keyboard-layout-policy compositor &
@@ -163,5 +158,4 @@ ssh -S "$ctl" -q -tt "$host" "
     kill -0 \$pid 2>/dev/null && { wait \$pid; rc=\$?; }
     rm -f '$pwfile'
     hyprctl eval \"\$(printf \"\$cursor\" \"\$hw\")\" >/dev/null
-    hyprctl eval \"\$(printf \"\$rules\" false false)\" >/dev/null
     exit \$rc" || [ -e "$ctl.up" ]

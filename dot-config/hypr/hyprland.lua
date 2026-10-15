@@ -354,25 +354,6 @@ hl.window_rule({
     opacity = "1.0 override 1.0 override",
 })
 
--- enabled by remote-desktop-rdp during a session, as h.264 turns the wallpaper
--- showing through translucent windows and bars into blocky noise
-hl.window_rule({
-    name    = "remote-desktop",
-    enabled = false,
-    match   = {
-        class = ".*",
-    },
-    opaque  = true,
-})
-hl.layer_rule({
-    name    = "remote-desktop",
-    enabled = false,
-    match   = {
-        namespace = "waybar",
-    },
-    blur    = true,
-})
-
 hl.window_rule({
     name  = "suppress-maximize-events",
     match = {
@@ -454,4 +435,15 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hypridle")
     hl.exec_cmd("xwaylandvideobridge")
     hl.exec_cmd("wlsunset -l 47 -L 8") -- 47 N, 8 E (Switzerland coordinates)
+end)
+
+-- the headless monitor of remote-desktop-rdp -n gets a flat background, as
+-- h.264 turns the wallpaper showing through translucent windows and bars into
+-- blocky noise. awww paints new outputs black once it knows them, so this waits
+-- for that first
+hl.on("monitor.added", function(mon)
+    if mon.name:find("^hypr%-rdp") then
+        hl.exec_cmd("for i in $(seq 20); do awww query | grep -q '^: " .. mon.name .. ":' && break; "
+            .. "sleep 0.25; done; awww clear 1b1b1f -o " .. mon.name)
+    end
 end)
