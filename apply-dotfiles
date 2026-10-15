@@ -15,8 +15,8 @@
 [ -e dot-config/swaync/theme.css ] || cp dot-config/swaync/dark.css dot-config/swaync/theme.css
 [ -e dot-config/kitty/theme.conf ] || ln -s dark_theme.conf dot-config/kitty/theme.conf
 
-stow --verbose --dotfiles --target=$HOME/.config dot-config
-stow --verbose --dotfiles --target=$HOME/.local/share local-share
-stow --verbose --dotfiles --target=$HOME/.local/bin local-bin
+stow --verbose --restow --dotfiles --target=$HOME/.config dot-config
+stow --verbose --restow --dotfiles --target=$HOME/.local/share local-share
+stow --verbose --restow --dotfiles --target=$HOME/.local/bin local-bin
 #cd dot-config/
 #stow --verbose --dotfiles --target=$HOME/.config/vim vim
