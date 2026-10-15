@@ -221,6 +221,7 @@ hl.bind(mainMod .. " + " .. "SUPER_L", hl.dsp.exec_cmd("fuzzel"), { release = tr
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Binds/ for more
 hl.bind(mainMod .. " + " .. "N", hl.dsp.exec_cmd("fuzzel-vpn"))
+hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "D", hl.dsp.exec_cmd("fuzzel-remote-desktop"))
 hl.bind(mainMod .. " + " .. "Return", hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + " .. "Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "Q", hl.dsp.exec_cmd("killall Hyprland"))

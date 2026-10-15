@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# script to open the desktop of another machine from fuzzel. the hosts offered
+# are the ones from ~/.ssh/config, any other [user@]host can be typed in. each
+# host is shared over rdp, with "native" on a headless monitor sized to the
+# viewer (remote-desktop-rdp -n), or with "vnc" over wayvnc. there is no
+# terminal to show errors in, so a failure is sent as a notification
+
+hosts=$(awk 'tolower($1) == "host" {
+    for (i = 2; i <= NF; i++) if ($i !~ /[*?!]/) print $i
+}' ~/.ssh/config 2>/dev/null)
+
+chosen=$(for host in $hosts; do
+    printf '%s\n' "$host" "$host native" "$host vnc"
+done | fuzzel -d -p "Remote desktop: ")
+[ -n "$chosen" ] || exit 0
+
+host=${chosen%% *}
+case ${chosen#"$host"} in
+"") set -- remote-desktop-rdp "$host" ;;
+" native") set -- remote-desktop-rdp -n "$host" ;;
+" vnc") set -- remote-desktop "$host" ;;
+*)
+    notify-send "Remote desktop" "Unknown choice: $chosen"
+    exit 1
+    ;;
+esac
+
+# the output goes to a log, its last lines hold the error
+log=${XDG_RUNTIME_DIR:-/tmp}/fuzzel-remote-desktop.log
+"$@" </dev/null >"$log" 2>&1 ||
+    notify-send -u critical "Remote desktop: $host" "$(tr -d '\r' <"$log" | tail -n 4)"
