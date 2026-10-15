@@ -48,10 +48,11 @@ waiter=$!
 echo "Sharing the desktop of $host on vnc://127.0.0.1:$port (ctrl-c to stop)"
 
 # -tt so that wayvnc gets hung up when this connection goes away, -e so that
-# it exits once the viewer disconnects
-ssh -S "$ctl" -tt "$host" "
-    wl=\$(hyprctl instances -j | jq -re '.[0].wl_socket') || {
-        echo 'No running hyprland session found' >&2
+# it exits once the viewer disconnects. without a session, hyprctl instances -j
+# prints a lone ] instead of an empty array, so jq errors are silenced
+ssh -S "$ctl" -q -tt "$host" "
+    wl=\$(hyprctl instances -j 2>/dev/null | jq -re '.[0].wl_socket' 2>/dev/null) || {
+        echo \"no running hyprland session on \$(uname -n)\" >&2
         exit 1
     }
     WAYLAND_DISPLAY=\$wl exec wayvnc -e 'unix:$sock'"

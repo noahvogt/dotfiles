@@ -2,9 +2,10 @@
 
 # script to view and control the hyprland desktop of another machine on the
 # local network over rdp. like remote-desktop, hypr-rdp only runs on the remote
-# for the duration of the connection, but it listens on the network directly
-# and is protected by a one-time password. the remote needs sshd, hypr-rdp and
-# a running hyprland session
+# for the duration of the connection, but it listens on the network directly,
+# only on the address the ssh connection came in on, and is protected by a
+# one-time password. the remote needs sshd, hypr-rdp and a running hyprland
+# session
 #
 # by default the focused monitor of the remote is shared like with wayvnc and
 # scaled to the viewer window, which distorts it when the aspect ratios differ.
@@ -47,8 +48,6 @@ else
     view=/smart-sizing
 fi
 
-# the ssh host may be an alias, the rdp client needs the real address
-addr=$(ssh -G "$host" | awk '$1 == "hostname" { print $2 }')
 pass=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
 
 ctl=$(mktemp -u "${XDG_RUNTIME_DIR:-/tmp}/remote-desktop-rdp.XXXXXX")
@@ -56,6 +55,7 @@ ctl=$(mktemp -u "${XDG_RUNTIME_DIR:-/tmp}/remote-desktop-rdp.XXXXXX")
 cleanup() {
     [ -n "$waiter" ] && kill "$waiter" 2>/dev/null
     ssh -S "$ctl" -O exit "$host" 2>/dev/null
+    rm -f "$ctl.up"
 }
 trap cleanup EXIT
 trap 'exit 1' INT TERM HUP
@@ -69,8 +69,10 @@ ssh -M -S "$ctl" -fN "$host" || exit 1
 # the alt/win swap missing on a mac keyboard, are applied here. the scancodes
 # (see sdl-freerdp3 /list:kbd-scancode) are decimal, as freerdp rejects remap
 # entries longer than 10 characters. without a session, hyprctl instances -j
-# prints a lone ] instead of an empty array, so jq errors are silenced
-remote_opts=$(ssh -S "$ctl" "$host" '
+# prints a lone ] instead of an empty array, so jq errors are silenced.
+# hypr-rdp only listens on the address the ssh connection came in on, which is
+# also reachable from here
+probe=$(ssh -S "$ctl" "$host" '
     command -v hypr-rdp >/dev/null || {
         echo "hypr-rdp is not installed on $(uname -n)" >&2
         exit 1
@@ -79,8 +81,14 @@ remote_opts=$(ssh -S "$ctl" "$host" '
         echo "no running hyprland session on $(uname -n)" >&2
         exit 1
     }
-    HYPRLAND_INSTANCE_SIGNATURE=$sig hyprctl getoption input:kb_options -j |
-        jq -r .str') || exit 1
+    addr=$(echo "$SSH_CONNECTION" | cut -d " " -f 3)
+    addr=${addr#::ffff:}
+    case $addr in *:*) addr="[$addr]" ;; esac
+    echo "$addr" "$(HYPRLAND_INSTANCE_SIGNATURE=$sig \
+        hyprctl getoption input:kb_options -j | jq -r .str)"') || exit 1
+read -r addr remote_opts <<EOF
+$probe
+EOF
 
 local_opts=$(hyprctl devices -j | jq -r '.keyboards[] | select(.main).options')
 kbd=/kbd:layout:0x0807
@@ -111,6 +119,7 @@ pwfile=$(echo "$pass" | ssh -S "$ctl" "$host" '
         sleep 0.5
     done
     ssh -S "$ctl" "$host" "rm -f '$pwfile'"
+    : >"$ctl.up"
     printf '%s\n' "/v:$addr:$port" /u:rdp "/p:$pass" '/auth-pkg-list:!kerberos' \
         "$kbd" /cert:tofu /sound "$view" /log-level:ERROR |
         FREERDP_WLROOTS_HACK=0 sdl-freerdp3 /args-from:stdin >/dev/null
@@ -121,8 +130,9 @@ waiter=$!
 echo "Sharing the desktop of $host on rdp://$addr:$port (ctrl-c to stop)"
 
 # -tt so that hypr-rdp gets hung up when this connection goes away, which also
-# removes its headless monitor
-ssh -S "$ctl" -tt "$host" "
+# removes its headless monitor. once the viewer is open it shows errors itself
+# and closing it ends the session, so only failures before that count
+ssh -S "$ctl" -q -tt "$host" "
     sig=\$(hyprctl instances -j 2>/dev/null | jq -re '.[0].instance' 2>/dev/null) || {
         echo \"no running hyprland session on \$(uname -n)\" >&2
         exit 1
@@ -136,7 +146,7 @@ ssh -S "$ctl" -tt "$host" "
     hw=\$(hyprctl getoption cursor:no_hardware_cursors -j | jq -r .int)
     cursor='hl.config({ cursor = { no_hardware_cursors = %s } })'
     hyprctl eval \"\$(printf \"\$cursor\" 1)\" >/dev/null
-    hypr-rdp --bind 0.0.0.0:$port --username rdp \
+    hypr-rdp --bind '$addr:$port' --username rdp \
         --password-file '$pwfile' $display \
         --keyboard-layout-policy compositor &
     pid=\$!
@@ -148,4 +158,4 @@ ssh -S "$ctl" -tt "$host" "
     kill -0 \$pid 2>/dev/null && { wait \$pid; rc=\$?; }
     rm -f '$pwfile'
     hyprctl eval \"\$(printf \"\$cursor\" \"\$hw\")\" >/dev/null
-    exit \$rc"
+    exit \$rc" || [ -e "$ctl.up" ]
