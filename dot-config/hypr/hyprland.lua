@@ -354,6 +354,25 @@ hl.window_rule({
     opacity = "1.0 override 1.0 override",
 })
 
+-- enabled by remote-desktop-rdp during a session, as h.264 turns the wallpaper
+-- showing through translucent windows and bars into blocky noise
+hl.window_rule({
+    name    = "remote-desktop",
+    enabled = false,
+    match   = {
+        class = ".*",
+    },
+    opaque  = true,
+})
+hl.layer_rule({
+    name    = "remote-desktop",
+    enabled = false,
+    match   = {
+        namespace = "waybar",
+    },
+    blur    = true,
+})
+
 hl.window_rule({
     name  = "suppress-maximize-events",
     match = {
