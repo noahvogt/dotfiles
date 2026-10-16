@@ -2,18 +2,10 @@
 
 # edit preliminary git message in .git/message
 
-error_exit() {
-    echo "Fatal: not a git repository (or any of the parent directories): .git"
-    exit 1
-}
+toplevel="$(git rev-parse --show-toplevel)" || exit 1
+message="$toplevel/.git/message"
 
-cd_to_dotgit_dir() {
-    while [ ! -d '.git' ]; do
-        [ "$PWD" = "/" ] && error_exit
-        cd ..
-    done
-    cd ".git" || error_exit
-}
-
-cd_to_dotgit_dir
-"$EDITOR" "message"
+case "${EDITOR##*/}" in
+nvim | vim | vi) "$EDITOR" -c "set filetype=gitcommit" "$message" ;;
+*) "$EDITOR" "$message" ;;
+esac
