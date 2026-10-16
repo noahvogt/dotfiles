@@ -5,5 +5,6 @@
 toplevel="$(git rev-parse --show-toplevel)" || exit 1
 message="$toplevel/.git/message"
 
-[ -f "$message" ] && bat --style plain --theme "base16" --paging never \
-    --language "Git Commit" -H 1 "$message"
+[ -f "$message" ] && git stripspace --strip-comments <"$message" |
+    bat --style plain --theme "base16" --paging never \
+        --language "Git Commit" -H 1

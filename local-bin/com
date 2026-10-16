@@ -5,4 +5,4 @@
 toplevel="$(git rev-parse --show-toplevel)" || exit 1
 message="$toplevel/.git/message"
 
-[ -s "$message" ] && git commit -F "$message" && rmgitmessage
+[ -s "$message" ] && git commit --cleanup=strip -F "$message" && rmgitmessage
