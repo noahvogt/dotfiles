@@ -173,7 +173,9 @@ hl.config({
 hl.config({
     input = {
         kb_layout = "ch",
-        kb_options = "caps:swapescape,altwin:swap_lalt_lwin",
+        -- apple keyboards send pc codes for left option/command (hid_apple
+        -- swap_opt_cmd=2, set by norisa), so this also puts super on command
+        kb_options = "caps:swapescape,altwin:swap_lalt_lwin,lv3:rwin_switch",
         follow_mouse = 1,
         sensitivity = 0,
         -- -1.0 - 1.0, 0 means no modification.
@@ -198,20 +200,6 @@ hl.device({
     name = "epic-mouse-v1",
     sensitivity = -0.5,
 })
-
--- ca 2015 Macbook Keyboard
-hl.device({
-    name = "apple-inc.-apple-internal-keyboard-/-trackpad",
-    kb_options = "caps:swapescape,lv3:rwin_switch",
-})
-hl.bind("SUPER + ALT_L", hl.dsp.exec_cmd("fuzzel"), { release = true, device = "apple-inc.-apple-internal-keyboard-/-trackpad" })
-
--- M1 Keyboard
-hl.device({
-    name = "apple-spi-keyboard",
-    kb_options = "caps:swapescape,lv3:rwin_switch",
-})
-hl.bind("SUPER + ALT_L", hl.dsp.exec_cmd("fuzzel"), { release = true, device = "apple-spi-keyboard" })
 
 --##################
 --## KEYBINDINGS ###
