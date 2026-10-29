@@ -83,6 +83,17 @@ for _, server in ipairs(servers) do
   vim.lsp.enable(server)
 end
 
+-- jdtls: put system jars on the classpath of projects without maven/gradle
+vim.lsp.config('jdtls', {
+  settings = {
+    java = {
+      project = {
+        referencedLibraries = { 'lib/**/*.jar', '/usr/share/java/gurobi/gurobi.jar' },
+      },
+    },
+  },
+})
+
 -- Markdown (AUR: marksman-git), only if installed
 if vim.fn.executable('marksman') == 1 then
   vim.lsp.config('marksman', { capabilities = capabilities, on_attach = on_attach })
