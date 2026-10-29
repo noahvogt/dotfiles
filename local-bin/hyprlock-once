@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# script to start hyprlock unless it already runs in this hyprland instance.
+# used as the hypridle lock_cmd instead of `pidof hyprlock || hyprlock`, which
+# also counts a hyprlock of another hyprland session (e.g. one on another tty)
+# and then never locks this one
+
+for pid in $(pgrep -x -u "$(id -u)" hyprlock); do
+    if tr '\0' '\n' <"/proc/$pid/environ" 2>/dev/null |
+        grep -qxF "HYPRLAND_INSTANCE_SIGNATURE=$HYPRLAND_INSTANCE_SIGNATURE"; then
+        exit 0
+    fi
+done
+
+exec hyprlock "$@"
