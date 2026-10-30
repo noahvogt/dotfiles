@@ -10,7 +10,7 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 
-# for shfmt: matches shell scripts by shebang, most here have no .sh extension
+# for shfmt: matches shell scripts by shebang, also those without a .sh extension
 [[shell]]
 indent_style = space
 indent_size = 4
