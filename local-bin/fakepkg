@@ -18,6 +18,6 @@ conflicts=('%s')
 source=()
 package() {
 	echo 'WARNING: THIS IS A DUMMY PACKAGE'
-}" "$1" "$1" "$1" > PKGBUILD
+}" "$1" "$1" "$1" >PKGBUILD
 
 makepkg -si

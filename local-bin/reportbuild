@@ -1,15 +1,16 @@
 #!/bin/bash
 
-for (( i=0; i < 3; i++ )); do
+for ((i = 0; i < 3; i++)); do
     sudo GNUPGHOME=/home/builder/.local/share/gnupg ccm64 s && break
 done
-rm *-debug*.pkg.tar.zst
+rm ./*-debug*.pkg.tar.zst
 if sendreportmail | grep -q "BUILD SUCCESS"; then
     git push
     if echo "$1$2" | grep -q "c"; then
         cr
     fi
     if echo "$1$2" | grep -q "x"; then
+        # shellcheck disable=SC2035 # xup takes the package name from the bare file name
         xup *.pkg.tar.zst
     fi
 fi

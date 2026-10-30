@@ -11,6 +11,8 @@
 dir="${SCREENSHOT_DIR:-$HOME/pix/Screenshots}"
 cd "$dir" || exit 1
 
+# ls -t sorts by mtime, newest first. the preview is expanded by fzf, not here
+# shellcheck disable=SC2012,SC2016
 selection="$(
     ls -t -- *.png *.jpg *.jpeg *.webp 2>/dev/null |
         fzf --multi --no-sort --layout=reverse \

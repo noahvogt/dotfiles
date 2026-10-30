@@ -3,7 +3,10 @@
 # script to connect to weird educational wifis
 
 # make sure that script is run with root privileges
-[ $EUID -ne 0 ] && { echo -e "\e[0;30;101m Error: Please run this script with root privileges \e[0m"; exit; }
+[ $EUID -ne 0 ] && {
+    echo -e "\e[0;30;101m Error: Please run this script with root privileges \e[0m"
+    exit
+}
 
 # list network interfaces
 echo -e "\e[0;30;42m List of Wifi interfaces (iwconfig): \e[0m\n"
@@ -23,8 +26,7 @@ printf "\n"
 
 # define unique uuid
 uuid=$(uuidgen)
-while grep -q "uuid=${uuid}" /etc/NetworkManager/system-connections/*
-do
+while grep -q "uuid=${uuid}" /etc/NetworkManager/system-connections/*; do
     uuid=$(uuidgen)
 done
 
@@ -61,7 +63,7 @@ dns-search=
 method=auto
 
 [proxy]
-" "$uuid" "$interface" "$username" "$password" > /etc/NetworkManager/system-connections/gkg-connect.nmconnection
+" "$uuid" "$interface" "$username" "$password" >/etc/NetworkManager/system-connections/gkg-connect.nmconnection
 chmod 600 /etc/NetworkManager/system-connections/gkg-connect.nmconnection
 systemctl restart NetworkManager || rc-service NetworkManager restart
 nmcli connection up GKGe

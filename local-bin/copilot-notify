@@ -83,61 +83,61 @@ start_interactive_monitor() {
         fi
 
         case "$line" in
-        *"Tool calls count: "*)
-            tool_calls_count="${line##*Tool calls count: }"
-            tool_calls_count="${tool_calls_count%%[^0-9]*}"
-            [ -n "$tool_calls_count" ] || tool_calls_count=0
-            ;;
-        *"kind: assistant_turn_start"*)
-            busy=1
-            clear_permission_state
-            ;;
-        *'"name": "ask_user"'*)
-            # "ask_user" appears in tool schema on every turn; only alert if a
-            # real tool call follows immediately with a question payload.
-            ask_user_pending=8
-            ;;
-        *'"arguments": "{\"question\":'*)
-            if [ "$ask_user_pending" -gt 0 ]; then
-                notify_action_required "$win_addr"
-                ask_user_pending=0
-            fi
-            ;;
-        *"Permission request (kind="*"): routing via PermissionService"*)
-            # PermissionService handles all tool calls; only notify if the
-            # request stays unresolved for a moment (likely a real prompt).
-            permission_pending=1
-            permission_notified=0
-            start_permission_timer
-            ask_user_pending=0
-            ;;
-        *"respondToPermission:"*)
-            clear_permission_state
-            ask_user_pending=0
-            ;;
-        *"kind: tool_call_executed"*)
-            # Single-tool turns that auto-approve complete quickly; suppress
-            # stale timer notifications in that common case.
-            if [ "$permission_pending" -eq 1 ] && [ "$tool_calls_count" -le 1 ]; then
+            *"Tool calls count: "*)
+                tool_calls_count="${line##*Tool calls count: }"
+                tool_calls_count="${tool_calls_count%%[^0-9]*}"
+                [ -n "$tool_calls_count" ] || tool_calls_count=0
+                ;;
+            *"kind: assistant_turn_start"*)
+                busy=1
                 clear_permission_state
-            fi
-            ;;
-        *"kind: permission_prompt"*)
-            # Emitted when a decision is submitted; don't notify here.
-            clear_permission_state
-            ask_user_pending=0
-            ;;
-        *"kind: assistant_turn_end"*)
-            clear_permission_state
-            ;;
-        *"kind: session_idle"*)
-            if [ "$busy" -eq 1 ]; then
-                notify_task_finished "$win_addr"
-                busy=0
-            fi
-            clear_permission_state
-            ask_user_pending=0
-            ;;
+                ;;
+            *'"name": "ask_user"'*)
+                # "ask_user" appears in tool schema on every turn; only alert if a
+                # real tool call follows immediately with a question payload.
+                ask_user_pending=8
+                ;;
+            *'"arguments": "{\"question\":'*)
+                if [ "$ask_user_pending" -gt 0 ]; then
+                    notify_action_required "$win_addr"
+                    ask_user_pending=0
+                fi
+                ;;
+            *"Permission request (kind="*"): routing via PermissionService"*)
+                # PermissionService handles all tool calls; only notify if the
+                # request stays unresolved for a moment (likely a real prompt).
+                permission_pending=1
+                permission_notified=0
+                start_permission_timer
+                ask_user_pending=0
+                ;;
+            *"respondToPermission:"*)
+                clear_permission_state
+                ask_user_pending=0
+                ;;
+            *"kind: tool_call_executed"*)
+                # Single-tool turns that auto-approve complete quickly; suppress
+                # stale timer notifications in that common case.
+                if [ "$permission_pending" -eq 1 ] && [ "$tool_calls_count" -le 1 ]; then
+                    clear_permission_state
+                fi
+                ;;
+            *"kind: permission_prompt"*)
+                # Emitted when a decision is submitted; don't notify here.
+                clear_permission_state
+                ask_user_pending=0
+                ;;
+            *"kind: assistant_turn_end"*)
+                clear_permission_state
+                ;;
+            *"kind: session_idle"*)
+                if [ "$busy" -eq 1 ]; then
+                    notify_task_finished "$win_addr"
+                    busy=0
+                fi
+                clear_permission_state
+                ask_user_pending=0
+                ;;
         esac
     done < <(tail -n0 -F "$log_file" 2>/dev/null)
 
@@ -148,10 +148,10 @@ start_interactive_monitor() {
 is_prompt_run=0
 for arg in "$@"; do
     case "$arg" in
-    -p | --prompt | -i | --interactive)
-        is_prompt_run=1
-        break
-        ;;
+        -p | --prompt | -i | --interactive)
+            is_prompt_run=1
+            break
+            ;;
     esac
 done
 
@@ -170,10 +170,10 @@ if [ "$is_prompt_run" -eq 0 ] || [ "$#" -eq 0 ]; then
     has_log_level=0
     for arg in "$@"; do
         case "$arg" in
-        --log-level | --log-level=*)
-            has_log_level=1
-            break
-            ;;
+            --log-level | --log-level=*)
+                has_log_level=1
+                break
+                ;;
         esac
     done
 

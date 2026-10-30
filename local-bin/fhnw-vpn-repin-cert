@@ -54,8 +54,8 @@ served_pin() {
         openssl dgst -sha256 -binary | base64
 }
 
-command -v nmcli > /dev/null || error_msg "Could not find 'nmcli' executable"
-command -v openssl > /dev/null || error_msg "Could not find 'openssl' executable"
+command -v nmcli >/dev/null || error_msg "Could not find 'nmcli' executable"
+command -v openssl >/dev/null || error_msg "Could not find 'openssl' executable"
 
 nmcli -t -f NAME connection show | grep -qx "$CONNECTION" ||
     error_msg "No '$CONNECTION' connection configured in NetworkManager"

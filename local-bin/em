@@ -6,6 +6,6 @@ toplevel="$(git rev-parse --show-toplevel)" || exit 1
 message="$toplevel/.git/message"
 
 case "${EDITOR##*/}" in
-nvim | vim | vi) "$EDITOR" -c "set filetype=gitcommit" "$message" ;;
-*) "$EDITOR" "$message" ;;
+    nvim | vim | vi) "$EDITOR" -c "set filetype=gitcommit" "$message" ;;
+    *) "$EDITOR" "$message" ;;
 esac

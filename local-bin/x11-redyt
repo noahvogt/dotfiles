@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # If notify-send is not found, use echo as notifier
-command -v "notify-send" > /dev/null && notifier="echo" || notifier="notify-send"
+command -v "notify-send" >/dev/null && notifier="echo" || notifier="notify-send"
 
 # check dependencies
 for prog in dmenu jq nomacs wget curl; do
-	! command -v "$prog" > /dev/null && 
+    ! command -v "$prog" >/dev/null &&
         $notifier "redyt" "Error: Program '$prog' not found." && exit 1
 done
 
@@ -22,24 +22,23 @@ rm "${cachedir:?}"/*
 
 # set defaults
 defaultsub="memes"
-[ -f "$configdir/subreddits" ] || echo "$defaultsub" > "$configdir/subreddits"
+[ -f "$configdir/subreddits" ] || echo "$defaultsub" >"$configdir/subreddits"
 limit=100
 # select sorting (default: sort by hot)
 # sorting=$(printf "hot\nnew\n" | dmenu -p "Select Sorting" -i -l 10)
-# [ -z "$sorting" ] && 
+# [ -z "$sorting" ] &&
 sorting="hot"
 
 # when no argument given, use dmenu to ask for subreddit
 if [ -z "$1" ]; then
-	subreddit=$(dmenu -p "Select Subreddit r/" -i -l 10 < \
+    subreddit=$(dmenu -p "Select Subreddit r/" -i -l 10 < \
         "$configdir/subreddits" | cut -d\| -f1 | awk '{$1=$1;print}')
 
-	# if no subreddit was chosen, exit
-	[ -z "$subreddit" ] && exit 1
+    # if no subreddit was chosen, exit
+    [ -z "$subreddit" ] && exit 1
 else
-	subreddit="$1"
+    subreddit="$1"
 fi
-
 
 # send a notification
 $notifier "Redyt" "📩 Downloading your 🖼️ Memes"
@@ -48,10 +47,10 @@ $notifier "Redyt" "📩 Downloading your 🖼️ Memes"
 # and store it inside $cachedir/tmp.json
 curl -H "User-agent: 'your bot 0.1'" \
     "https://www.reddit.com/r/$subreddit/$sorting.json?limit=$limit" \
-    > "$cachedir/tmp.json"
+    >"$cachedir/tmp.json"
 
 # get a list of images
-imgs="$(jq '.' < "$cachedir/tmp.json" | grep url_overridden_by_dest | \
+imgs="$(jq '.' <"$cachedir/tmp.json" | grep url_overridden_by_dest |
     grep -Eo "http(s|)://.*(jpg|png)\b" | sort -u)"
 
 # if there are no images, exit
@@ -63,5 +62,5 @@ imgs="$(jq '.' < "$cachedir/tmp.json" | grep url_overridden_by_dest | \
 cp "$configdir/redyt.png" "$cachedir"
 
 # download + display images in cache dir
-wget -bq -P "$cachedir" "$imgs" > /dev/null 2> /dev/null
+wget -bq -P "$cachedir" "$imgs" >/dev/null 2>/dev/null
 devour nomacs "$cachedir/redyt.png" & #> /dev/null 2> /dev/null

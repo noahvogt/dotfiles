@@ -7,4 +7,4 @@
 
 cp ~/.config/setup/templates/latex/beamer.tex .
 mv beamer.tex "${1%.*}.tex"
-vim -c :1  "${1%.*}.tex"
+vim -c :1 "${1%.*}.tex"

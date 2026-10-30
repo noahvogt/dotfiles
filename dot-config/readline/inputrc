@@ -7,7 +7,7 @@ Control-l: clear-screen
 
 set keymap vi-insert
 # these are for vi-insert mode
-Control-l: clear-screen 
+Control-l: clear-screen
 $endif
 
 # different cursor dependig on editing mode

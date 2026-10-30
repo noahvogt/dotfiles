@@ -9,14 +9,13 @@ oldindex="none"
 
 # check dependencies
 for prog in jq wget; do
-	! command -v "$prog" > /dev/null && 
+    ! command -v "$prog" >/dev/null &&
         echo "Error: Program '$prog' not found." && exit 1
 done
 
 error() {
-    echo "Error: $@" && exit 1
+    echo "Error: $*" && exit 1
 }
-
 
 # make sure needed dirs exist
 [ -d "$conf" ] || mkdir -p "$conf" || error "Could not create config directory"
@@ -27,13 +26,12 @@ error() {
 dest="$(cat "$conf/config")"
 # TODO: check $dest and s/~/$HOME/
 
-
 echo "Fetching Index ..."
 
 [ -f "$cache/index" ] && mv "$cache/index" "$cache/index.old" && oldindex=
 [ -f "$cache/index.html" ] && rm "$cache/index.html"
 wget -q --show-progress -P "$cache" "$base_url"
-categories="$(sed '0,/index.html/d; 0,/contact/!d' "$conf/index.html" | \
+categories="$(sed '0,/index.html/d; 0,/contact/!d' "$conf/index.html" |
     head -n -1 | sed 's/^.*href="//; s/.html.*$//')"
 for c in $categories; do
     [ -f "$cache/$c.html" ] && rm "$cache/$c.html"
@@ -45,15 +43,15 @@ printf "\nGenerating Index ...\n"
 # generate new index
 for c in $categories; do
     sed '0,/id="list/d; /flexListItem/!d; s/^.*href="//; s/".*$//' \
-        "$cache/$c.html" >> "$cache/index"
+        "$cache/$c.html" >>"$cache/index"
 done
 
 # check what files are new, create download list
 if [ -z "$oldindex" ]; then
     [ -f "$cache/dl" ] && rm "$cache/dl"
     while IFS='' read -r line; do
-        grep -q "$line" "$cache/index.old" || echo "$line" >> "$cache/dl"
-    done < "$cache/index"
+        grep -q "$line" "$cache/index.old" || echo "$line" >>"$cache/dl"
+    done <"$cache/index"
 else
     cp "$cache/index" "$cache/dl"
 fi
@@ -62,6 +60,6 @@ if [ ! -f "$cache/dl" ]; then
     printf "\nDownloading Skipped, already up-to-date...\n"
 else
     printf "\nDownloading Images...\n"
-        sed "s/^/$ex_base_url/;" "$cache/dl" | \
-            wget -q --show-progress -P "$dest" -i -
+    sed "s/^/$ex_base_url/;" "$cache/dl" |
+        wget -q --show-progress -P "$dest" -i -
 fi

@@ -17,13 +17,13 @@ done | fuzzel -d -p "Remote desktop: ")
 
 host=${chosen%% *}
 case ${chosen#"$host"} in
-"") set -- remote-desktop-rdp "$host" ;;
-" native") set -- remote-desktop-rdp -n "$host" ;;
-" vnc") set -- remote-desktop "$host" ;;
-*)
-    notify-send "Remote desktop" "Unknown choice: $chosen"
-    exit 1
-    ;;
+    "") set -- remote-desktop-rdp "$host" ;;
+    " native") set -- remote-desktop-rdp -n "$host" ;;
+    " vnc") set -- remote-desktop "$host" ;;
+    *)
+        notify-send "Remote desktop" "Unknown choice: $chosen"
+        exit 1
+        ;;
 esac
 
 # the output goes to a log, its last lines hold the error

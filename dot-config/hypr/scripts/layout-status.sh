@@ -11,16 +11,16 @@ if [ -z "$LAYOUT" ] || [ "$LAYOUT" = "null" ]; then
 fi
 
 case "$LAYOUT" in
-"master")
-    echo ""
-    ;;
-"monocle")
-    echo ""
-    ;;
-"dwindle")
-    echo ""
-    ;;
-*)
-    echo "$LAYOUT"
-    ;;
+    "master")
+        echo ""
+        ;;
+    "monocle")
+        echo ""
+        ;;
+    "dwindle")
+        echo ""
+        ;;
+    *)
+        echo "$LAYOUT"
+        ;;
 esac

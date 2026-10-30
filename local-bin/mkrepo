@@ -8,7 +8,7 @@ URL_PART_AFTER_REPONAME=""
 [ -d "$REPO_BASE_PATH/$1.git" ] && echo "Error: repository '$1' already exists" && exit 1
 
 error_exit() {
-    "Error: couldn't create the repository '$1'"
+    echo "Error: couldn't create the repository '$1'" >&2
     exit 1
 }
 

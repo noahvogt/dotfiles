@@ -106,14 +106,14 @@ $endif$
 
 % geometry
 \usepackage{geometry}
-\geometry{ 
+\geometry{
     headsep=20pt,
     headheight=20pt,
     left=21mm,
     top=15mm,
     right=21mm,
     bottom=15mm,
-    footskip=20pt, 
+    footskip=20pt,
 }
 
 \usepackage{hyperref}

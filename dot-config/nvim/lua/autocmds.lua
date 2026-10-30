@@ -161,4 +161,3 @@ autocmd("FocusGained", {
     require('theme').sync_theme()
   end,
 })
-

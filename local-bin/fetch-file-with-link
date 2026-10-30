@@ -6,9 +6,9 @@ while getopts ":c:l:o:h" option; do case "${option}" in
 to the file on sharepoint (full url)\\n\
  -o [path]\t path to output directory\\n\\n\
  -h\t\t show this help message\\n" && exit 1 ;;
-    c) cookiefile=${OPTARG};;
-    l) linktofile=${OPTARG};;
-    o) outputpath=${OPTARG};;
+    c) cookiefile=${OPTARG} ;;
+    l) linktofile=${OPTARG} ;;
+    o) outputpath=${OPTARG} ;;
     *) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
 esac done
 

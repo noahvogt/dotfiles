@@ -10,7 +10,7 @@ notify() {
 # check if access to file
 apkFile=$(cat "$HOME/.config/norisa/reapk")
 fileTest=$(file $apkFile)
-if echo $fileTest | grep -q "Error: cannot open APK file"; then 
+if echo $fileTest | grep -q "Error: cannot open APK file"; then
     notify "error"
 fi
 

@@ -19,10 +19,10 @@ print_layout() {
     fi
 
     case "$LAYOUT" in
-    "master") echo "" ;;
-    "monocle") echo "" ;;
-    "dwindle") echo "" ;;
-    *) echo "$LAYOUT" ;;
+        "master") echo "" ;;
+        "monocle") echo "" ;;
+        "dwindle") echo "" ;;
+        *) echo "$LAYOUT" ;;
     esac
 }
 
@@ -36,9 +36,9 @@ handle_gemini() {
 
     current="idle"
     case "$title" in
-    *"✋"*) current="action" ;;
-    *"✦"*) current="working" ;;
-    *"◇"*) current="ready" ;;
+        *"✋"*) current="action" ;;
+        *"✦"*) current="working" ;;
+        *"◇"*) current="ready" ;;
     esac
 
     last_state=$(grep "$addr" "$STATE_FILE" | cut -d' ' -f2)
@@ -66,13 +66,13 @@ print_layout
 # Background the event listener
 socat -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while read -r line; do
     case "$line" in
-    workspace* | layoutmsg* | activelayout*)
-        print_layout
-        ;;
-    windowtitle*)
-        addr_raw=${line#*>>}
-        handle_gemini "$addr_raw"
-        ;;
+        workspace* | layoutmsg* | activelayout*)
+            print_layout
+            ;;
+        windowtitle*)
+            addr_raw=${line#*>>}
+            handle_gemini "$addr_raw"
+            ;;
     esac
 done &
 

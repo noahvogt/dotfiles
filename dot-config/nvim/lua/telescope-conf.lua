@@ -105,4 +105,3 @@ telescope.setup {
 
 -- Extensions read their config from setup(), so load them afterwards
 telescope.load_extension('media_files')
-

@@ -3,7 +3,7 @@
 # wrapper script to move the ~/.mozilla folder after exiting firefox
 
 # check if firefox is installed
-command -v "firefox" > /dev/null || exit 1
+command -v "firefox" >/dev/null || exit 1
 
 # make sure datadir exists
 datadir=${XDG_DATA_HOME:-$HOME/.local/share}/furryfox

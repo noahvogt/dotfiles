@@ -9,10 +9,10 @@ require('gitsigns').setup({
   },
   -- Enable highlighting for the sign column and line numbers
   signcolumn = true,
-  numhl      = true, 
+  numhl      = true,
   linehl     = false,
   word_diff  = false,
-  
+
   on_attach = function(bufnr)
     local gs = package.loaded.gitsigns
 

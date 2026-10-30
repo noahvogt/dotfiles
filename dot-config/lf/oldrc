@@ -45,10 +45,10 @@ cmd open ${{
 		pdf) devour llpp $f > /dev/null 2> /dev/null &disown;;
 		epub) llpp $f > /dev/null 2> /dev/null &disown;;
         sc) sc-im $f;;
-        *) 
+        *)
 			case $(file --mime-type $f -b) in
 			text/*) $EDITOR $fx;;
-            image/*) sxiv $f &;;  
+            image/*) sxiv $f &;;
             *) for f in $fx; do setsid $OPENER $f > /dev/null 2> /dev/null & done;;
 			esac;;
     esac

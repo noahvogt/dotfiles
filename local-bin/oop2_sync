@@ -8,7 +8,7 @@ error_msg() {
     exit 1
 }
 
-command -v "rsync" > /dev/null || error_msg "Could not find 'rsync' executable"
+command -v "rsync" >/dev/null || error_msg "Could not find 'rsync' executable"
 
 [ -d "$SRC_DIR" ] || error_msg "Could not access '$SRC_DIR'"
 

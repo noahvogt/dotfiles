@@ -2,4 +2,7 @@
 
 # fix weird audio duration in iTunes
 
-for f in *.mp3; do ffmpeg -i "$f" -acodec copy "${f%.*}-fix.mp3"; mv "${f%.*}-fix.mp3" "$f"; done
+for f in *.mp3; do
+    ffmpeg -i "$f" -acodec copy "${f%.*}-fix.mp3"
+    mv "${f%.*}-fix.mp3" "$f"
+done
