@@ -37,13 +37,18 @@ never in tracked files.
 ## Conventions
 
 * Scripts in `local-bin/` are POSIX `sh` unless they need more; keep them short and
-  dependency-light. Check shell with `shellcheck` and format with `shfmt`.
+  dependency-light. Check shell with `shellcheck` and format with `shfmt` (settings in
+  `.editorconfig`; zsh files are skipped, shellcheck cannot parse them). The prek
+  hooks in `.pre-commit-config.yaml` enforce this, fix missing final newlines and
+  trailing whitespace, and check the commit message format. Run
+  `prek run --all-files` after a change. The hooks only run on commit after
+  `prek install`, which is needed once per clone.
 * Never commit secrets, tokens, hostnames of private infra or personal data.
 
 ## Workflow
 
 * **NEVER commit or push.** Leave all git history operations to the user.
 * When a change is done, suggest a commit message following Conventional Commits,
-  **unscoped** (`feat!: ... `, `feat: ...`, `fix: ...`, `chore: ...`, `doc: ...`, `refactor: ...`),
+  **unscoped** (`feat!: ... `, `feat: ...`, `fix: ...`, `chore: ...`, `docs: ...`, `refactor: ...`),
   lowercase, imperative, matching `git log`. If the change spans both repos, suggest
   one message per repo.
