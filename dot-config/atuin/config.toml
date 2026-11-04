@@ -1,0 +1,19 @@
+# Full reference: `atuin default-config`
+
+## no server configured yet, so nothing to sync
+auto_sync = false
+## pacman handles updates
+update_check = false
+
+## start the search UI in the keymap of the shell (vi insert from ctrl-r,
+## vi normal from / in vicmd)
+keymap_mode = "auto"
+
+## enter runs the selected command, tab puts it on the prompt for editing
+enter_accept = true
+
+## ctrl-r cycles through these; start with all history from every directory
+filter_mode = "global"
+search_mode = "fuzzy"
+style = "compact"
+inline_height = 20

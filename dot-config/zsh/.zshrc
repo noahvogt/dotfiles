@@ -146,6 +146,11 @@ bindkey -s '^p' 'lfcd\n'
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^e' edit-command-line
 
+# atuin: fuzzy history search on ctrl-r (and / in vi normal mode). Must come
+# after `bindkey -v`, which resets the keymaps. Up arrow keeps the plain zsh
+# history.
+command -v atuin >/dev/null && eval "$(atuin init zsh --disable-up-arrow --disable-ai)"
+
 # Load aliases and shortcuts if existent.
 [ -f "$HOME/.config/exportrc" ] && source "$HOME/.config/exportrc"
 [ -f "$HOME/.config/aliasrc" ] && source "$HOME/.config/aliasrc"
