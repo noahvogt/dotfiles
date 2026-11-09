@@ -21,15 +21,6 @@ local terminal = "kitty"
 local fileManager = "nautilus"
 local menu = "fuzzel"
 
---################
---## AUTOSTART ###
---################
--- Autostart necessary processes (like notifications daemons, status bars, etc.)
--- Or execute your favorite apps at launch like this:
-
--- exec-once = $terminal
--- exec-once = nm-applet &
--- exec-once = waybar & hyprpaper & firefox
 --############################
 --## ENVIRONMENT VARIABLES ###
 --############################
@@ -423,6 +414,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hypridle")
     hl.exec_cmd("xwaylandvideobridge")
     hl.exec_cmd("wlsunset -l 47 -L 8") -- 47 N, 8 E (Switzerland coordinates)
+    hl.exec_cmd("systemctl --user start hyprpolkitagent")
 end)
 
 -- the headless monitor of remote-desktop-rdp -n gets a flat background, as
