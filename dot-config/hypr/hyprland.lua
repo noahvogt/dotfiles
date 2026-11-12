@@ -381,8 +381,32 @@ hl.window_rule({
     name  = "keepassxc-workspace",
     match = {
         class = "^(org.keepassxc.KeePassXC)$",
+        -- only the main window ("<db> [Locked] - KeePassXC" or "KeePassXC"), so
+        -- browser access, passkey and other dialogs open on the current workspace
+        title = "^(.+ - )?KeePassXC$",
+        -- these dialogs share the main window's title suffix
+        initial_title = "negative:^(Unlock Database|Auto-Type) - KeePassXC$",
     },
     workspace = 5,
+})
+
+-- float all other keepassxc windows (browser access, passkey, unlock, auto-type...)
+hl.window_rule({
+    name  = "keepassxc-dialogs-float",
+    match = {
+        class = "^(org.keepassxc.KeePassXC)$",
+        title = "negative:^(.+ - )?KeePassXC$",
+    },
+    float = true,
+})
+
+hl.window_rule({
+    name  = "keepassxc-unlock-autotype-float",
+    match = {
+        class = "^(org.keepassxc.KeePassXC)$",
+        title = "^(Unlock Database|Auto-Type) - KeePassXC$",
+    },
+    float = true,
 })
 
 hl.window_rule({

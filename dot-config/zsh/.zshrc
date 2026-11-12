@@ -248,3 +248,8 @@ source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+
+# Added by modulplaner install script
+fpath=("/home/noah/.local/share/zsh/site-functions" $fpath)
+autoload -Uz compinit
+compinit
